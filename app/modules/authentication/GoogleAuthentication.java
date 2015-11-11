@@ -18,10 +18,6 @@ public class GoogleAuthentication {
         GoogleClientSecrets gcs = GoogleClientSecrets.load(JacksonFactory.getDefaultInstance(),
                 new InputStreamReader(Play.application().classloader().getResourceAsStream("client_secret.json")));
 
-        String url = new GoogleBrowserClientRequestUrl(gcs,
-                gcs.getDetails().getRedirectUris().get(0), Arrays.asList(
-                "https://www.googleapis.com/auth/userinfo.email"))/*.setState("/profile")*/.build();
-
-        return url;
+        return gcs.getDetails().getAuthUri();
     }
 }

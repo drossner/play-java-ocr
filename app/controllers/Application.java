@@ -20,10 +20,10 @@ public class Application extends Controller {
         return ok(index.render("Your new application is ready."));
     }
 
-    public Result oauth(String access_token, String error) {
-        if(error != null || access_token == null) return unauthorized();
+    public Result oauth(String error, String code) {
+        if(error != null || code == null) return unauthorized();
 
-        return ok(access_token);
+        return ok(code);
     }
 
     public Result login() {
