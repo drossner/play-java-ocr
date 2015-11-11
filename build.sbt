@@ -12,6 +12,8 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
+libraryDependencies += "com.google.api-client" % "google-api-client" % "1.19.1"
+
 resolvers ++= Seq(
   "webjars"    at "http://webjars.github.com/m2"
 )
