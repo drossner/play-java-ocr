@@ -9,7 +9,7 @@ GET         /dummy                 controllers.Application.dummy()
 
 
 # oAuth
-GET        /oauth2callback        controllers.Application.oauth(code: String, error: String)
+GET        /oauth2callback        controllers.Application.oauth(access_token: String, error: String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file          controllers.Assets.versioned(path="/public", file: Asset)

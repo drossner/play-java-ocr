@@ -1,5 +1,6 @@
 package controllers;
 
+import com.google.api.services.plus.model.Person;
 import modules.authentication.GoogleAuthentication;
 import play.*;
 //import play.api.mvc.*;
@@ -19,10 +20,10 @@ public class Application extends Controller {
         return ok(index.render("Your new application is ready."));
     }
 
-    public Result oauth(String code, String error) {
-        if(error != null || code == null) return unauthorized();
+    public Result oauth(String access_token, String error) {
+        if(error != null || access_token == null) return unauthorized();
 
-        return ok(code);
+        return ok(access_token);
     }
 
     public Result login() {

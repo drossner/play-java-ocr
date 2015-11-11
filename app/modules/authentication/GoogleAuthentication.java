@@ -20,7 +20,7 @@ public class GoogleAuthentication {
 
         String url = new GoogleBrowserClientRequestUrl(gcs,
                 gcs.getDetails().getRedirectUris().get(0), Arrays.asList(
-                "https://www.googleapis.com/auth/userinfo.email")).setState("/profile").build();
+                "https://www.googleapis.com/auth/userinfo.email"))/*.setState("/profile")*/.build();
 
         return url;
     }
