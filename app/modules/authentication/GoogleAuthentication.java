@@ -48,7 +48,7 @@ public class GoogleAuthentication {
     }
 
     public String exchangeToken(String token) throws IOException {
-        String accessToken = gacf.newTokenRequest(token).setRedirectUri(AppValues.BASE_URL + "oauth2Access").execute().getIdToken();
+        String accessToken = gacf.newTokenRequest(token).setRedirectUri(gcs.getDetails().getRedirectUris().get(1)).execute().getIdToken();
         GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
 
         return credential.getServiceAccountId();
