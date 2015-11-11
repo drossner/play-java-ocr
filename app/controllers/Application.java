@@ -32,6 +32,10 @@ public class Application extends Controller {
         //return ok(code);
     }
 
+    public Result oauthAccess(){
+        return ok();
+    }
+
     public Result login() {
         try {
             return redirect(GoogleAuthentication.getInstance().setUpGoogleClient());

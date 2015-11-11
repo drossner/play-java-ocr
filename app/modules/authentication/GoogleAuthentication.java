@@ -6,6 +6,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.plus.Plus;
+import constants.AppValues;
 import play.Play;
 
 
@@ -47,7 +48,7 @@ public class GoogleAuthentication {
     }
 
     public String exchangeToken(String token) throws IOException {
-        String accessToken = gacf.newTokenRequest(token).execute().getIdToken();
+        String accessToken = gacf.newTokenRequest(token).setRedirectUri(AppValues.BASE_URL + "oauth2Access").execute().getIdToken();
         GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
 
         return credential.getServiceAccountId();
