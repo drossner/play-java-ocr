@@ -1,6 +1,6 @@
 package controllers;
 
-import com.google.api.services.plus.model.Person;
+
 import modules.authentication.GoogleAuthentication;
 import play.*;
 //import play.api.mvc.*;
@@ -23,12 +23,18 @@ public class Application extends Controller {
     public Result oauth(String error, String code) {
         if(error != null || code == null) return unauthorized();
 
-        return ok(code);
+        try {
+            return ok(GoogleAuthentication.getInstance().exchangeToken(code));
+        } catch (IOException e) {
+            Logger.error("oauth IO-Error", e);
+            return internalServerError("error");
+        }
+        //return ok(code);
     }
 
     public Result login() {
         try {
-            return redirect(new GoogleAuthentication().setUpGoogleClient());
+            return redirect(GoogleAuthentication.getInstance().setUpGoogleClient());
         } catch (IOException e) {
             Logger.error("Login IO-Error", e);
             return internalServerError("error");
