@@ -30,7 +30,7 @@ public class Application extends Controller {
             return redirect(new GoogleAuthentication().setUpGoogleClient());
         } catch (IOException e) {
             Logger.error("Login IO-Error", e);
-            return internalServerError();
+            return internalServerError("error");
         }
     }
 }
