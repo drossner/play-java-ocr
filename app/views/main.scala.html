@@ -5,9 +5,12 @@
 <html lang="en">
     <head>
         <link rel='stylesheet' href='@routes.WebJarAssets.at(WebJarAssets.locate("css/bootstrap.min.css"))'>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
+
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("jquery.min.js"))'></script>
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("knockout.js"))'></script>
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))'></script>
+
     </head>
     <body>
         <div class="container">
@@ -30,11 +33,17 @@
             <div>@content</div>
         </div>
         <div class="container">
-            <form action="@routes.Application.login()">
-                <input type="submit" value="Login with Google">
-            </form>
+            <a class="btn sharp" href="@routes.Application.login()" role="button">Link</a>
+
         </div>
+
+
+
+
+
+
     </body>
+
     <!-- scripts which need complete DOM-tree -->
 
     <!-- scripts end -->
