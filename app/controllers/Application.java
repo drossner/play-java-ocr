@@ -20,6 +20,14 @@ public class Application extends Controller {
         return ok(index.render("Your new application is ready."));
     }
 
+    public Result upload() {
+        return ok(upload.render("Your new application is ready."));
+    }
+
+    public Result buttonup() {
+            return ok(buttonup.render("Your new application is ready."));
+        }
+
     public Result oauth(String error, String code) {
         if(error != null || code == null) return unauthorized();
 

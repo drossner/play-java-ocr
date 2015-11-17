@@ -4,9 +4,10 @@
 
 # Home page
 GET        /                      controllers.Application.index()
+GET        /upload                controllers.Application.upload()
+GET        /buttonup              controllers.Application.buttonup()
 GET        /login                 controllers.Application.login()
 GET        /dummy                 controllers.Application.dummy()
-
 
 # oAuth
 GET        /oauth2callback        controllers.Application.oauth(error: String ?=null, code: String ?=null)
