@@ -29,6 +29,7 @@ public class Application extends Controller {
         }
 
     public Result oauth(String error, String code) {
+        Logger.debug(request().body().asText());
         if(error != null || code == null){
             Logger.debug(request().body().asText());
             return unauthorized();
