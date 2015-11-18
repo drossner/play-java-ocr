@@ -3,6 +3,7 @@ package modules.authentication;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
@@ -50,14 +51,10 @@ public class GoogleAuthentication {
     }
 
     public String exchangeToken(String token) throws IOException {
-        String accessToken = gacf.newTokenRequest(token).setRedirectUri(gcs.getDetails().getRedirectUris().get(0)).execute().getIdToken(); //get(1)
-        GoogleCredential credential = new GoogleCredential().setAccessToken(accessToken);
-        Oauth2 oauth2 = new Oauth2.Builder(new NetHttpTransport(), new JacksonFactory(), credential).setApplicationName(
-                "Oauth2").build();
-        Userinfoplus userinfo = oauth2.userinfo().get().execute();
-        userinfo.toPrettyString();
+        GoogleIdToken idToken = gacf.newTokenRequest(token).setRedirectUri(gcs.getDetails().getRedirectUris().get(0)).execute().parseIdToken(); //get(1)
+        String gplusId = idToken.getPayload().getSubject();
 
-        return userinfo.toPrettyString();
+        return gplusId;
     }
 
 }
