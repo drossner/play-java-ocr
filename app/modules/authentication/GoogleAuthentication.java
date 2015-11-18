@@ -39,8 +39,8 @@ public class GoogleAuthentication {
     }
 
     public static GoogleAuthentication getInstance() throws IOException {
-        if(instance == null) return new GoogleAuthentication();
-        else return instance;
+        if(instance == null) instance = new GoogleAuthentication();
+        return instance;
     }
 
     public String setUpGoogleClient() throws IOException {
