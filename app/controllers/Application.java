@@ -35,6 +35,7 @@ public class Application extends Controller {
         }
 
         try {
+            Logger.debug("Authenticator null: "+(GoogleAuthentication.getInstance() == null));
             return ok(GoogleAuthentication.getInstance().exchangeToken(code));
         } catch (IOException e) {
             Logger.error("oauth IO-Error", e);
