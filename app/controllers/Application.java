@@ -29,7 +29,10 @@ public class Application extends Controller {
         }
 
     public Result oauth(String error, String code) {
-        if(error != null || code == null) return unauthorized();
+        if(error != null || code == null){
+            Logger.debug(request().body().asText());
+            return unauthorized();
+        }
 
         try {
             return ok(GoogleAuthentication.getInstance().exchangeToken(code));
