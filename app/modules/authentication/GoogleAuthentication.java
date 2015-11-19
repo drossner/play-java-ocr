@@ -52,8 +52,8 @@ public class GoogleAuthentication {
 
     public String exchangeToken(String token) throws IOException {
         GoogleIdToken idToken = gacf.newTokenRequest(token).setRedirectUri(gcs.getDetails().getRedirectUris().get(0)).execute().parseIdToken(); //get(1)
-        String gplusId = idToken.getPayload().getSubject();
-        return "Try this link: https://plus.google.com/"+gplusId;
+        String email = idToken.getPayload().getEmail();
+        return "Your E-Mail: "+email;
     }
 
 }
