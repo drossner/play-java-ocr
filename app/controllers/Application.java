@@ -1,6 +1,7 @@
 package controllers;
 
 
+import modules.authentication.AuthResponse;
 import modules.authentication.GoogleAuthentication;
 import play.*;
 //import play.api.mvc.*;
@@ -36,17 +37,17 @@ public class Application extends Controller {
         }
 
         try {
-            Logger.debug("Authenticator null: "+(GoogleAuthentication.getInstance() == null));
-            return ok(GoogleAuthentication.getInstance().exchangeToken(code));
+            AuthResponse authResponse = GoogleAuthentication.getInstance().exchangeToken(code);
+            if(authResponse.isValid()){
+                return ok("Your Email is: " + authResponse.getEmail());
+            } else {
+                return badRequest("invalidToken");
+            }
         } catch (IOException e) {
             Logger.error("oauth IO-Error", e);
             return internalServerError("error");
         }
         //return ok(code);
-    }
-
-    public Result oauthAccess(){
-        return ok();
     }
 
     public Result login() {

@@ -1,19 +1,19 @@
 package modules.authentication;
 
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.*;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.oauth2.Oauth2;
 import com.google.api.services.oauth2.model.Userinfoplus;
 import com.google.api.services.plus.Plus;
 import constants.AppValues;
+import play.Logger;
 import play.Play;
 
 
 import java.io.*;
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
 /**
@@ -50,10 +50,29 @@ public class GoogleAuthentication {
         return gacf.newAuthorizationUrl().setRedirectUri(redirectURI).build();
     }
 
-    public String exchangeToken(String token) throws IOException {
-        GoogleIdToken idToken = gacf.newTokenRequest(token).setRedirectUri(gcs.getDetails().getRedirectUris().get(0)).execute().parseIdToken(); //get(1)
-        String email = idToken.getPayload().getEmail();
-        return "Your E-Mail: "+email;
+    public AuthResponse exchangeToken(String token) throws IOException {
+        GoogleTokenResponse gtr = gacf.newTokenRequest(token).setRedirectUri(gcs.getDetails().getRedirectUris().get(0)).execute(); //get(1)
+        GoogleIdToken idToken = gtr.parseIdToken();
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), JacksonFactory.getDefaultInstance()).setAudience(
+                Arrays.asList(gcs.getDetails().getClientId())
+        ).build();
+
+        //create response object
+        AuthResponse authResponse;
+        try {
+            if(verifier.verify(idToken)){
+                //build response with all necessary data
+                String email = idToken.getPayload().getEmail();
+                authResponse = new AuthResponse(true, email, null, null);
+            } else {
+                authResponse = new AuthResponse(false, null, null, null);
+            }
+        } catch (GeneralSecurityException e) {
+            Logger.info("GoogleIdToken verification failed", e);
+            authResponse = new AuthResponse(false, null, null, null);
+        }
+
+        return authResponse;
     }
 
 }
