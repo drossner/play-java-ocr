@@ -12,6 +12,7 @@ import play.Logger;
 import play.Play;
 
 
+import javax.inject.Singleton;
 import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
@@ -19,14 +20,15 @@ import java.util.Arrays;
 /**
  * Created by Daniel on 11.11.2015.
  */
-public class GoogleAuthentication {
+@Singleton
+public class GoogleAuthentication implements OAuthentication{
 
-    private static GoogleAuthentication instance;
+    //private static GoogleAuthentication instance;
     private GoogleClientSecrets gcs;
     private GoogleAuthorizationCodeFlow gacf;
     private String redirectURI;
 
-    private GoogleAuthentication() throws IOException {
+    public GoogleAuthentication() throws IOException {
         gcs = GoogleClientSecrets.load(JacksonFactory.getDefaultInstance(),
                 new InputStreamReader(Play.application().classloader().getResourceAsStream("client_secret.json")));
 
@@ -41,12 +43,12 @@ public class GoogleAuthentication {
                 .setApprovalPrompt("force").build();
     }
 
-    public static GoogleAuthentication getInstance() throws IOException {
+    /**public static GoogleAuthentication getInstance() throws IOException {
         if(instance == null) instance = new GoogleAuthentication();
         return instance;
-    }
+    }*/
 
-    public String setUpGoogleClient() throws IOException {
+    public String getAuthURL() throws IOException {
         return gacf.newAuthorizationUrl().setRedirectUri(redirectURI).build();
     }
 
