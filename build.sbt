@@ -12,10 +12,14 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
-resolvers += Resolver.mavenLocal
-//resolvers ++= Seq(
-//  "webjars"    at "http://webjars.github.com/m2"
-//)
+libraryDependencies ++= Seq(
+  "com.google.api-client" % "google-api-client" % "1.19.1",
+  "com.google.apis" % "google-api-services-plus" % "v1-rev296-1.20.0"
+)
+
+resolvers ++= Seq(
+  "webjars"    at "http://webjars.github.com/m2"
+)
 
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.4.0-1",
@@ -31,4 +35,4 @@ libraryDependencies ++= Seq(
 routesGenerator := InjectedRoutesGenerator
 
 
-fork in run := false
+//fork in run := false

@@ -1,15 +1,13 @@
-package database.entities;
+package modules.database.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-
+import javax.persistence.*;
 
 /**
- * Created by FRudi on 17.11.2015.
+ * Created by florian on 17.11.15.
  */
+
 @Entity
+@Table(name="Country")
 public class Country {
 
     @Id

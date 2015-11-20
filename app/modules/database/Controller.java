@@ -1,13 +1,15 @@
-package database;
+package modules.database;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 /**
- * code from: https://github.com/ldaume/play-hibernate/blob/master/build.sbt
+ * create user psql: http://stackoverflow.com/questions/10861260/how-to-create-user-for-a-db-in-postgresql
  *
- * Created by FRudi on 17.11.2015.
+ * magic config: https://groups.google.com/forum/#!topic/play-framework/xJsImshqJwM
+ *
+ * Created by florian on 17.11.15.
  */
 public class Controller {
 
@@ -25,6 +27,6 @@ public class Controller {
     private Controller(){
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("ocr");
         em = emf.createEntityManager();
-
     }
+
 }
