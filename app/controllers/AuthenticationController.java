@@ -1,6 +1,7 @@
 package controllers;
 
 import modules.authentication.AuthResponse;
+import modules.authentication.FacebookAuthentication;
 import modules.authentication.OAuthentication;
 import play.Logger;
 import play.libs.F.Promise;
@@ -15,23 +16,30 @@ import java.io.IOException;
  */
 public class AuthenticationController extends Controller{
     private final OAuthentication gp;
+    private final OAuthentication fb;
 
     @Inject
     public AuthenticationController(OAuthentication gp){
         this.gp = gp;
+        this.fb = new FacebookAuthentication();
     }
 
-    public Promise<Result> oauth(String error, String code) {
+    public Promise<Result> oauth(String error, String code, int method) {
         if(error != null || code == null){
             Logger.info(request().body().asText());
             return Promise.promise(() -> unauthorized());
         }
 
-        return Promise.promise(() -> authorize(code));
+        return Promise.promise(() -> authorize(code, method));
     }
 
     public Result login(int method) {
         try {
+            //testcode START
+            if(method == 1){
+                return redirect(fb.getAuthURL());
+            }
+            //testcode ENDE
             return redirect(gp.getAuthURL());
         } catch (IOException e) {
             Logger.error("Login IO-Error", e);
@@ -39,8 +47,14 @@ public class AuthenticationController extends Controller{
         }
     }
 
-    private Result authorize(String code){
+    private Result authorize(String code, int method){
         try {
+            //testcode START
+            if(method == 1){
+                AuthResponse authResponse = fb.exchangeToken(code);
+                return ok("Your Email is: " + authResponse.getEmail());
+            }
+            //testcode ENDE
             AuthResponse authResponse = gp.exchangeToken(code);
             if(authResponse.isValid()){
                 return ok("Your Email is: " + authResponse.getEmail());
