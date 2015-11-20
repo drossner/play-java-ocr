@@ -12,10 +12,22 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
+//google oauth lib
 libraryDependencies ++= Seq(
   "com.google.api-client" % "google-api-client" % "1.19.1",
   "com.google.apis" % "google-api-services-plus" % "v1-rev296-1.20.0",
   "com.google.apis" % "google-api-services-oauth2" % "v2-rev65-1.17.0-rc"
+)
+
+//facebook and generic oauth2 lib NOT YET PUBLISHED
+/*
+libraryDependencies ++= Seq(
+  "com.github.scribejava" % "scribejava-apis" % "2.0"
+)
+*/
+
+libraryDependencies ++= Seq(
+  "org.scribe" % "scribe" % "1.3.6"
 )
 
 resolvers ++= Seq(
