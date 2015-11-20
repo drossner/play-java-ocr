@@ -22,7 +22,7 @@ public class FacebookAuthentication implements  OAuthentication {
                 .apiKey("1541577662799415")
                 .apiSecret("5cbc1c463eec2f77a2fb6e512f04f453")
                 //.callback("http://v22015042759824376.yourvserver.net:9000/oauth2callback")
-                .callback("http://84.181.157.152:9000/oauth2callback_fb")
+                .callback("http://http://v22015042759824376.yourvserver.net:9000/oauth2callback_fb")
                 .scope("email")
                 .build();
     }
