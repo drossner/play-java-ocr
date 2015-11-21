@@ -12,6 +12,10 @@ libraryDependencies ++= Seq(
   javaWs
 )
 
+libraryDependencies ++= Seq(
+  "be.objectify" %% "deadbolt-java" % "2.4.3"
+)
+
 //google oauth lib
 libraryDependencies ++= Seq(
   "com.google.api-client" % "google-api-client" % "1.19.1",

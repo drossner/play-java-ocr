@@ -1,6 +1,16 @@
+@import be.objectify.deadbolt.java.views.html.{subjectPresent, subjectPresentOr}
 @(message: String)
 
 @main("Welcome to Play") {
     <a href="@routes.AuthenticationController.login(0)">Google login</a> </br>
-    <a href="@routes.AuthenticationController.login(1)">Facebook login</a>
+    <a href="@routes.AuthenticationController.login(1)">Facebook login</a> </br>
+    <a href="@routes.AuthenticationController.stubLogin()">Stub Login</a> </br>
+    <a href="@routes.AuthenticationController.logout()">Logout</a> Sollte nur fehlerfrei nach Stub Login funktionieren
+    <p>
+    @subjectPresentOr() {
+        LoggedIn
+    } {
+        LoggedOut
+    }
+    </p>
 }

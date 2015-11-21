@@ -1,5 +1,6 @@
 package controllers;
 
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import modules.authentication.AuthResponse;
 import modules.authentication.FacebookAuthentication;
 import modules.authentication.OAuthentication;
@@ -47,6 +48,12 @@ public class AuthenticationController extends Controller{
         }
     }
 
+    @SubjectPresent
+    public Result logout(){
+        session().clear();
+        return redirect(routes.Application.index());
+    }
+
     private Result authorize(String code, int method){
         try {
             //testcode START
@@ -65,6 +72,12 @@ public class AuthenticationController extends Controller{
             Logger.error("oauth IO-Error", e);
             return internalServerError("error");
         }
+    }
+
+    public Result stubLogin(){
+        session().clear();
+        session("session", "test@test.te");
+        return redirect(routes.Application.index());
     }
 
 }
