@@ -6,6 +6,7 @@
 GET        /                      controllers.Application.index()
 GET        /login                 controllers.Application.login()
 GET        /dummy                 controllers.Application.dummy()
+GET        /testDatabase          controllers.Application.testDatabase()
 
 
 # oAuth

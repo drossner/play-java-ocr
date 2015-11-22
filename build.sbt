@@ -1,3 +1,6 @@
+import play.routes.compiler.InjectedRoutesGenerator
+import play.sbt.PlayJava
+
 name := """play-java-ocr"""
 
 version := "0.0.1-SNAPSHOT"
