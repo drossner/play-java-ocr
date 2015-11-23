@@ -28,4 +28,51 @@ public class User {
     @Column
     private String cmsPassword;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getCmsAccount() {
+        return cmsAccount;
+    }
+
+    public void setCmsAccount(String cmsAccount) {
+        this.cmsAccount = cmsAccount;
+    }
+
+    public String getCmsPassword() {
+        return cmsPassword;
+    }
+
+    public void setCmsPassword(String cmsPassword) {
+        this.cmsPassword = cmsPassword;
+    }
 }

@@ -7,6 +7,7 @@ GET        /                         controllers.Application.index()
 GET        /upload                   controllers.Application.upload()
 GET        /buttonup                 controllers.Application.buttonup()
 GET        /dummy                    controllers.Application.dummy()
+GET        /testDatabase          controllers.Application.testDatabase()
 
 # oAuth
 GET        /login                    controllers.AuthenticationController.login(method: Int)

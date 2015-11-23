@@ -11,6 +11,7 @@ import javax.persistence.Persistence;
  *
  * Created by florian on 17.11.15.
  */
+@Deprecated
 public class Controller {
 
     private static Controller INSTANCE = null;

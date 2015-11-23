@@ -1,5 +1,9 @@
 package controllers;
 
+
+import modules.authentication.GoogleAuthentication;
+import modules.database.entities.Country;
+import modules.database.entities.User;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import play.*;
 //import play.api.mvc.*;
@@ -7,7 +11,14 @@ import play.mvc.*;
 
 import views.html.*;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.io.IOException;
+
 public class Application extends Controller {
+
+    @PersistenceContext
+    EntityManager em;
 
     @SubjectPresent
     public Result dummy() {
@@ -30,4 +41,32 @@ public class Application extends Controller {
         return ok("this site is protected!");
     }
 
+    public Result testDatabase(){
+        User temp = new DataCreator().getUser();
+        em.persist(temp);
+
+        if(em.find(User.class, temp.getId()).geteMail().equals(temp.geteMail())){
+            return ok(database.render("erfolgreich!"));
+        }else{
+            return ok(database.render("nicht erfolgreich!"));
+        }
+    }
+
+    public class DataCreator{
+
+
+        public User getUser(){
+            User rc = new User();
+
+            Country c = new Country();
+            c.setName("Deutscheland");
+
+            rc.seteMail("test@test.de");
+            rc.setCountry(c);
+            rc.setPassword("test");
+
+            return rc;
+        }
+
+    }
 }
