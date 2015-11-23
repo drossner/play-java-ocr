@@ -6,7 +6,14 @@
 <persistence-unit name="ocr" >
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
-    <!--<class>com.sample.persistence.Sample</class> -->
+    <class>modules.database.entities.Country</class>
+    <class>modules.database.entities.Image</class>
+    <class>modules.database.entities.Job</class>
+    <class>modules.database.entities.LayoutConfig</class>
+    <class>modules.database.entities.LayoutFragment</class>
+    <class>modules.database.entities.User</class>
+    <class>modules.database.entities.SecurityRole</class>
+    <class>modules.database.entities.UserPermission</class>
     <properties>
         <!--<property name="hibernate.connection.url" value="jdbc:postgresql:sample"/>
         <property name="javax.persistence.jdbc.driver" value="org.postgresql.Driver"/>
