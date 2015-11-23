@@ -1,7 +1,8 @@
 package modules.ldap;
 
 import java.util.Hashtable;
-import java.security.MessageDigest;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
@@ -13,6 +14,9 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+
+import modules.database.entities.User;
+import play.Logger;
 import sun.misc.BASE64Encoder;
 
 /**
@@ -21,11 +25,9 @@ import sun.misc.BASE64Encoder;
 public class LdapController {
 
     public static final String INITIAL_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
-
-
     public static final String PROVIDER_URL = "ldap://v22015042759824376.yourvserver.net:389/";
     public static final String BASE_DN = "dc=somuchocr,dc=iisys,dc=de";
-    public static final String SECURITY_PRINCIPAL = "cn=manager";
+    public static final String SECURITY_PRINCIPAL = "cn=admin";
     public static final String SECURITY_CREDENTIALS = "slapd101&";
 
     private Hashtable<String, String> env = new Hashtable<String, String>();
@@ -37,7 +39,7 @@ public class LdapController {
             env.put(Context.SECURITY_PRINCIPAL, SECURITY_PRINCIPAL +", "+ BASE_DN);
             env.put(Context.SECURITY_CREDENTIALS, SECURITY_CREDENTIALS);
         } catch (Exception e) {
-            System.out.println("Faild");
+            Logger.info("Faild", e);
         }
     }
 
@@ -46,24 +48,24 @@ public class LdapController {
         try {
             DirContext dctx = new InitialDirContext(env);
             Attributes matchAttrs = new BasicAttributes(true);
-            matchAttrs.put(new BasicAttribute("uid", user.getFirstName()));
-            matchAttrs.put(new BasicAttribute("cn", user.getName()));
-            matchAttrs.put(new BasicAttribute("sn", user.getLastName()));
-            matchAttrs.put(new BasicAttribute("givenname", user.getFirstName()));
-            matchAttrs.put(new BasicAttribute("mail", user.getEmail()));
-            matchAttrs.put(new BasicAttribute("userpassword", encryptLdapPassword("MD5", user.getPassword())));
+            matchAttrs.put(new BasicAttribute("uid", user.getCmsAccount()));
+            matchAttrs.put(new BasicAttribute("cn", user.getCmsAccount()));
+            matchAttrs.put(new BasicAttribute("sn", user.getCmsAccount()));
+            matchAttrs.put(new BasicAttribute("givenname", user.getCmsAccount()));
+            matchAttrs.put(new BasicAttribute("mail", user.geteMail()));
+            matchAttrs.put(new BasicAttribute("userpassword", encryptLdapPassword(user.getCmsPassword())));
             matchAttrs.put(new BasicAttribute("objectclass", "top"));
             matchAttrs.put(new BasicAttribute("objectclass", "person"));
             matchAttrs.put(new BasicAttribute("objectclass", "organizationalPerson"));
             matchAttrs.put(new BasicAttribute("objectclass", "inetorgperson"));
 
-            String name = "cn=" + user.getName() + ",ou=groups";
+            String name = "cn=" + user.getCmsAccount() + ",ou=groups";
             InitialDirContext iniDirContext = (InitialDirContext) dctx;
             iniDirContext.bind(name, dctx, matchAttrs);
 
             return true;
         } catch (Exception e) {
-            System.out.println("Could not insert a Person");
+            Logger.info("Could not insert a user", e);
 
             return false;
         }
@@ -74,15 +76,15 @@ public class LdapController {
 
             DirContext ctx = new InitialDirContext(env);
             ModificationItem[] mods = new ModificationItem[1];
-            Attribute mod0 = new BasicAttribute("userpassword", encryptLdapPassword("SHA", user.getPassword()));
+            Attribute mod0 = new BasicAttribute("userpassword", encryptLdapPassword(user.getCmsPassword()));
             mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, mod0);
 
-            ctx.modifyAttributes("cn=" + user.getName() + ",ou=group", mods);
+            ctx.modifyAttributes("cn=" + user.getCmsAccount() + ",ou=groups", mods);
 
-            System.out.println("success editing "+user.getName());
+            Logger.info("success editing user: "+user.getCmsAccount());
             return true;
         } catch (Exception e) {
-            System.out.println("Could not edit Person");
+            Logger.info("Could not edit user", e);
             return false;
         }
     }
@@ -91,9 +93,11 @@ public class LdapController {
         try {
 
             DirContext ctx = new InitialDirContext(env);
-            ctx.destroySubcontext("cn=" + user.getName() + ",ou=group");
+            ctx.destroySubcontext("cn=" + user.getCmsAccount() + ",ou=groups");
+            Logger.info("success deleting user:  "+user.getCmsAccount());
             return true;
         } catch (Exception e) {
+            Logger.info("Could not delete User", e);
             return false;
         }
     }
@@ -107,7 +111,7 @@ public class LdapController {
             SearchControls sc = new SearchControls();
             sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-            String filter = "(&(objectclass=person)(cn="+user.getName()+"))";
+            String filter = "(&(objectclass=person)(cn="+user.getCmsAccount()+"))";
 
             NamingEnumeration results = ctx.search(base, filter, sc);
 
@@ -118,38 +122,23 @@ public class LdapController {
 
                 Attribute attr = attrs.get("cn");
                 if(attr != null)
-                    System.out.println("record found "+attr.get());
+                    Logger.info("record found "+attr.get());
             }
             ctx.close();
 
             return true;
         } catch (Exception e) {
-            System.out.println("record not found");
+            Logger.info("record not found",e);
             return false;
         }
     }
 
-    private String encryptLdapPassword(String algorithm, String _password) {
-        String sEncrypted = _password;
-        if ((_password != null) && (_password.length() > 0)) {
-            boolean bMD5 = algorithm.equalsIgnoreCase("MD5");
-            boolean bSHA = algorithm.equalsIgnoreCase("SHA")
-                    || algorithm.equalsIgnoreCase("SHA1")
-                    || algorithm.equalsIgnoreCase("SHA-1");
-            if (bSHA || bMD5) {
-                String sAlgorithm = "MD5";
-                if (bSHA) {
-                    sAlgorithm = "SHA";
-                }
-                try {
-                    MessageDigest md = MessageDigest.getInstance(sAlgorithm);
-                    md.update(_password.getBytes("UTF-8"));
-                    sEncrypted = "{" + sAlgorithm + "}" + (new BASE64Encoder()).encode(md.digest());
-                } catch (Exception e) {
-                    sEncrypted = null;
-                }
-            }
-        }
-        return sEncrypted;
+    private String encryptLdapPassword(String password) throws Exception {
+        byte[] keyData = (password).getBytes();
+        SecretKeySpec secretKeySpec = new SecretKeySpec(keyData, "Blowfish");
+        Cipher cipher = Cipher.getInstance("Blowfish");
+        cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
+        byte[] hasil = cipher.doFinal(password.getBytes());
+        return new BASE64Encoder().encode(hasil);
     }
 }
