@@ -12,9 +12,11 @@ scalaVersion := "2.11.6"
 libraryDependencies ++= Seq(
   javaJdbc,
   cache,
-  javaWs
+  javaWs,
+  evolutions
 )
 
+//user and role management
 libraryDependencies ++= Seq(
   "be.objectify" %% "deadbolt-java" % "2.4.3"
 )
@@ -37,17 +39,22 @@ libraryDependencies ++= Seq(
   "org.scribe" % "scribe" % "1.3.6"
 )
 
+//Persistence
 libraryDependencies ++= Seq(
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
   "org.hibernate" % "hibernate-core" % "5.0.3.Final",
-  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final",
-  "junit" % "junit" % "4.11"
+  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final"
 )
 
+//Junit test
+libraryDependencies += "junit" % "junit" % "4.11"
+
+//Webjars (Client source in jars)
 resolvers ++= Seq(
   "webjars"    at "http://webjars.github.com/m2"
 )
 
+//client libs
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.4.0",
   "org.webjars" % "bootstrap" % "3.1.1",
