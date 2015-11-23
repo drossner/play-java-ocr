@@ -40,7 +40,8 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
   "org.hibernate" % "hibernate-core" % "5.0.3.Final",
-  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final"
+  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final",
+  "junit" % "junit" % "4.11"
 )
 
 resolvers ++= Seq(
@@ -50,11 +51,7 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.4.0",
   "org.webjars" % "bootstrap" % "3.1.1",
-  "org.webjars" % "knockout" % "3.0.0",
-  "postgresql" % "postgresql" % "9.1-901.jdbc4",
-  "org.hibernate" % "hibernate-core" % "5.0.3.Final",
-  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final",
-  "junit" % "junit" % "4.11"
+  "org.webjars" % "knockout" % "3.0.0"
 )
 
 // Play provides two styles of routers, one expects its actions to be injected, the
