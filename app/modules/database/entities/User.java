@@ -1,13 +1,18 @@
 package modules.database.entities;
 
+import be.objectify.deadbolt.core.models.Permission;
+import be.objectify.deadbolt.core.models.Role;
+import be.objectify.deadbolt.core.models.Subject;
+
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Created by florian on 17.11.15.
  */
 @Entity
 @Table(name="User")
-public class User {
+public class User implements Subject {
 
     @Id
     @GeneratedValue
@@ -27,6 +32,12 @@ public class User {
 
     @Column
     private String cmsPassword;
+
+    @ManyToMany
+    private List<SecurityRole> roles;
+
+    @ManyToMany
+    private List<UserPermission> permission;
 
     public int getId() {
         return id;
@@ -74,5 +85,20 @@ public class User {
 
     public void setCmsPassword(String cmsPassword) {
         this.cmsPassword = cmsPassword;
+    }
+
+    @Override
+    public List<? extends Role> getRoles() {
+        return roles;
+    }
+
+    @Override
+    public List<? extends Permission> getPermissions() {
+        return permission;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return geteMail();
     }
 }
