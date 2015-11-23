@@ -34,6 +34,12 @@ libraryDependencies ++= Seq(
   "org.scribe" % "scribe" % "1.3.6"
 )
 
+libraryDependencies ++= Seq(
+  "postgresql" % "postgresql" % "9.1-901.jdbc4",
+  "org.hibernate" % "hibernate-core" % "5.0.3.Final",
+  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final"
+)
+
 resolvers ++= Seq(
   "webjars"    at "http://webjars.github.com/m2"
 )
