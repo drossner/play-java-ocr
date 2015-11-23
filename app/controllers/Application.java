@@ -1,24 +1,24 @@
 package controllers;
 
 
-import modules.authentication.GoogleAuthentication;
 import modules.database.entities.Country;
 import modules.database.entities.User;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import play.*;
 //import play.api.mvc.*;
+import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 import play.mvc.*;
 
 import views.html.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
 
 public class Application extends Controller {
 
-    @PersistenceContext
-    EntityManager em;
+ /*   @PersistenceContext
+    EntityManager em; */
 
     @SubjectPresent
     public Result dummy() {
@@ -41,11 +41,12 @@ public class Application extends Controller {
         return ok("this site is protected!");
     }
 
+    @Transactional
     public Result testDatabase(){
         User temp = new DataCreator().getUser();
-        em.persist(temp);
+        JPA.em().persist(temp);
 
-        if(em.find(User.class, temp.getId()).geteMail().equals(temp.geteMail())){
+        if(JPA.em().find(User.class, temp.getId()).geteMail().equals(temp.geteMail())){
             return ok(database.render("erfolgreich!"));
         }else{
             return ok(database.render("nicht erfolgreich!"));

@@ -43,7 +43,8 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "postgresql" % "postgresql" % "9.1-901.jdbc4",
   "org.hibernate" % "hibernate-core" % "5.0.3.Final",
-  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final"
+  "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final",
+  javaJpa
 )
 
 //Junit test
