@@ -11,7 +11,7 @@ import java.util.List;
  * Created by florian on 17.11.15.
  */
 @Entity
-@Table(name="User")
+@Table(name="Users")
 public class User implements Subject {
 
     @Id
