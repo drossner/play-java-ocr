@@ -17,18 +17,20 @@ import javax.persistence.PersistenceContext;
 
 public class Application extends Controller {
 
- /*   @PersistenceContext
-    EntityManager em; */
-
-
     public Result index() {
-        return ok(index.render());
+        if(session().get("session") != null){
+            return hochladen(2);
+        } else {
+            return ok(index.render());
+        }
     }
 
+    @SubjectPresent
     public Result secured(){
         return ok("this site is protected!");
     }
 
+    @SubjectPresent
     public Result hochladen(int step){
         if(step == 1) {
             return ok(hochladen_1.render());
@@ -40,14 +42,17 @@ public class Application extends Controller {
 
     }
 
+    @SubjectPresent
     public Result verwalten(){
         return ok(verwalten.render());
     }
 
+    @SubjectPresent
     public Result ablage(){
         return ok(ablage.render());
     }
 
+    @SubjectPresent
     public Result hilfe(){
         return ok(hilfe.render());
     }
