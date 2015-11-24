@@ -162,3 +162,57 @@ a.dropdown-toggle
 font-weight: lighter;
 }
 
+canvas {
+    padding: 0;
+    margin: auto;
+        display: block;
+     /*   position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;*/
+    alaing: center;
+}
+
+
+.fileupload-buttonbar{
+    align-content: center;
+    padding: 10px;
+    margin: auto;
+    display: block;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+    color: #ffffff;
+    background: #8082a6;
+
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    outline: none;
+    cursor: inherit;
+    display: block;
+}
+
+.btn-file:hover
+{
+
+    color: #ffffff;
+    background: #646682;
+
+
+}
+
+.btn-file:active {
+    background: #646682;
+    color: white;
+}
