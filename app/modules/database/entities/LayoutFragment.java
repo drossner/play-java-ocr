@@ -14,6 +14,7 @@ public class LayoutFragment {
     private int id;
 
     @Column
+    @OneToOne
     private LayoutConfig layoutConfig;
 
     @Column

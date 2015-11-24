@@ -14,9 +14,11 @@ public class LayoutConfig {
     private int id;
 
     @Column
+    @OneToOne
     private User user;
 
     @Column
+    @OneToOne
     private Country language;
 
     @Column

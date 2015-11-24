@@ -19,6 +19,7 @@ public class Job {
     private String name;
 
     @Column
+    @OneToOne
     private User user;
 
     @Column
@@ -37,6 +38,7 @@ public class Job {
     private boolean notificationSend;
 
     @Column
+    @OneToOne
     private LayoutConfig layoutConfig;
 
     @Column
