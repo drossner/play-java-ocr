@@ -20,28 +20,39 @@ public class Application extends Controller {
  /*   @PersistenceContext
     EntityManager em; */
 
-    @SubjectPresent
-    public Result dummy() {
-        return ok(dummy.render());
-    }
 
     public Result index() {
-        return ok(index.render("Your new application is ready."));
-    }
-
-    public Result upload() {
-        return ok(upload.render("Your new application is ready."));
-    }
-
-    public Result buttonup() {
-            return ok(buttonup.render("Your new application is ready."));
+        return ok(index.render());
     }
 
     public Result secured(){
         return ok("this site is protected!");
     }
 
-    @Transactional
+    public Result hochladen(int step){
+        if(step == 1) {
+            return ok(hochladen_1.render());
+        } else if (step == 2){
+            return ok(hochladen_2.render());
+        } else {
+            return badRequest();
+        }
+
+    }
+
+    public Result verwalten(){
+        return ok(verwalten.render());
+    }
+
+    public Result ablage(){
+        return ok(ablage.render());
+    }
+
+    public Result hilfe(){
+        return ok(hilfe.render());
+    }
+
+   /* @Transactional
     public Result testDatabase(){
         User temp = new DataCreator().getUser();
         JPA.em().persist(temp.getCountry());
@@ -70,5 +81,5 @@ public class Application extends Controller {
             return rc;
         }
 
-    }
+    } */
 }

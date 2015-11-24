@@ -58,7 +58,7 @@ resolvers ++= Seq(
 //client libs
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.4.0",
-  "org.webjars" % "bootstrap" % "3.1.1",
+  "org.webjars" % "bootstrap" % "3.3.5",
   "org.webjars" % "knockout" % "3.0.0"
 )
 
