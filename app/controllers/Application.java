@@ -44,6 +44,7 @@ public class Application extends Controller {
     @Transactional
     public Result testDatabase(){
         User temp = new DataCreator().getUser();
+        JPA.em().persist(temp.getCountry());
         JPA.em().persist(temp);
 
         if(JPA.em().find(User.class, temp.getId()).geteMail().equals(temp.geteMail())){
