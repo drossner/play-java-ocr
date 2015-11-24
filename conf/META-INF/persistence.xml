@@ -5,6 +5,7 @@
 
 <persistence-unit name="ocr" >
     <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+    <non-jta-data-source>DefaultDS</non-jta-data-source>
 
     <class>modules.database.entities.Country</class>
     <class>modules.database.entities.Image</class>
