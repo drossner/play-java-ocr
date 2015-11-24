@@ -2,8 +2,8 @@ import modules.database.entities.Country;
 import modules.database.entities.User;
 import org.junit.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 
 import play.mvc.*;
 import play.test.*;
@@ -17,16 +17,16 @@ import static play.test.Helpers.*;
  */
 public class DatabaseTest {
 
-    @PersistenceContext
-    EntityManager em;
 
     @Test
+    @Transactional
     public void createUserTest(){
         running(fakeApplication(), () -> {
             User temp = new DataCreator().getUser();
-            em.persist(temp);
+            JPA.em().persist(temp.getCountry());
+            JPA.em().persist(temp);
 
-            assertEquals(em.find(User.class, temp.getId()).geteMail(), temp.geteMail());
+            assertEquals(JPA.em().find(User.class, temp.getId()).geteMail(), temp.geteMail());
         });
     }
 
