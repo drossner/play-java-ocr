@@ -9,11 +9,12 @@ import javax.persistence.*;
  */
 @Entity(name="UserPermission")
 @Table(name="UserPermission")
+/*
         @NamedQuery(
                 name = "findUserPermissionByName",
                 query = "from UserPermission s where s.name = :name"
         )
-
+*/
 public class UserPermission implements Permission
 {
     @Id
