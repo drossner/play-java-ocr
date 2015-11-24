@@ -14,7 +14,7 @@ import javax.persistence.*;
         )
 })
 
-@Entity
+@Entity(name="UserPermission")
 @Table(name="UserPermission")
 public class UserPermission implements Permission
 {

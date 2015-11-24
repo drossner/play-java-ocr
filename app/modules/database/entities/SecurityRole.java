@@ -14,7 +14,7 @@ import javax.persistence.*;
         )
 })
 
-@Entity
+@Entity(name="SecurityRole")
 @Table(name="SecurityRole")
 public class SecurityRole implements Role
 {
