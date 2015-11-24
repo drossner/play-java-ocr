@@ -7,15 +7,13 @@ import javax.persistence.*;
 /**
  * Created by daniel on 23.11.15.
  */
-@NamedQueries({
+@Entity(name="UserPermission")
+@Table(name="UserPermission")
         @NamedQuery(
                 name = "findUserPermissionByName",
                 query = "from UserPermission s where s.name = :name"
         )
-})
 
-@Entity(name="UserPermission")
-@Table(name="UserPermission")
 public class UserPermission implements Permission
 {
     @Id

@@ -7,15 +7,13 @@ import javax.persistence.*;
 /**
  * Created by daniel on 23.11.15.
  */
-@NamedQueries({
+@Entity(name="SecurityRole")
+@Table(name="SecurityRole")
         @NamedQuery(
                 name = "findSecurityRoleByName",
                 query = "from SecurityRole s where s.name = :name"
         )
-})
 
-@Entity(name="SecurityRole")
-@Table(name="SecurityRole")
 public class SecurityRole implements Role
 {
     @Id
