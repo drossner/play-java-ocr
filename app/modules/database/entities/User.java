@@ -21,7 +21,6 @@ public class User implements Subject {
     @Column
     private String eMail;
 
-    @Column
     @OneToOne
     private Country country;
 
@@ -34,11 +33,9 @@ public class User implements Subject {
     @Column
     private String cmsPassword;
 
-    @Column
     @ManyToMany
     private List<SecurityRole> roles;
 
-    @Column
     @ManyToMany
     private List<UserPermission> permission;
 

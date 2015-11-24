@@ -13,7 +13,6 @@ public class LayoutFragment {
     @GeneratedValue
     private int id;
 
-    @Column
     @OneToOne
     private LayoutConfig layoutConfig;
 

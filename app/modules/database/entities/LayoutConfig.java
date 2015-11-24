@@ -13,11 +13,9 @@ public class LayoutConfig {
     @GeneratedValue
     private int id;
 
-    @Column
     @OneToOne
     private User user;
 
-    @Column
     @OneToOne
     private Country language;
 
