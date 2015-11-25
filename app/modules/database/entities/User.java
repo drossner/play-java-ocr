@@ -23,7 +23,7 @@ public class User implements Subject {
     @Column
     private String eMail;
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.ALL})
     private Country country;
 
     @Column
