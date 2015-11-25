@@ -6,6 +6,7 @@ import be.objectify.deadbolt.core.models.Subject;
 import controllers.security.OcrRole;
 
 import javax.persistence.*;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -35,10 +36,10 @@ public class User implements Subject {
     private String cmsPassword;
 
     @ManyToMany
-    private List<SecurityRole> roles;
+    private List<SecurityRole> roles = new LinkedList<SecurityRole>();
 
     @ManyToMany
-    private List<UserPermission> permission;
+    private List<UserPermission> permission = new LinkedList<UserPermission>();
 
     public int getId() {
         return id;

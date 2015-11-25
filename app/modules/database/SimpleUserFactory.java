@@ -12,10 +12,7 @@ public class SimpleUserFactory{
     private User user = new User();
 
     public User build(){
-        Country c = new Country();
-        c.setName("Deutschland");
-        c.setIsoCode(276);
-        user.setCountry(c);
+        user.setCountry(new Country("Deutschland", 276));
         return user;
     }
 
