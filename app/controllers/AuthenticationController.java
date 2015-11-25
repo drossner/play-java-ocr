@@ -1,10 +1,16 @@
 package controllers;
 
 import be.objectify.deadbolt.java.actions.SubjectPresent;
+import controllers.security.OcrRole;
 import modules.authentication.AuthResponse;
 import modules.authentication.FacebookAuthentication;
 import modules.authentication.OAuthentication;
+import modules.database.SimpleUserFactory;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import play.Logger;
+import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -74,9 +80,32 @@ public class AuthenticationController extends Controller{
         }
     }
 
-    public Result stubLogin(){
+    @Transactional
+    public Result stubLogin() {
         session().clear();
-        session("session", "test@test.te");
+        final String userEmail = "test@test.de";
+        //lokup stub user userEmail
+        //session creation
+        Session hibSession = JPA.em().unwrap(Session.class);
+        hibSession.beginTransaction();
+
+        Query q = hibSession.createQuery("select 1 from User u where u.eMail = :email");
+        q.setString("email", userEmail);
+        boolean exists = q.uniqueResult() != null;
+
+        if(!exists){
+            hibSession.save(new SimpleUserFactory()
+                    .setEmail(userEmail)
+                    .setPassword("test")
+                    .addRole(OcrRole.USER)
+                    .build());
+        }
+
+        hibSession.getTransaction().commit();
+        hibSession.close();
+
+
+        session("session", userEmail);
         return redirect(routes.Application.index());
     }
 

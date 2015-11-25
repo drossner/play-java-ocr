@@ -3,6 +3,7 @@ package modules.database.entities;
 import be.objectify.deadbolt.core.models.Permission;
 import be.objectify.deadbolt.core.models.Role;
 import be.objectify.deadbolt.core.models.Subject;
+import controllers.security.OcrRole;
 
 import javax.persistence.*;
 import java.util.List;
@@ -87,6 +88,10 @@ public class User implements Subject {
         this.cmsPassword = cmsPassword;
     }
 
+    public void addRole(OcrRole role){
+        roles.add(new SecurityRole(role));
+    }
+
     @Override
     public List<? extends Role> getRoles() {
         return roles;
@@ -101,4 +106,5 @@ public class User implements Subject {
     public String getIdentifier() {
         return geteMail();
     }
+
 }
