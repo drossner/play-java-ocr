@@ -87,7 +87,7 @@ public class AuthenticationController extends Controller{
         //lokup stub user userEmail
         //session creation
         Session hibSession = JPA.em().unwrap(Session.class);
-        hibSession.beginTransaction();
+        //hibSession.beginTransaction(); //done by transactional?
 
         Query q = hibSession.createQuery("select 1 from User u where u.eMail = :email");
         q.setString("email", userEmail);
@@ -101,8 +101,8 @@ public class AuthenticationController extends Controller{
                     .build());
         }
 
-        hibSession.getTransaction().commit();
-        hibSession.close();
+        //hibSession.getTransaction().commit(); //done by transactional?
+        //hibSession.close(); //done by transactional?
 
 
         session("session", userEmail);
