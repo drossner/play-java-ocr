@@ -81,32 +81,32 @@ public class AuthenticationController extends Controller{
     }
 
     @Transactional
-    public Result stubLogin() {
-        session().clear();
-        final String userEmail = "test@test.de";
-        //lokup stub user userEmail
-        //session creation
-        Session hibSession = JPA.em().unwrap(Session.class);
-        //hibSession.beginTransaction(); //done by transactional?
+    public Promise<Result> stubLogin() {
+        return Promise.promise(() -> {
+            session().clear();
+            final String userEmail = "test@test.de";
+            //lokup stub user userEmail
+            //session creation
+            Session hibSession = JPA.em().unwrap(Session.class);
+            //hibSession.beginTransaction(); //done by transactional
 
-        Query q = hibSession.createQuery("select 1 from User u where u.eMail = :email");
-        q.setString("email", userEmail);
-        boolean exists = q.uniqueResult() != null;
+            Query q = hibSession.createQuery("select 1 from User u where u.eMail = :email");
+            q.setString("email", userEmail);
+            boolean exists = q.uniqueResult() != null;
 
-        if(!exists){
-            hibSession.save(new SimpleUserFactory()
-                    .setEmail(userEmail)
-                    .setPassword("test")
-                    .addRole(OcrRole.USER)
-                    .build());
-        }
+            if (!exists) {
+                hibSession.save(new SimpleUserFactory()
+                        .setEmail(userEmail)
+                        .setPassword("test")
+                        .addRole(OcrRole.USER)
+                        .build());
+            }
 
-        //hibSession.getTransaction().commit(); //done by transactional?
-        //hibSession.close(); //done by transactional?
-
-
-        session("session", userEmail);
-        return redirect(routes.Application.index());
+            //hibSession.getTransaction().commit(); //done by transactional
+            //hibSession.close(); //done by transactional
+            session("session", userEmail);
+            return redirect(routes.Application.index());
+        });
     }
 
 }
