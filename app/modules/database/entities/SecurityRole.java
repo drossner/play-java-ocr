@@ -1,6 +1,7 @@
 package modules.database.entities;
 
 import be.objectify.deadbolt.core.models.Role;
+import controllers.security.OcrRole;
 
 import javax.persistence.*;
 
@@ -21,12 +22,13 @@ public class SecurityRole implements Role
     @GeneratedValue
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column
-    private String name;
+    private OcrRole name;
 
     public String getName()
     {
-        return name;
+        return name.getName();
     }
 
 }

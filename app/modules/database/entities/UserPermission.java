@@ -1,6 +1,7 @@
 package modules.database.entities;
 
 import be.objectify.deadbolt.core.models.Permission;
+import controllers.security.OcrPermission;
 
 import javax.persistence.*;
 
@@ -21,12 +22,13 @@ public class UserPermission implements Permission
     @GeneratedValue
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "permission_value")
-    private String value;
+    private OcrPermission value;
 
     public String getValue()
     {
-        return value;
+        return value.getValue();
     }
 
 }
