@@ -16,11 +16,11 @@ import javax.persistence.*;
                 query = "from UserPermission s where s.name = :name"
         )
 */
-public class UserPermission implements Permission
+public class UserPermission extends DomainObject implements Permission
 {
     @Id
     @GeneratedValue
-    private Long id;
+    private int id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "permission_value")
@@ -31,4 +31,17 @@ public class UserPermission implements Permission
         return value.getValue();
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setValue(OcrPermission value) {
+        this.value = value;
+    }
 }

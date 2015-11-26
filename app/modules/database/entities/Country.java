@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name="Country")
-public class Country {
+public class Country extends DomainObject{
 
     @Id
     @GeneratedValue

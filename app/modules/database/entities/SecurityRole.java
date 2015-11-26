@@ -16,11 +16,11 @@ import javax.persistence.*;
                 query = "from SecurityRole s where s.name = :name"
         )
 */
-public class SecurityRole implements Role
+public class SecurityRole extends DomainObject implements Role
 {
     @Id
     @GeneratedValue
-    private Long id;
+    private int id;
 
     @Enumerated(EnumType.STRING)
     @Column
@@ -35,4 +35,17 @@ public class SecurityRole implements Role
         return name.getName();
     }
 
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(OcrRole name) {
+        this.name = name;
+    }
 }

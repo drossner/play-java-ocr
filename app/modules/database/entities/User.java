@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="Users", uniqueConstraints = {@UniqueConstraint(columnNames = "roles"), @UniqueConstraint(columnNames = "permission")})
-public class User implements Subject {
+public class User extends DomainObject implements Subject {
 
     @Id
     @GeneratedValue
