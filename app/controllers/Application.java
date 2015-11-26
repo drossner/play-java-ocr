@@ -19,7 +19,7 @@ public class Application extends Controller {
 
     public Result index() {
         if(session().get("session") != null){
-            return hochladen(2);
+            return redirect(routes.Application.hochladen(2));
         } else {
             return ok(index.render());
         }
