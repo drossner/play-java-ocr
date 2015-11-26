@@ -1,85 +1,127 @@
 @main("Hochladen")("hochladen") {
 <div class="container">
     <!-- content begins here -->
-  <br />
-  <br />
-  <div class="panel panel-default">
-      <!-- Default panel contents -->
-    <div class="panel-heading">Dein Upload</div>
-    <div class="panel-body">
-      <p>Hier sieht man drei Zebras.</p>
+    <br/>
+    <br/>
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Dein Upload</div>
+        <div class="panel-body">
+            <p>Hier sieht man drei Zebras.</p>
+        </div>
+        <!-- Table -->
+        <table class="table">
+            <thead>
+            <tr class="table-header">
+                <th>#</th>
+                <th>Datei</th>
+                <th>Sprache</th>
+                <th>Typ des Dokuments</th>
+                <th>Bereich anpassen</th>
+                <th>Löschen</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>John</td>
+                <td class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Deutsch<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">Englisch</a>
+                        </li>
+                    </ul>
+                </td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Rechnung<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">Benutzerdefiniert</a>
+                        </li>
+                    </ul>
+                </td>
+                <td class="text-center">
+                    <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true"
+                                      data-toggle="modal" data-target="#myModal"></span></a>
+                </td>
+                <td class="text-center">
+                    <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>Heizung</td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Deutsch<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">Englisch</a>
+                        </li>
+                    </ul>
+                </td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Rechnung<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">Benutzerdefiniert</a>
+                        </li>
+                    </ul>
+                </td>
+                <td class="text-center">
+                    <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true"
+                                      data-toggle="modal" data-target="#myModal"></span></a>
+                </td>
+                <td class="text-center">
+                    <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" aria-hidden="true"></span></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-      <!-- Table -->
-    <table class="table">
-      <thead>
-        <tr class="table-header">
-          <th>#</th>
-          <th>Datei</th>
-          <th>Sprache</th>
-          <th>Typ des Dokuments</th>
-          <th>Bereich anpassen</th>
-          <th>Löschen</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1</td>
-          <td>John</td>
-          <td class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Deutsch<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#">Englisch</a>
-              </li>
-            </ul>
-          </td>
-          <td class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Rechnung<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#">Benutzerdefiniert</a>
-              </li>
-            </ul>
-          </td>
-          <td class="text-center">
-            <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true"></span></a>
-          </td>
-          <td class="text-center">
-            <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" aria-hidden="true"></span></a>
-          </td>
-        </tr>
-        <tr>
-          <td>2</td>
-          <td>Heizung</td>
-          <td class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Deutsch<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#">Englisch</a>
-              </li>
-            </ul>
-          </td>
-          <td class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Rechnung<span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li>
-                <a href="#">Benutzerdefiniert</a>
-              </li>
-            </ul>
-          </td>
-          <td class="text-center">
-            <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true"></span></a>
-          </td>
-          <td class="text-center">
-            <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" aria-hidden="true"></span></a>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <label class="pull-right">
-    <span class="lightfont"> <input type="checkbox" value="">&nbspzu einem Dokument zusammenfassen</span>
-    <button type="button" class="btn btn-lila pull-right" href="#">Erkennen</button>
-  </label>
+    <label class="pull-right">
+        <span class="lightfont"> <input type="checkbox" value="">&nbspzu einem Dokument zusammenfassen</span>
+        <button type="button" class="btn btn-lila pull-right" href="#">Erkennen</button>
+    </label>
+
+
+    <!-- Modal -->
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Dein Bildbearbeiten</h4>
+                </div>
+                <div class="modal-body">
+                    <br>
+
+                    <div>
+                        Your browser does not support the HTML5 canvas tag.
+                        <img src='@routes.Assets.versioned("images/rechnungtest.png")'
+                             alt="hier könnte ihre rechnung stehen">
+
+
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-default btn-lachs" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 </div>
+
+
 }
