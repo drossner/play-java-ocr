@@ -13,7 +13,7 @@ import java.util.List;
  * Created by florian on 17.11.15.
  */
 @Entity
-@Table(name="Users")
+@Table(name="Users", uniqueConstraints = {@UniqueConstraint(columnNames = "roles"), @UniqueConstraint(columnNames = "permission")})
 public class User implements Subject {
 
     @Id
