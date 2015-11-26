@@ -6,7 +6,7 @@ import modules.authentication.AuthResponse;
 import modules.authentication.FacebookAuthentication;
 import modules.authentication.OAuthentication;
 import modules.database.SimpleUserFactory;
-import org.hibernate.Query;
+import modules.database.entities.User;
 import org.hibernate.Session;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -16,6 +16,11 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 import java.io.IOException;
 
 /**
@@ -87,15 +92,21 @@ public class AuthenticationController extends Controller{
             final String userEmail = "test@test.de";
             //lokup stub user userEmail
             //session creation
-            Session hibSession = JPA.em().unwrap(Session.class);
+            //Session hibSession = JPA.em().unwrap(Session.class); // not recommendet: http://www.theserverside.com/news/2240186700/The-JPA-20-EntityManager-vs-the-Hibernate-Session-Which-one-to-use
             //hibSession.beginTransaction(); //done by transactional
 
-            Query q = hibSession.createQuery("select 1 from User u where u.eMail = :email");
-            q.setString("email", userEmail);
-            boolean exists = q.uniqueResult() != null;
+            CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
+            CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+            Root user = cq.from(User.class);
+            cq.select(qb.count(user));
+            cq.where(qb.equal(user.get("eMail"), userEmail));
+            boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;
 
+            /*TypedQuery<Integer> q = JPA.em().createQuery("COUNT from User u where u.eMail = :email", Integer.class);
+            q.setParameter("email", userEmail); */
+            //boolean exists = q.getSingleResult() == 1;
             if (!exists) {
-                hibSession.save(new SimpleUserFactory()
+                JPA.em().persist(new SimpleUserFactory()
                         .setEmail(userEmail)
                         .setPassword("test")
                         .addRole(OcrRole.USER)
