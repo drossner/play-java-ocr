@@ -106,7 +106,8 @@ public class AuthenticationController extends Controller{
                     .addRole(OcrRole.USER)
                     .build());
         }
-
+        //session init
+        session().put("session", userEmail);
         return redirect(routes.Application.index());
     }
 
