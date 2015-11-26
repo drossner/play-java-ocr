@@ -44,7 +44,6 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
     {
         // in a real application, the user name would probably be in the session following a login process
         final String userMail = context.session().get("session");
-        System.err.println("Cache null? " + (cache == null));
         if(userMail == null){
             return F.Promise.promise(Optional::empty);
         } else {

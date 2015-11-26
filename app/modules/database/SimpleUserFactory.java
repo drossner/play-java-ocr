@@ -30,4 +30,5 @@ public class SimpleUserFactory{
         user.addRole(role);
         return this;
     }
+
 }

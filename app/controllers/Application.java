@@ -1,21 +1,34 @@
 package controllers;
 
 
+import be.objectify.deadbolt.core.models.Subject;
+import com.google.inject.Inject;
 import modules.database.entities.Country;
 import modules.database.entities.User;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import play.*;
 //import play.api.mvc.*;
+import play.cache.CacheApi;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
+import play.libs.F;
 import play.mvc.*;
 
 import views.html.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import java.util.Optional;
 
 public class Application extends Controller {
+
+    private CacheApi cache;
+
+    @Inject
+    public Application(CacheApi cache){
+        this.cache = cache;
+    }
 
     public Result index() {
         if(session().get("session") != null){
@@ -43,8 +56,21 @@ public class Application extends Controller {
     }
 
     @SubjectPresent
-    public Result verwalten(){
-        return ok(verwalten.render());
+    public F.Promise<Result> verwalten(){
+        final String userMail = session().get("session");
+        return F.Promise.promise(() ->
+                //auto open/close/commit transaction in this thread, readOnly = true
+                JPA.withTransaction("default", true, () -> {
+                    //load subject from cache of from database if not available
+                    User user = cache.getOrElse(userMail, () -> {
+                                TypedQuery<User> q = JPA.em().createQuery("select u from User u where u.eMail = :email", User.class);
+                                q.setParameter("email", userMail);
+                                return q.getSingleResult();
+                            }
+                    );
+                    return ok(verwalten.render(user));
+                })
+        );
     }
 
     @SubjectPresent

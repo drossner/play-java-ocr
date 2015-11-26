@@ -35,10 +35,10 @@ public class User implements Subject {
     @Column
     private String cmsPassword;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<SecurityRole> roles = new LinkedList<SecurityRole>();
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
     private List<UserPermission> permission = new LinkedList<UserPermission>();
 
     public int getId() {

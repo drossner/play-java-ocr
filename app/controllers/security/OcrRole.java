@@ -6,6 +6,7 @@ import be.objectify.deadbolt.core.models.Role;
  * Created by Daniel on 25.11.2015.
  */
 public enum OcrRole implements Role {
+    DEFAULT("default"),
     USER("user"),
     ADMIN("admin");
 

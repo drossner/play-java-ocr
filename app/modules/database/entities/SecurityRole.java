@@ -26,6 +26,10 @@ public class SecurityRole implements Role
     @Column
     private OcrRole name;
 
+    public SecurityRole(){
+        name = OcrRole.DEFAULT;
+    }
+
     public SecurityRole(OcrRole role){
         name = role;
     }
