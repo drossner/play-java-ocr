@@ -80,9 +80,9 @@ public class AuthenticationController extends Controller{
         }
     }
 
-    @Transactional
+
     public Promise<Result> stubLogin() {
-        return Promise.promise(() -> {
+        return Promise.promise(() -> JPA.withTransaction(() -> {
             session().clear();
             final String userEmail = "test@test.de";
             //lokup stub user userEmail
@@ -106,7 +106,7 @@ public class AuthenticationController extends Controller{
             //hibSession.close(); //done by transactional
             session("session", userEmail);
             return redirect(routes.Application.index());
-        });
+        }));
     }
 
 }
