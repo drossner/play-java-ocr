@@ -1,15 +1,10 @@
-package modules.database;
+package modules.database.factory;
 
 import controllers.security.OcrRole;
 import modules.database.entities.Country;
-import modules.database.entities.SecurityRole;
 import modules.database.entities.User;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 /**
  * Created by Daniel on 25.11.2015.
