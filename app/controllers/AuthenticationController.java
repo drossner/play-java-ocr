@@ -70,7 +70,7 @@ public class AuthenticationController extends Controller{
             OAuthentication oauth = getOAuthenticationImpl(method);
             AuthResponse authResponse = oauth.exchangeToken(code);
             if(authResponse.isValid()){
-                return setUpSession(authResponse);
+                return JPA.withTransaction(() -> setUpSession(authResponse));
             } else {
                 return badRequest("invalidToken");
             }
@@ -80,10 +80,12 @@ public class AuthenticationController extends Controller{
         } catch (InvalidParameterException e){
             Logger.info(e.getMessage(), e);
             return badRequest("Invalid login method: " + method);
+        } catch (Throwable e) {
+            Logger.error("oauth IO-Error", e);
+            return internalServerError("error");
         }
     }
 
-    @Transactional
     private Result setUpSession(AuthResponse authResponse){
         //first of all clear the session()
         session().clear();
