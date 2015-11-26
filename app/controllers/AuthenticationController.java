@@ -22,6 +22,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.io.IOException;
+import java.security.InvalidParameterException;
 
 /**
  * Created by Daniel on 19.11.2015.
@@ -47,15 +48,14 @@ public class AuthenticationController extends Controller{
 
     public Result login(int method) {
         try {
-            //testcode START
-            if(method == 1){
-                return redirect(fb.getAuthURL());
-            }
-            //testcode ENDE
-            return redirect(gp.getAuthURL());
+            OAuthentication oauth = getOAuthenticationImpl(method);
+            return redirect(oauth.getAuthURL());
         } catch (IOException e) {
             Logger.error("Login IO-Error", e);
             return internalServerError("error");
+        } catch (InvalidParameterException e){
+            Logger.error(e.getMessage(), e);
+            return badRequest("Invalid login method: " + method);
         }
     }
 
@@ -67,22 +67,51 @@ public class AuthenticationController extends Controller{
 
     private Result authorize(String code, int method){
         try {
-            //testcode START
-            if(method == 1){
-                AuthResponse authResponse = fb.exchangeToken(code);
-                return ok("Your Email is: " + authResponse.getEmail());
-            }
-            //testcode ENDE
-            AuthResponse authResponse = gp.exchangeToken(code);
+            OAuthentication oauth = getOAuthenticationImpl(method);
+            AuthResponse authResponse = oauth.exchangeToken(code);
             if(authResponse.isValid()){
-                return ok("Your Email is: " + authResponse.getEmail());
+                return setUpSession(authResponse);
             } else {
                 return badRequest("invalidToken");
             }
         } catch (IOException e) {
             Logger.error("oauth IO-Error", e);
             return internalServerError("error");
+        } catch (InvalidParameterException e){
+            Logger.info(e.getMessage(), e);
+            return badRequest("Invalid login method: " + method);
         }
+    }
+
+    @Transactional
+    private Result setUpSession(AuthResponse authResponse){
+        //first of all clear the session()
+        session().clear();
+        //get the email of the user
+        final String userEmail = authResponse.getEmail();
+        //lookup if user aleady exists
+        CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
+        Root user = cq.from(User.class);
+        cq.select(qb.count(user));
+        cq.where(qb.equal(user.get("eMail"), userEmail));
+        boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;
+        //create new user if he doesnt exist
+        if (!exists) {
+            JPA.em().persist(new SimpleUserFactory()
+                    .setEmail(userEmail)
+                    .setPassword("")
+                    .addRole(OcrRole.USER)
+                    .build());
+        }
+
+        return redirect(routes.Application.index());
+    }
+
+    private OAuthentication getOAuthenticationImpl(int method) throws InvalidParameterException{
+        if(method == 0)return gp;
+        else if(method == 1) return fb;
+        else throw new InvalidParameterException();
     }
 
 
