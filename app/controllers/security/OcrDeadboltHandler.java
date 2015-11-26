@@ -8,11 +8,13 @@ import be.objectify.deadbolt.java.DynamicResourceHandler;
 import controllers.routes;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import play.cache.CacheApi;
 import play.db.jpa.JPA;
 import play.libs.F;
 import play.mvc.*;
 import views.html.index;
 
+import javax.inject.Inject;
 import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.List;
@@ -23,6 +25,13 @@ import java.util.Optional;
  * Created by Daniel on 21.11.2015.
  */
 public class OcrDeadboltHandler extends AbstractDeadboltHandler {
+
+    private CacheApi cache;
+
+    @Inject
+    public OcrDeadboltHandler(CacheApi cache){
+        this.cache = cache;
+    }
 
     public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context)
     {
@@ -35,14 +44,21 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
     {
         // in a real application, the user name would probably be in the session following a login process
         final String userMail = context.session().get("session");
+        System.err.println("Cache null? " + (cache == null));
         if(userMail == null){
             return F.Promise.promise(Optional::empty);
         } else {
             return F.Promise.promise(() -> Optional.ofNullable(
+                    //auto open/close/commit transaction in this thread, readOnly = true
                     JPA.withTransaction("default", true, () -> {
-                        TypedQuery<Subject> q = JPA.em().createQuery("select u from User u where u.eMail = :email", Subject.class);
-                        q.setParameter("email", userMail);
-                        return q.getSingleResult();
+                        //load subject from cache of from database if not available
+                        Subject subj = cache.getOrElse(userMail, () -> {
+                                    TypedQuery<Subject> q = JPA.em().createQuery("select u from User u where u.eMail = :email", Subject.class);
+                                    q.setParameter("email", userMail);
+                                    return q.getSingleResult();
+                                }
+                        );
+                        return subj;
                     })
             ));
         }

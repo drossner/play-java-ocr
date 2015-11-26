@@ -6,6 +6,7 @@ import com.google.inject.Singleton;
 import controllers.security.HandlerKeys;
 import controllers.security.OcrDeadboltHandler;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +16,13 @@ import java.util.Map;
 @Singleton
 public class DeadboltHandlerCache implements HandlerCache{
 
-    private final DeadboltHandler defaultHandler = new OcrDeadboltHandler();
+    private final DeadboltHandler defaultHandler; // = new OcrDeadboltHandler();
     private final Map<String, DeadboltHandler> handlers = new HashMap<>();
 
-    public DeadboltHandlerCache()
+    @Inject
+    public DeadboltHandlerCache(OcrDeadboltHandler ocrDeadboltHandler)
     {
+        this.defaultHandler = ocrDeadboltHandler;
         handlers.put(HandlerKeys.DEFAULT.key, defaultHandler);
     }
 
