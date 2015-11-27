@@ -161,7 +161,7 @@ a.dropdown-toggle
 {
 font-weight: lighter;
 }
-
+/* Code von Lednam */
 canvas {
     padding: 0;
     margin: auto;
@@ -215,4 +215,16 @@ canvas {
 .btn-file:active {
     background: #646682;
     color: white;
+}
+
+.pic
+{
+    background: darkgray;
+
+}
+
+.can
+{
+    margin-left: 0;
+
 }
