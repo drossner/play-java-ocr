@@ -39,6 +39,10 @@ libraryDependencies ++= Seq(
   "org.scribe" % "scribe" % "1.3.6"
 )
 
+libraryDependencies ++= Seq(
+  "org.imgscalr" % "imgscalr-lib" % "4.2"
+)
+
 //Persistence
 libraryDependencies ++= Seq(
   "postgresql" % "postgresql" % "9.1-901.jdbc4",

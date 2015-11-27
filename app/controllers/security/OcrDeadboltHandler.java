@@ -51,7 +51,7 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
                     //auto open/close/commit transaction in this thread, readOnly = true
                     JPA.withTransaction("default", true, () -> {
                         //load subject from cache of from database if not available
-                        Subject subj = cache.getOrElse(userMail, () -> {
+                        Subject subj = cache.getOrElse(userMail+".subject", () -> {
                                     TypedQuery<Subject> q = JPA.em().createQuery("select u from User u where u.eMail = :email", Subject.class);
                                     q.setParameter("email", userMail);
                                     return q.getSingleResult();
