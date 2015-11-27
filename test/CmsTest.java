@@ -17,19 +17,18 @@ import static org.junit.Assert.assertTrue;
  */
 public class CmsTest {
 
-    public static final String BASE_URL = "http://localhost:8080/nuxeo/atom/cmis";
 
     SessionCMS sessionCMS;
     CmsController cmsController;
 
-    String user = "testuser";
+    String user = "test";
     String password = "test";
 
 
 
     @Before
     public void setupTest(){
-        sessionCMS = new SessionCMS(user, password, BASE_URL);
+        sessionCMS = new SessionCMS(user, password);
         cmsController = new CmsController(sessionCMS);
     }
 
