@@ -17,19 +17,16 @@ import static org.junit.Assert.assertTrue;
  */
 public class CmsTest {
 
-
-    SessionCMS sessionCMS;
     CmsController cmsController;
 
     String user = "test";
     String password = "test";
 
 
-
     @Before
     public void setupTest(){
-        sessionCMS = new SessionCMS(user, password);
-        cmsController = new CmsController(sessionCMS);
+        cmsController = new CmsController();
+        cmsController.createSession(user, password);
     }
 
     @Test

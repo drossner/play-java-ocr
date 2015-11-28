@@ -27,8 +27,8 @@ public class SessionHolder {
         sessions.put(sessionName,session);
     }
 
-    public Session retrieveSession(String sessionName) {
-        return (Session) sessions.get(sessionName);
+    public SessionCMS retrieveSession(String sessionName) {
+        return sessions.get(sessionName);
     }
 
     void disconnectSession(String sessionName) {

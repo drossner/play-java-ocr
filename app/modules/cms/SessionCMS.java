@@ -5,6 +5,7 @@ import org.apache.chemistry.opencmis.client.api.SessionFactory;
 import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
+import play.Logger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,11 +30,11 @@ public class SessionCMS {
         this.username = username;
         this.password = password;
 
-        // create a session
-        this.session = createSession();
+        this.session = createNewSession(this.username, this.password);
+
     }
 
-    protected Session createSession() {
+    private Session createNewSession(String username, String password) {
         SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
         Map<String, String> parameter = new HashMap<String, String>();
         parameter.put(SessionParameter.USER, username);
@@ -51,8 +52,13 @@ public class SessionCMS {
         return session;
     }
 
+
     public Session getSession(){
         return  session;
+    }
+
+    public void setSession(Session session){
+        this.session = session;
     }
 
     public void setUsername(String username) {
@@ -62,4 +68,6 @@ public class SessionCMS {
     public String getUsername() {
         return username;
     }
+
+
 }
