@@ -6,28 +6,26 @@ import com.google.inject.Inject;
 import modules.database.entities.Country;
 import modules.database.entities.User;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
+import modules.upload.UploadHandler;
 import play.*;
 //import play.api.mvc.*;
 import play.cache.CacheApi;
 import play.db.jpa.JPA;
-import play.db.jpa.Transactional;
 import play.libs.F;
 import play.mvc.*;
 
 import views.html.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.Optional;
 
 public class Application extends Controller {
 
     private CacheApi cache;
+    private UploadHandler uploadHandler;
 
     @Inject
-    public Application(CacheApi cache){
+    public Application(CacheApi cache, UploadHandler uploadHandler){
         this.cache = cache;
+        this.uploadHandler = uploadHandler;
     }
 
     public Result index() {
@@ -46,13 +44,12 @@ public class Application extends Controller {
     @SubjectPresent
     public Result hochladen(int step){
         if(step == 1) {
-            return ok(hochladen_1.render());
+            return ok(hochladen_1.render(uploadHandler.createUploadId()));
         } else if (step == 2){
             return ok(hochladen_2.render());
         } else {
             return badRequest();
         }
-
     }
 
     @SubjectPresent
