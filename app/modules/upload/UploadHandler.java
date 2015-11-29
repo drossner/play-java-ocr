@@ -9,8 +9,10 @@ import play.Logger;
 import play.Play;
 import play.cache.CacheApi;
 import play.cache.NamedCache;
+import play.libs.Akka;
 import play.libs.Json;
 import play.mvc.Http.MultipartFormData.FilePart;
+import scala.concurrent.duration.Duration;
 
 import javax.imageio.ImageIO;
 import javax.inject.Singleton;
@@ -23,6 +25,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Daniel on 28.11.2015.
@@ -46,10 +49,21 @@ public class UploadHandler {
         this.uploadIds = new ConcurrentSkipListMap<String, Long>();
         this.fileList = new ConcurrentSkipListMap<>();
 
-        //Create custom temp dir (fuck that bug!!!!11111elf)
+        //cleanup code
+        Akka.system().scheduler().schedule(
+                Duration.create(10, TimeUnit.MINUTES),   // initial delay
+                Duration.create(10, TimeUnit.MINUTES),   // run job every 5 minutes
+                () -> {
+                    cleanup();
+                }, Akka.system().dispatcher());
+
         //Create custom temp dir (fuck that bug!!!!11111elf)
         TEMP_DIR = new File(Play.application().path().getAbsolutePath() + TEMP_DIR_NAME);
         TEMP_DIR.mkdir();
+        File[] oldFiles = TEMP_DIR.listFiles();
+        for(File f : oldFiles){
+            f.delete();
+        }
     }
 
     /**
@@ -71,13 +85,18 @@ public class UploadHandler {
     public boolean isUploadIdValid(String uploadId){
         long timestamp = uploadIds.getOrDefault(uploadId, -1l);
         if(timestamp < 0) return false;
-        if(System.currentTimeMillis() - timestamp > MAXIMAL_CACHE_TIME){
-            uploadIds.remove(uploadId);
-            Logger.error("dfhsdfbbfdfbsdfbdfjvbsrhgbbvd");
+        if(!isTimestampValid(timestamp)){
+            //removed cause of efficency, better do async or in the scheduled job
+            /*deleteUploadedFiles(uploadId);
+            uploadIds.remove(uploadId);*/
             return false;
         } else {
             return true;
         }
+    }
+
+    private boolean isTimestampValid(long timestamp){
+        return System.currentTimeMillis() - timestamp < MAXIMAL_CACHE_TIME;
     }
 
     public ObjectNode addFilesToCache(final String uploadId, List<FilePart> fileParts) throws IOException {
@@ -162,5 +181,24 @@ public class UploadHandler {
 
     private String calcDeletePath(final String uploadId, File f){
         return routes.UploadController.delete(uploadId, f.getName()).path();
+    }
+
+    private void cleanup(){
+        Iterator<Map.Entry<String, Long>> it = uploadIds.entrySet().iterator();
+        while (it.hasNext()){
+            Map.Entry<String, Long> entry = it.next();
+            if(!isTimestampValid(entry.getValue())){
+                deleteUploadedFiles(entry.getKey());
+                it.remove();
+            }
+        }
+    }
+
+    private void deleteUploadedFiles(String uploadId){
+        CopyOnWriteArrayList<File> files = fileList.get(uploadId);
+        for(File f : files){
+            f.delete();
+        }
+        fileList.remove(files);
     }
 }
