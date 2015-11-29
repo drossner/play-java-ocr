@@ -5,6 +5,8 @@ import org.junit.*;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 import play.mvc.*;
 import play.test.*;
 import play.libs.F.*;
@@ -22,12 +24,16 @@ public class DatabaseTest {
     @Transactional
     public void createUserTest(){
         running(fakeApplication(), () -> {
-            User temp = new DataCreator().getUser();
-            JPA.em().persist(temp.getCountry());
-            JPA.em().persist(temp);
-
-            assertEquals(JPA.em().find(User.class, temp.getId()).geteMail(), temp.geteMail());
+            JPA.withTransaction(this::create);
         });
+    }
+
+    private void create() {
+
+        User temp = new DataCreator().getUser();
+        JPA.em().persist(temp.getCountry());
+        JPA.em().persist(temp);
+        assertEquals(JPA.em().find(User.class, temp.getId()).geteMail(), temp.geteMail());
     }
 
     public class DataCreator{
