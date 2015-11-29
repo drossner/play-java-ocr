@@ -162,10 +162,6 @@ a.dropdown-toggle
 font-weight: lighter;
 }
 
-.extraspace-left {
-    margin-left: 100px;
-}
-
 
 canvas {
     padding: 0;
@@ -206,4 +202,16 @@ canvas {
     outline: none;
     cursor: inherit;
     display: block;
+}
+
+.whitebg {
+    background-color: #ffffff !important;
+
+}
+
+.tablespacing {
+
+    width: 60%;
+    min-width: 600px;
+    margin: auto;
 }
