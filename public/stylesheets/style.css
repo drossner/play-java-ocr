@@ -64,6 +64,8 @@ IMG.header
     background-color: #F25260;
     border-color: #F25260;
     margin-right: 5px;
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 .btn-lachs:hover,
@@ -101,6 +103,9 @@ fieldset[disabled] .btn-lachs.active
     border-color: #8082a6;
     margin-right: 5px;
     margin-left: 10px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+
 }
 
 .btn-lila:hover,
@@ -211,7 +216,7 @@ canvas {
 
 .tablespacing {
 
-    width: 60%;
+    width: 65%;
     min-width: 600px;
     margin: auto;
 }
