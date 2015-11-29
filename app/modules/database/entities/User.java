@@ -108,4 +108,15 @@ public class User extends DomainObject implements Subject {
         return geteMail();
     }
 
+    public void setRoles(List<SecurityRole> roles) {
+        this.roles = roles;
+    }
+
+    public List<UserPermission> getPermission() {
+        return permission;
+    }
+
+    public void setPermission(List<UserPermission> permission) {
+        this.permission = permission;
+    }
 }

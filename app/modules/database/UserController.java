@@ -23,7 +23,8 @@ public class UserController extends DatabaseController<User, Country> {
             throw new Exception("false country iso");
         }
 
-
+        user.setRoles(roles);
+        user.setPermission(permissions);
 
         persistObject(user);
     }
