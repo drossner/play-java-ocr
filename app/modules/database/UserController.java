@@ -12,30 +12,24 @@ import java.util.List;
 /**
  * Created by FRudi on 26.11.2015.
  */
-public class UserController extends DatabaseController {
+public class UserController extends DatabaseController<User, Country> {
 
     public void persistUser(User user, int countryISO, List<Role> roles, List<Permission> permissions) throws Exception {
-        Country country = selectEntity(Country.getClass(), null);
+        Country country = selectEntity(Country.class, null);
 
         if(country != null){
             user.setCountry(country);
         }else{
-            throw new Exception("false country id");
+            throw new Exception("false country iso");
         }
 
-        for(Role role: roles){
-            switch(role.getName()){
-                case OcrRole.USER.getName():
-                    user.addRole(OcrRole.USER);
-            }
 
-        }
 
         persistObject(user);
     }
 
     public void persist(User user, int countryISO) throws Exception {
-        Country country = selectEntity(Country.class, null, null);
+        Country country = selectEntity(Country.class, null);
 
         if(country != null){
             user.setCountry(country);
