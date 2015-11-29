@@ -23,56 +23,52 @@
         <!-- Redirect browsers with JavaScript disabled to the origin page -->
         <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>
         <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-
+    </br></br>
         <canvas id="myCanvas" width="205" height="152">
             Your browser does not support the HTML5 canvas tag.
         </canvas>
 
         <br>
-        <div>
-        <p>Datein zum Upload auswählen oder auf das Browserfenster ziehen </p><br><br>
+
+    <div align=center>
+        <br>
+
+        <p>Dateien zum Upload auswählen oder auf das Browserfenster ziehen </p>
 
 
         </div>
 
-        <div class="row fileupload-buttonbar">
+    <div class="row fileupload-buttonbar text-center">
 
 
-            <div class="col-lg-7">
+        <div>
                 <!-- The fileinput-button span is used to style the file input field as button -->
-                <span class="btn btn-default btn-file" id="fileselect" name="fileselect[]">
+                <span class="btn btn-file" id="fileselect" name="fileselect[]">
 
                                  Datei auswählen <input type="file">
 
                 </span>
+            <button type="submit" class="btn start btn-lila">
 
-
-                <button type="submit" class="btn btn-primary start btn-lila">
-
-                    <span>Start upload</span>
+                <span>Hochladen (alle Dateien)</span>
                 </button>
 
                 <button type="reset" class="btn btn-warning cancel btn-lachs">
 
-                    <span>Cancel upload</span>
+                    <span>Hochladen abbrechen</span>
                 </button>
 
-                <!--<button type="button" class="btn btn-danger delete">
-                    <i class="glyphicon glyphicon-trash"></i>
-                    <span>Delete</span>
-                </button>-->
-
-                <!--<input type="checkbox" class="toggle">-->
-                <!-- The global file processing state -->
 
                 <span class="fileupload-process"></span>
 
-            </div>
+
+        </div>
             <!-- The global progress state -->
             <div class="col-lg-5 fileupload-progress fade">
                 <!-- The global progress bar -->
-                <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                    <div class="progress-bar progress-bar-success" style="width:0%;"></div>
+                <div id="pb" class="progress progress-striped active" role="progressbar" aria-valuemin="0"
+                     aria-valuemax="100">
+                    <div id="ps" class="progress-bar progress-bar-success" style="width:0%;"></div>
                 </div>
                 <!-- The extended global progress state -->
                 <div class="progress-extended">&nbsp;</div>
@@ -99,25 +95,25 @@
         </td>
         <td>
             <p class="size">Processing...</p>
-            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
         </td>
         <td>
             {% if (!i && !o.options.autoUpload) { %}
-                <button class="btn btn-primary start btn-lila" disabled>
+                <button class="btn btn-primary start btn-lila extraspace-left" disabled>
                     <i class="glyphicon glyphicon-upload"></i>
-                    <span>Start</span>
+                    <span>Hochladen</span>
                 </button>
             {% } %}
             {% if (!i) { %}
                 <button class="btn btn-warning cancel btn-lachs">
                     <i class="glyphicon glyphicon-ban-circle"></i>
-                    <span>Cancel</span>
+                    <span>Löschen</span>
                 </button>
             {% } %}
         </td>
     </tr>
 {% } %}
-
 
 </script>
 
@@ -170,11 +166,11 @@
         </td>
         <td>
             {% if (file.deleteUrl) { %}
-                <button class="btn btn-danger delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
+                <button class="btn btn-lachs delete" data-type="{%=file.deleteType%}" data-url="{%=file.deleteUrl%}"{% if (file.deleteWithCredentials) { %} data-xhr-fields='{"withCredentials":true}'{% } %}>
                     <i class="glyphicon glyphicon-trash"></i>
-                    <span>Delete</span>
+                    <span>Löschen</span>
                 </button>
-                <input type="checkbox" name="delete" value="1" class="toggle">
+
             {% } else { %}
                 <button class="btn btn-warning cancel btn-lachs">
                     <i class="glyphicon glyphicon-ban-circle"></i>
@@ -186,8 +182,21 @@
 {% } %}
 
 
+</script>
+
+<script>
+    $('#pb').css({
+        'background-image': 'none',
+        'background-color': '#8082a6'
+    });
+    $('#ps').css({
+        'background-image': 'none',
+        'background-color': '#f03a4a'
+    });
 
 </script>
+<br><br><br>
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <!-- The jQuery UI widget factory, can be omitted if jQuery UI is already included -->
 <script src='@routes.Assets.versioned("jQuery-File-Upload-9.11.2/js/vendor/jquery.ui.widget.js")'></script>

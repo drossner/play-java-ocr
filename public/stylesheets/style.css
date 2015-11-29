@@ -162,6 +162,11 @@ a.dropdown-toggle
 font-weight: lighter;
 }
 
+.extraspace-left {
+    margin-left: 100px;
+}
+
+
 canvas {
     padding: 0;
     margin: auto;
@@ -171,7 +176,7 @@ canvas {
         bottom: 0;
         left: 0;
         right: 0;*/
-    alaing: center;
+    align: center;
 }
 
 
@@ -201,18 +206,4 @@ canvas {
     outline: none;
     cursor: inherit;
     display: block;
-}
-
-.btn-file:hover
-{
-
-    color: #ffffff;
-    background: #646682;
-
-
-}
-
-.btn-file:active {
-    background: #646682;
-    color: white;
 }
