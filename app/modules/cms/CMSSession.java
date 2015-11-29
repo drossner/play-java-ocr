@@ -16,7 +16,7 @@ import java.util.Map;
 /**
  * Created by Benedikt Linke on 23.11.15.
  */
-public class SessionCMS {
+public class CMSSession {
 
     private String username;
 
@@ -25,10 +25,9 @@ public class SessionCMS {
     private Date lastActivity;
 
 
-    public SessionCMS(String username, Session session){
+    public CMSSession(String username, Session session){
         this.username = username;
         this.session = session;
-
     }
 
     public Session getSession(){

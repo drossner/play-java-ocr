@@ -1,5 +1,4 @@
-import modules.cms.CmsController;
-import modules.cms.SessionCMS;
+import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
@@ -10,6 +9,7 @@ import play.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +18,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class CmsTest {
 
-    CmsController cmsController;
+    CMSController cmsController;
 
     String user = "test";
     String password = "test";
@@ -30,14 +30,13 @@ public class CmsTest {
     }
 
     @Test
-    public void folderTest() {
+    public void folderTest(){
         Folder workspaceFolder = cmsController.getWorkspaceFolder();
 
         Folder newFolder = cmsController.createFolder(workspaceFolder, "testfolder");
         String testFolderId = newFolder.getId();
 
         assertEquals(testFolderId, cmsController.getFolderById(testFolderId).getId());
-
         Folder testFolder = cmsController.getFolderById(testFolderId);
 
         Folder updatedFolder = cmsController.updateFolder(testFolder, "newName");

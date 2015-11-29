@@ -14,9 +14,9 @@ import java.util.*;
  */
 public class FolderController {
 
-    private CmsController cmsController;
+    private CMSController cmsController;
 
-    public FolderController(CmsController cmsController){
+    public FolderController(CMSController cmsController){
         this.cmsController = cmsController;
     }
 

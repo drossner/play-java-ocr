@@ -18,9 +18,9 @@ import java.util.Map;
  */
 public class DocumentController {
 
-    private CmsController cmsController;
+    private CMSController cmsController;
 
-    public DocumentController(CmsController cmsController){
+    public DocumentController(CMSController cmsController){
         this.cmsController = cmsController;
     }
 
@@ -33,7 +33,6 @@ public class DocumentController {
     }
 
     public Document createDocument(Folder parentFolder, File file, String fileType) throws FileNotFoundException {
-
         String fileName = file.getName();
 
         Map<String, Object> properties = new HashMap<String, Object>();

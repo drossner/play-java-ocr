@@ -1,7 +1,6 @@
 package modules.cms;
 
 import java.util.*;
-import java.util.concurrent.RunnableFuture;
 
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -18,9 +17,9 @@ import play.Logger;
 public class SessionHolder {
 
     private static final String CMIS_ENDPOINT = "http://v22015042759824376.yourvserver.net:8080/nuxeo/atom/cmis";
-    private static final long MAX_SESSION_TIME = 0;
+    private static final long MAX_SESSION_TIME = 1000*60*30;
 
-    Map<String, SessionCMS> sessions = new TreeMap<>();
+    Map<String, CMSSession> sessions = new TreeMap<>();
 
     private static SessionHolder instance = null;
 
@@ -36,24 +35,24 @@ public class SessionHolder {
         return instance;
     }
 
-    public CmsController getController(String username, String password){
+    public CMSController getController(String username, String password){
         if(sessions.containsKey(username)){
-            SessionCMS sessionCMS = sessions.get(username);
+            CMSSession sessionCMS = sessions.get(username);
 
             sessionCMS.setLastActivity(new Date());
 
             Logger.info("get session: " + username);
-            return new CmsController(sessionCMS);
+            return new CMSController(sessionCMS);
         }else{
             sessions.put(username, createSession(username, password));
             sessions.get(username).setLastActivity(new Date());
 
             Logger.info("create session: " + username);
-            return new CmsController(sessions.get(username));
+            return new CMSController(sessions.get(username));
         }
     }
 
-    private SessionCMS createSession(String username, String password) {
+    private CMSSession createSession(String username, String password) {
         SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
         Map<String, String> parameter = new HashMap<String, String>();
         parameter.put(SessionParameter.USER, username);
@@ -68,7 +67,7 @@ public class SessionHolder {
         // Turn off the session cache completely
         session.getDefaultContext().setCacheEnabled(false);
 
-        return new SessionCMS(username, session);
+        return new CMSSession(username, session);
     }
 
     void disconnectSession(String sessionName) {

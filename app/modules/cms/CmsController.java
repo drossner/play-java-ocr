@@ -2,7 +2,6 @@ package modules.cms;
 
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.api.Session;
-import play.Logger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,16 +11,14 @@ import java.util.ArrayList;
 /**
  * Created by Benedikt Linke on 23.11.15.
  */
-public class CmsController {
+public class CMSController {
 
-    private SessionCMS sessionCMS;
-    private static final String CMIS_ENDPOINT = "http://v22015042759824376.yourvserver.net:8080/nuxeo/atom/cmis";
-
+    private CMSSession sessionCMS;
 
     private FolderController folderController;
     private DocumentController documentController;
 
-    public CmsController(SessionCMS session) {
+    public CMSController(CMSSession session) {
         this.folderController = new FolderController(this);
         this.documentController = new DocumentController(this);
 

@@ -6,18 +6,16 @@ package modules.cms;
 
 public class ActivityChecker implements Runnable{
 
-
     @Override
     public void run() {
         while(true) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(1000*60*10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             SessionHolder.getInstance().checkSessions();
-
         }
     }
 }
