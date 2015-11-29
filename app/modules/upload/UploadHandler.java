@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.Inject;
 import controllers.routes;
 import org.imgscalr.Scalr;
+import play.Logger;
+import play.Play;
 import play.cache.CacheApi;
 import play.cache.NamedCache;
 import play.libs.Json;
@@ -16,6 +18,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -29,6 +33,8 @@ public class UploadHandler {
     private final long MAXIMAL_CACHE_TIME = 1000*60*60; //1 Stunde
     private final int THUMBNAIL_WIDTH = 80;
     private final int THUMBNAIL_HEIGTH = 80;
+    private final String TEMP_DIR_NAME = "/uploadTemp/";
+    private final File TEMP_DIR;
 
     /*@Inject
     @NamedCache("upload-cache")
@@ -36,9 +42,14 @@ public class UploadHandler {
     private ConcurrentSkipListMap<String, Long> uploadIds;
     private ConcurrentSkipListMap<String, CopyOnWriteArrayList<File>> fileList;
 
-    public UploadHandler(){
+    public UploadHandler() throws IOException {
         this.uploadIds = new ConcurrentSkipListMap<String, Long>();
         this.fileList = new ConcurrentSkipListMap<>();
+
+        //Create custom temp dir (fuck that bug!!!!11111elf)
+        //Create custom temp dir (fuck that bug!!!!11111elf)
+        TEMP_DIR = new File(Play.application().path().getAbsolutePath() + TEMP_DIR_NAME);
+        TEMP_DIR.mkdir();
     }
 
     /**
@@ -62,13 +73,14 @@ public class UploadHandler {
         if(timestamp < 0) return false;
         if(System.currentTimeMillis() - timestamp > MAXIMAL_CACHE_TIME){
             uploadIds.remove(uploadId);
+            Logger.error("dfhsdfbbfdfbsdfbdfjvbsrhgbbvd");
             return false;
         } else {
             return true;
         }
     }
 
-    public ObjectNode addFilesToCache(final String uploadId, List<FilePart> fileParts){
+    public ObjectNode addFilesToCache(final String uploadId, List<FilePart> fileParts) throws IOException {
         //Preparing Json Answer
         ObjectNode result = Json.newObject();
         ArrayNode arrayNode = result.putArray("files");
@@ -83,7 +95,9 @@ public class UploadHandler {
         }
 
         for(FilePart part : fileParts){
-            File f = part.getFile();
+            File tf = part.getFile();
+            Files.copy(tf.toPath(), new File(TEMP_DIR.getAbsolutePath()+"/"+tf.getName()).toPath());
+            File f = new File(TEMP_DIR.getAbsolutePath()+"/"+tf.getName());
             arrayNode.addObject()
                     .put("name", part.getFilename())
                     .put("size", f.length())
@@ -107,6 +121,7 @@ public class UploadHandler {
         for(File f : cachedFiles){
             if(f.getName().equals(filename)){
                 cachedFiles.remove(f);
+                f.delete();
                 arrayNode.addObject().put(filename, true);
             }
         }

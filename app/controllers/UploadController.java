@@ -31,9 +31,14 @@ public class UploadController extends Controller {
         Logger.debug("File upload started from " + session().get("session"));
         Http.MultipartFormData body = request().body().asMultipartFormData();
         List<Http.MultipartFormData.FilePart> pictures = body.getFiles();
-
         //Json Answer
-        ObjectNode result = uploadHandler.addFilesToCache(uploadId, pictures);
+        ObjectNode result = null;
+        try {
+            result = uploadHandler.addFilesToCache(uploadId, pictures);
+        } catch (IOException e) {
+            Logger.error(e.getMessage(), e);
+            return internalServerError(e.getMessage());
+        }
 
         Logger.debug(result.toString());
         return ok(result);
