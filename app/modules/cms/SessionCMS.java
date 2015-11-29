@@ -7,6 +7,7 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import play.Logger;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,41 +18,18 @@ import java.util.Map;
  */
 public class SessionCMS {
 
-    private static final String CMIS_ENDPOINT = "http://v22015042759824376.yourvserver.net:8080/nuxeo/atom/cmis";
-
     private String username;
-
-    private String password;
 
     private Session session;
 
+    private Date lastActivity;
 
-    public SessionCMS(String username, String password){
+
+    public SessionCMS(String username, Session session){
         this.username = username;
-        this.password = password;
-
-        this.session = createNewSession(this.username, this.password);
+        this.session = session;
 
     }
-
-    private Session createNewSession(String username, String password) {
-        SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
-        Map<String, String> parameter = new HashMap<String, String>();
-        parameter.put(SessionParameter.USER, username);
-        parameter.put(SessionParameter.PASSWORD, password);
-        parameter.put(SessionParameter.ATOMPUB_URL, CMIS_ENDPOINT);
-        parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
-
-        // Use the first repository
-        List<Repository> repositories = sessionFactory.getRepositories(parameter);
-        Session session = repositories.get(0).createSession();
-
-        // Turn off the session cache completely
-        session.getDefaultContext().setCacheEnabled(false);
-
-        return session;
-    }
-
 
     public Session getSession(){
         return  session;
@@ -69,5 +47,12 @@ public class SessionCMS {
         return username;
     }
 
+    public Date getLastActivity() {
+        return lastActivity;
+    }
+
+    public void setLastActivity(Date lastActivity) {
+        this.lastActivity = lastActivity;
+    }
 
 }

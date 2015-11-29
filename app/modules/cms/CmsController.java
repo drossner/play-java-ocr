@@ -21,24 +21,12 @@ public class CmsController {
     private FolderController folderController;
     private DocumentController documentController;
 
-    public CmsController() {
-
+    public CmsController(SessionCMS session) {
         this.folderController = new FolderController(this);
         this.documentController = new DocumentController(this);
+
+        this.sessionCMS = session;
     }
-
-
-    public SessionCMS createSession(String username, String password) {
-        SessionHolder sessionHolder = SessionHolder.getInstance();
-        sessionCMS = sessionHolder.retrieveSession(username);
-        if (sessionCMS == null){
-            sessionCMS = new SessionCMS(username, password);
-            Logger.info("new Session");
-            sessionHolder.storeSession(username, sessionCMS);
-        }
-        return sessionCMS;
-    }
-
 
 
     public Session getSession(){

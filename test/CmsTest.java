@@ -1,5 +1,6 @@
 import modules.cms.CmsController;
 import modules.cms.SessionCMS;
+import modules.cms.SessionHolder;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.junit.Before;
@@ -25,8 +26,7 @@ public class CmsTest {
 
     @Before
     public void setupTest(){
-        cmsController = new CmsController();
-        cmsController.createSession(user, password);
+        cmsController = SessionHolder.getInstance().getController(user, password);
     }
 
     @Test
@@ -63,9 +63,6 @@ public class CmsTest {
         } catch (FileNotFoundException e) {
             Logger.info("File not found",e);
         }
-
-
-
     }
 
 }

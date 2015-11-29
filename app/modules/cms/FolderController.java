@@ -7,10 +7,7 @@ import org.apache.chemistry.opencmis.commons.enums.UnfileObject;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import play.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Benedikt Linke on 23.11.15.
@@ -67,6 +64,26 @@ public class FolderController {
             Logger.info("Folder not found.");
         }
         return null;
+    }
+
+    protected void deleteAllContent() {
+        Folder rootFolder = getUserWorkspaceFolder();
+        try {
+            ItemIterable<CmisObject> children = rootFolder.getChildren();
+            for (CmisObject cmisObject : children) {
+                if ("cmis:folder".equals(cmisObject.getPropertyValue(PropertyIds.OBJECT_TYPE_ID))) {
+                    List<String> notDeltedIdList = ((Folder)cmisObject)
+                            .deleteTree(true, UnfileObject.DELETE, true);
+                    if (notDeltedIdList != null && notDeltedIdList.size() > 0) {
+                        throw new RuntimeException("Can not empty repo");
+                    }
+                } else {
+                    cmisObject.delete(true);
+                }
+            }
+        } catch (CmisObjectNotFoundException e){
+            Logger.info("Can not delete All Content");
+        }
     }
 
     public ItemIterable<CmisObject> getChildren(Folder target) {
