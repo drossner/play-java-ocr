@@ -2,8 +2,8 @@ import modules.database.entities.Country;
 import modules.database.entities.User;
 import org.junit.*;
 
-import play.db.jpa.JPA;
-import play.db.jpa.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import play.mvc.*;
 import play.test.*;
