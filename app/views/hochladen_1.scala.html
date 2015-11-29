@@ -89,7 +89,7 @@
         <td>
             <span class="preview"></span>
         </td>
-        <td>
+        <td width="25%">
             <p class="name">{%=file.name%}</p>
             <strong class="error text-danger"></strong>
         </td>
@@ -100,13 +100,13 @@
         </td>
         <td>
             {% if (!i && !o.options.autoUpload) { %}
-                <button class="btn btn-primary start btn-lila" disabled>
+                <button class="btn btn-primary start btn-lila pull-right" disabled>
                     <i class="glyphicon glyphicon-upload"></i>
                     <span>Hochladen</span>
                 </button>
             {% } %}
             {% if (!i) { %}
-                <button class="btn btn-warning cancel btn-lachs">
+                <button class="btn btn-warning cancel btn-lachs pull-right">
                     <i class="glyphicon glyphicon-ban-circle"></i>
                     <span>Löschen</span>
                 </button>
