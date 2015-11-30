@@ -1,5 +1,5 @@
 @main("Hochladen")("hochladen") {
-    <script src="@routes.Assets.versioned("js/knockout/bindings.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("js/knockout/jobs/bindings.js")" type="text/javascript"></script>
     <div class="container">
             <!-- content begins here -->
         <br/>
@@ -21,12 +21,12 @@
                 </thead>
                 <tbody data-bind="foreach: jobs">
                     <tr>
-                        <td data-bind="text: job().id"></td>
+                        <td data-bind="text: id"></td>
                         <td data-bind="text: job().name"></td>
                         <td> <select data-bind="options: $root.languages"></select></td>
                         <td> <select data-bind="options: $root.jobTypes"></select></td>
                         <td>
-                            <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" name="test"
+                            <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
                             data-toggle="modal" data-target="#myModal"></span></a>
                         </td>
                         <td>
@@ -42,7 +42,7 @@
         </label>
 
     </div>
-    <script src="@routes.Assets.versioned("js/knockout/app.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("js/knockout/job/app.js")" type="text/javascript"></script>
 
         <!-- Modal -->
 
@@ -81,14 +81,18 @@
                                     var canvas = document.getElementById('myCanvas');
                                     var context = canvas.getContext('2d');
 
-                                    var sources = {
-                                        selectedImage: '@routes.Assets.versioned("images/rechnungtest.png")'
-                                    };
+                                    var jobID = document.getElementById('myModal').data['id'];
+                                    Console.write("hole bild!");
+                                    $.getJSON("/json/getPhotoFromJobID", { id: jobID}, function(result){
+                                        Console.write(result);
+                                        var sources = {
+                                            selectedImage: result;
+                                        };
 
-                                    loadImages(sources, function (images) {
-                                        context.drawImage(images.selectedImage, 20, 20, 467, 631);
+                                        loadImages(sources, function (images) {
+                                            context.drawImage(images.selectedImage, 20, 20, 467, 631);
+                                        });
                                     });
-
                             </script>
                         </div>
 

@@ -8,6 +8,7 @@ import play.libs.F.Promise;
 import play.mvc.Result;
 import play.libs.Json;
 
+import java.io.File;
 import java.util.ArrayList;
 
 
@@ -24,17 +25,17 @@ public class JobController extends Controller {
 
         Job job = new Job();
         job.setName("test.png");
-        job.setId(1);
+        job.setId(18);
         jobs.add(job);
 
         job = new Job();
         job.setName("test2.png");
-        job.setId(2);
+        job.setId(22);
         jobs.add(job);
 
         job = new Job();
         job.setName("test3.png");
-        job.setId(3);
+        job.setId(38);
         jobs.add(job);
 
         return ok(Json.toJson(jobs));
@@ -68,4 +69,11 @@ public class JobController extends Controller {
         return ok(Json.toJson(rc));
     }
 
+    public Result getImageFromJobID(int id){
+        Logger.info("id erhalten: " + id);
+
+        File file = new File("./public/images/rechnungtest.png");
+
+        return ok(file);
+    }
 }

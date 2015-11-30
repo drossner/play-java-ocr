@@ -12,7 +12,8 @@ GET        /hilfe                    controllers.Application.hilfe()
 # json Endpoint
 GET         /json/jobHistory        controllers.JobController.getJobHistory
 GET         /json/jobType           controllers.JobController.getJobTypes
-GET         /json/jobLanguage        controllers.JobController.getLanguages
+GET         /json/jobLanguage       controllers.JobController.getLanguages
+GET         /json/getPhotoFromJobID controllers.JobController.getImageFromJobID(id: Int)
 
 # oAuth
 GET        /login                    controllers.AuthenticationController.login(method: Int)
