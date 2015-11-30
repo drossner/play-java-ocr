@@ -43,7 +43,7 @@ public class UploadHandler {
     @NamedCache("upload-cache")
     private CacheApi cache;*/
     private ConcurrentSkipListMap<String, Long> uploadIds;
-    private ConcurrentSkipListMap<String, CopyOnWriteArrayList<File>> fileList;
+    private ConcurrentSkipListMap<String, CopyOnWriteArrayList<FileContainer>> fileList;
 
     public UploadHandler() throws IOException {
         this.uploadIds = new ConcurrentSkipListMap<String, Long>();
@@ -104,11 +104,11 @@ public class UploadHandler {
         ObjectNode result = Json.newObject();
         ArrayNode arrayNode = result.putArray("files");
         if(!isUploadIdValid(uploadId)) return result;
-        CopyOnWriteArrayList<File> cachedFiles = null;
+        CopyOnWriteArrayList<FileContainer> cachedFiles = null;
         synchronized (uploadId) {
             cachedFiles = fileList.get(uploadId);
             if (cachedFiles == null){
-                cachedFiles = new CopyOnWriteArrayList<File>();
+                cachedFiles = new CopyOnWriteArrayList<FileContainer>();
                 fileList.put(uploadId, cachedFiles);
             }
         }
@@ -117,6 +117,12 @@ public class UploadHandler {
             File tf = part.getFile();
             Files.copy(tf.toPath(), new File(TEMP_DIR.getAbsolutePath()+"/"+tf.getName()).toPath());
             File f = new File(TEMP_DIR.getAbsolutePath()+"/"+tf.getName());
+            FileContainer fc = new FileContainer.Builder()
+                    .setContentType(part.getContentType())
+                    .setFile(f)
+                    .setFileName(part.getFilename())
+                    .build();
+
             arrayNode.addObject()
                     .put("name", part.getFilename())
                     .put("size", f.length())
@@ -124,7 +130,7 @@ public class UploadHandler {
                     .put("thumbnailUrl", calcDownloadThumbnailPath(uploadId, f))
                     .put("deleteUrl", calcDeletePath(uploadId, f))
                     .put("deleteType", "DELETE");
-            cachedFiles.add(f);
+            cachedFiles.add(fc);
         }
         return result;
     }
@@ -135,23 +141,25 @@ public class UploadHandler {
         ArrayNode arrayNode = result.putArray("files");
         if(!isUploadIdValid(uploadId)) return result;
 
-        CopyOnWriteArrayList<File> cachedFiles = fileList.get(uploadId);
+        CopyOnWriteArrayList<FileContainer> cachedFiles = fileList.get(uploadId);
 
-        for(File f : cachedFiles){
+        for(FileContainer fc : cachedFiles){
+            File f = fc.getFile();
             if(f.getName().equals(filename)){
                 cachedFiles.remove(f);
                 f.delete();
                 arrayNode.addObject().put(filename, true);
+                cachedFiles.remove(fc);
             }
         }
         return  result;
     }
 
     public ByteArrayOutputStream getThumbnail(final String uploadId, String filename) throws IOException {
-        Optional<File> of = loadFile(uploadId, filename);
+        Optional<FileContainer> of = loadFile(uploadId, filename);
 
         if(of.isPresent()){
-            File f = of.get();
+            File f = of.get().getFile();
             BufferedImage image = ImageIO.read(f);
             BufferedImage thumbnail =
                     Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, THUMBNAIL_WIDTH, THUMBNAIL_HEIGTH, Scalr.OP_ANTIALIAS);
@@ -162,11 +170,12 @@ public class UploadHandler {
         return null; //handled in controller
     }
 
-    public Optional<File> loadFile(final String uploadId, String filename){
-        CopyOnWriteArrayList<File> cachedFiles = fileList.get(uploadId);
-        File rcFile = null;
-        for(File f : cachedFiles){
-            if(f.getName().equals(filename)) rcFile = f;
+    public Optional<FileContainer> loadFile(final String uploadId, String filename){
+        CopyOnWriteArrayList<FileContainer> cachedFiles = fileList.get(uploadId);
+        FileContainer rcFile = null;
+        for(FileContainer fc : cachedFiles){
+            File f = fc.getFile();
+            if(f.getName().equals(filename)) rcFile = fc;
         }
         return Optional.ofNullable(rcFile);
     }
@@ -195,10 +204,10 @@ public class UploadHandler {
     }
 
     private void deleteUploadedFiles(String uploadId){
-        CopyOnWriteArrayList<File> files = fileList.get(uploadId);
+        CopyOnWriteArrayList<FileContainer> files = fileList.get(uploadId);
         if(files == null) return;
-        for(File f : files){
-            f.delete();
+        for(FileContainer fc : files){
+            fc.getFile().delete();
         }
         fileList.remove(files);
     }
