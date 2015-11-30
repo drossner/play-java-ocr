@@ -61,11 +61,11 @@
 
                 <span class="fileupload-process"></span>
 
-
         </div>
             <!-- The global progress state -->
-            <div class="col-lg-5 fileupload-progress fade">
+        <div class="fileupload-progress fade text-center tablespacing">
                 <!-- The global progress bar -->
+            </br>
                 <div id="pb" class="progress progress-striped active" role="progressbar" aria-valuemin="0"
                      aria-valuemax="100">
                     <div id="ps" class="progress-bar progress-bar-success" style="width:0%;"></div>
@@ -84,6 +84,7 @@
 </div>
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
+
 {% for (var i=0, file; file=o.files[i]; i++) { %}
     <tr class="whitebg template-upload fade text-center">
         <td>
