@@ -196,6 +196,7 @@ public class UploadHandler {
 
     private void deleteUploadedFiles(String uploadId){
         CopyOnWriteArrayList<File> files = fileList.get(uploadId);
+        if(files == null) return;
         for(File f : files){
             f.delete();
         }
