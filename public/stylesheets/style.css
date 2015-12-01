@@ -46,10 +46,34 @@ a.navbar-text
     height: 6px;
 }
 
+.purple-background {
+    background: #8082a6;
+    height: 105px;
+    max-width: 250px;
+    margin-left: 30px;
+    margin-top: -20px;
+}
+
+.iconstyle {
+    color: #F25260;
+    margin-top: -9px;
+}
+
+.paragraphmargin {
+    margin-top: 5px;
+    padding-left: 50px;
+    padding-bottom: 10px;
+    max-width: 400px;
+}
+
+.headlinestyle {
+    display: inline;
+}
+
 .header
 {
     height: 334px;
-    background-image: url('/assets/images/header-bg.png');
+    background-image: url('/assets/images/header-bg.jpg');
     background-position: center;
 }
 
@@ -64,6 +88,8 @@ IMG.header
     background-color: #F25260;
     border-color: #F25260;
     margin-right: 5px;
+    margin-top: 1px;
+    margin-bottom: 1px;
 }
 
 .btn-lachs:hover,
@@ -101,6 +127,9 @@ fieldset[disabled] .btn-lachs.active
     border-color: #8082a6;
     margin-right: 5px;
     margin-left: 10px;
+    margin-top: 1px;
+    margin-bottom: 1px;
+
 }
 
 .btn-lila:hover,
@@ -109,8 +138,8 @@ fieldset[disabled] .btn-lachs.active
 .btn-lila.active
 {
     color: #FFFFFF;
-    background-color: #8082a6;
-    border-color: #8082a6;
+    background-color: #737495;
+    border-color: #737495;
 }
 
 .btn-lila.disabled:focus,
@@ -129,6 +158,52 @@ fieldset[disabled] .btn-lila.active
     background-color: #8082a6;
     border-color: #8082a6;
 }
+
+.btn-facebook {
+    color: #FFFFFF;
+    background-color: #3B5998;
+    border-color: #3B5998;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 200px;
+
+}
+
+.btn-facebook:hover,
+.btn-facebook:focus,
+.btn-facebook:active,
+.btn-facebook.active {
+    color: #FFFFFF;
+    background-color: #4060A5;
+    border-color: #4060A5;
+    width: 200px;
+}
+
+.btn-google {
+    color: #FFFFFF;
+    background-color: #d34836;
+    border-color: #d34836;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+    width: 200px;
+
+}
+
+.btn-google:hover,
+.btn-google:focus,
+.btn-google:active,
+.btn-google.active {
+    color: #FFFFFF;
+    background-color: #e64522;
+    border-color: #e64522;
+    width: 200px;
+}
+
+
+
 
 a.dropdown-toggle
 {
@@ -162,6 +237,7 @@ a.dropdown-toggle
 font-weight: lighter;
 }
 
+
 canvas {
     padding: 0;
     margin: auto;
@@ -171,7 +247,7 @@ canvas {
         bottom: 0;
         left: 0;
         right: 0;*/
-    alaing: center;
+    align: center;
 }
 
 
@@ -203,16 +279,15 @@ canvas {
     display: block;
 }
 
-.btn-file:hover
-{
-
-    color: #ffffff;
-    background: #646682;
-
+.whitebg {
+    background-color: #ffffff !important;
 
 }
 
-.btn-file:active {
-    background: #646682;
-    color: white;
+.tablespacing {
+
+    width: 65%;
+    min-width: 600px;
+    margin: auto;
 }
+
