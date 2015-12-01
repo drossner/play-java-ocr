@@ -4,10 +4,10 @@
 
 # Home page
 GET        /                         controllers.Application.index()
-GET        /upload                   controllers.Application.upload()
-GET        /buttonup                 controllers.Application.buttonup()
-GET        /dummy                    controllers.Application.dummy()
-GET        /testDatabase          controllers.Application.testDatabase()
+GET        /hochladen                controllers.Application.hochladen(step: Int ?= 2)
+GET        /verwalten                controllers.Application.verwalten()
+GET        /ablage                   controllers.Application.ablage()
+GET        /hilfe                    controllers.Application.hilfe()
 
 # oAuth
 GET        /login                    controllers.AuthenticationController.login(method: Int)

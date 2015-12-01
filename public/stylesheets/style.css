@@ -1,0 +1,218 @@
+
+
+.navbar-brand
+{
+    padding-top: 4px;
+}
+
+.navbar-default
+{
+    background-color: #ffffff;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > .active > a:hover
+{
+    color: #F25260;
+    background: #eaeaea;
+}
+
+.navbar-default .navbar-nav > li > a
+{
+    color: #000000;
+}
+
+.navbar-default .navbar-nav > .active > a, 
+ .navbar-default .navbar-nav > .active > a:focus
+{
+    color: #8082a6;
+    background: #FFFFFF;
+}
+
+.navbar-bottom
+{
+    background-color: #52504c;
+}
+
+a.navbar-text
+{
+    color: #FFFFFF;
+    margin-right: 10px;
+}
+
+.purple-line
+{
+    background: #8082a6;
+    height: 6px;
+}
+
+.header
+{
+    height: 334px;
+    background-image: url('/assets/images/header-bg.png');
+    background-position: center;
+}
+
+IMG.header
+{
+    margin: 0 auto;
+}
+
+.btn-lachs
+{
+    color: #FFFFFF;
+    background-color: #F25260;
+    border-color: #F25260;
+    margin-right: 5px;
+}
+
+.btn-lachs:hover,
+.btn-lachs:focus,
+.btn-lachs:active,
+.btn-lachs.active
+{
+    color: #FFFFFF;
+    background-color: #f03a4a;
+    border-color: #ee2334;
+}
+
+.btn-lachs.disabled:hover,
+.btn-lachs.disabled:focus,
+.btn-lachs.disabled:active,
+.btn-lachs.disabled.active,
+.btn-lachs[disabled]:hover,
+.btn-lachs[disabled]:focus,
+.btn-lachs[disabled]:active,
+.btn-lachs[disabled].active,
+fieldset[disabled] .btn-lachs:hover,
+fieldset[disabled] .btn-lachs:focus,
+fieldset[disabled] .btn-lachs:active,
+fieldset[disabled] .btn-lachs.active
+{
+    color: #FFFFFF;
+    background-color: #F25260;
+    border-color: #F25260;
+}
+
+.btn-lila
+{
+    color: #FFFFFF;
+    background-color: #8082a6;
+    border-color: #8082a6;
+    margin-right: 5px;
+    margin-left: 10px;
+}
+
+.btn-lila:hover,
+.btn-lila:focus,
+.btn-lila:active,
+.btn-lila.active
+{
+    color: #FFFFFF;
+    background-color: #8082a6;
+    border-color: #8082a6;
+}
+
+.btn-lila.disabled:focus,
+.btn-lila.disabled:active,
+.btn-lila.disabled.active,
+.btn-lila[disabled]:hover,
+.btn-lila[disabled]:focus,
+.btn-lila[disabled]:active,
+.btn-lila[disabled].active,
+fieldset[disabled] .btn-lila:hover,
+fieldset[disabled] .btn-lila:focus,
+fieldset[disabled] .btn-lila:active,
+fieldset[disabled] .btn-lila.active
+{
+    color: #FFFFFF;
+    background-color: #8082a6;
+    border-color: #8082a6;
+}
+
+a.dropdown-toggle
+{
+    color: #8082a6;
+}
+
+.panel-default > .panel-heading
+{
+    color: black;
+    background-color: #eaeaea;
+}
+
+.table-header > th
+{
+    color: white;
+    background-color: #52504c;
+}
+
+.icon-lila
+{
+    color: #8082a6;
+}
+
+.icon-lachs
+{
+    color: #f03a4a;
+}
+
+.lightfont
+{
+font-weight: lighter;
+}
+
+canvas {
+    padding: 0;
+    margin: auto;
+        display: block;
+     /*   position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;*/
+    alaing: center;
+}
+
+
+.fileupload-buttonbar{
+    align-content: center;
+    padding: 10px;
+    margin: auto;
+    display: block;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+    color: #ffffff;
+    background: #8082a6;
+
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    outline: none;
+    cursor: inherit;
+    display: block;
+}
+
+.btn-file:hover
+{
+
+    color: #ffffff;
+    background: #646682;
+
+
+}
+
+.btn-file:active {
+    background: #646682;
+    color: white;
+}

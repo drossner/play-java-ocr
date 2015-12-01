@@ -1,51 +1,69 @@
 package controllers;
 
 
-import modules.authentication.GoogleAuthentication;
 import modules.database.entities.Country;
 import modules.database.entities.User;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import play.*;
 //import play.api.mvc.*;
+import play.db.jpa.JPA;
+import play.db.jpa.Transactional;
 import play.mvc.*;
 
 import views.html.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import java.io.IOException;
 
 public class Application extends Controller {
 
-    @PersistenceContext
-    EntityManager em;
+    public Result index() {
+        if(session().get("session") != null){
+            return hochladen(2);
+        } else {
+            return ok(index.render());
+        }
+    }
 
     @SubjectPresent
-    public Result dummy() {
-        return ok(dummy.render());
-    }
-
-    public Result index() {
-        return ok(index.render("Your new application is ready."));
-    }
-
-    public Result upload() {
-        return ok(upload.render("Your new application is ready."));
-    }
-
-    public Result buttonup() {
-            return ok(buttonup.render("Your new application is ready."));
-    }
-
     public Result secured(){
         return ok("this site is protected!");
     }
 
+    @SubjectPresent
+    public Result hochladen(int step){
+        if(step == 1) {
+            return ok(hochladen_1.render());
+        } else if (step == 2){
+            return ok(hochladen_2.render());
+        } else {
+            return badRequest();
+        }
+
+    }
+
+    @SubjectPresent
+    public Result verwalten(){
+        return ok(verwalten.render());
+    }
+
+    @SubjectPresent
+    public Result ablage(){
+        return ok(ablage.render());
+    }
+
+    @SubjectPresent
+    public Result hilfe(){
+        return ok(hilfe.render());
+    }
+
+   /* @Transactional
     public Result testDatabase(){
         User temp = new DataCreator().getUser();
-        em.persist(temp);
+        JPA.em().persist(temp.getCountry());
+        JPA.em().persist(temp);
 
-        if(em.find(User.class, temp.getId()).geteMail().equals(temp.geteMail())){
+        if(JPA.em().find(User.class, temp.getId()).geteMail().equals(temp.geteMail())){
             return ok(database.render("erfolgreich!"));
         }else{
             return ok(database.render("nicht erfolgreich!"));
@@ -68,5 +86,5 @@ public class Application extends Controller {
             return rc;
         }
 
-    }
+    } */
 }

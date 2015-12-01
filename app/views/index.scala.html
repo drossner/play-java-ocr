@@ -1,16 +1,22 @@
 @import be.objectify.deadbolt.java.views.html.{subjectPresent, subjectPresentOr}
-@(message: String)
 
-@main("Welcome to Play") {
-    <a href="@routes.AuthenticationController.login(0)">Google login</a> </br>
-    <a href="@routes.AuthenticationController.login(1)">Facebook login</a> </br>
-    <a href="@routes.AuthenticationController.stubLogin()">Stub Login</a> </br>
-    <a href="@routes.AuthenticationController.logout()">Logout</a> Sollte nur fehlerfrei nach Stub Login funktionieren
-    <p>
-    @subjectPresentOr() {
-        LoggedIn
-    } {
-        LoggedOut
-    }
-    </p>
+@main("Willkommen")() {
+
+    <div class="header">
+        <img src='@routes.Assets.versioned("images/willkommen.png")' class="header visible-md visible-lg visible-sm hidden-xs" />
+        <img src='@routes.Assets.versioned("images/willkommen-xs.png")' class="header img-responsive visible-xs hidden-sm hidden-md hidden-lg" />
+    </div>
+    <div class="purple-line">
+    </div>
+    <div class="container-fluid">
+            <!-- content begins here -->
+        <p><a href="@routes.AuthenticationController.login(0)">Google login</a></p>
+        <p><a href="@routes.AuthenticationController.login(1)">Facebook login</a></p>
+        <p><a href="@routes.AuthenticationController.stubLogin()">Stub Login</a></p>
+        <p><a href="@routes.AuthenticationController.logout()">Logout</a>
+            Sollte nur fehlerfrei nach Stub Login funktionieren
+        </p>
+    </div>
+
+
 }
