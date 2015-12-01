@@ -14,8 +14,19 @@ import java.util.List;
  */
 public class UserController extends DatabaseController<User, Country> {
 
+    private final RolesController rolesController;
+    private final PermissionController permissionController;
+
+    private UserController () {
+        rolesController = new RolesController();
+        permissionController = new PermissionController();
+    }
+
     public void persistUser(User user, int countryISO, List<Role> roles, List<Permission> permissions) throws Exception {
-        Country country = selectEntity(Country.class, null);
+        Country where = new Country();
+        where.setIsoCode(countryISO);
+
+        Country country = selectEntity(Country.class, where);
 
         if(country != null){
             user.setCountry(country);
@@ -23,14 +34,17 @@ public class UserController extends DatabaseController<User, Country> {
             throw new Exception("false country iso");
         }
 
-        user.setRoles(roles);
-        user.setPermission(permissions);
+        user.setRoles(rolesController.getRoles(roles));
+        user.setPermission(permissionController.getPermissions(permissions));
 
         persistObject(user);
     }
 
     public void persist(User user, int countryISO) throws Exception {
-        Country country = selectEntity(Country.class, null);
+        Country where = new Country();
+        where.setIsoCode(countryISO);
+
+        Country country = selectEntity(Country.class, where);
 
         if(country != null){
             user.setCountry(country);
