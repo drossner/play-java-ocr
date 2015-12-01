@@ -1,5 +1,6 @@
 @main("Hochladen")("hochladen") {
-    <script src="@routes.Assets.versioned("js/knockout/jobs/bindings.js")" type="text/javascript"></script>
+
+    <script src="@routes.Assets.versioned("js/knockout/job/bindings.js")" type="text/javascript"></script>
     <div class="container">
             <!-- content begins here -->
         <br/>
@@ -15,7 +16,8 @@
             <table class="table">
                 <thead>
                     <tr class="table-header">
-                        <th>#</th><th>Datei</th><th>Sprache</th><th>Typ des Dokuments</th><th>Bereich anpassen</th><th>Löschen</th><th>Ordner</th>
+                        <th>#</th><th>Datei</th><th>Sprache</th><th>Typ des Dokuments</th><th>Bereich anpassen</th><th>
+                        Löschen</th><th>Ordner</th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: jobs">
@@ -33,7 +35,7 @@
                         </td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-folder-open icon-lachs" aria-hidden="true" data-id="job().id"
-                                data-toggle="modal" data-target="#folder"></span></a>
+                            data-toggle="modal" data-target="#folder"></span></a>
                         </td>
                     </tr>
                 </tbody>
@@ -90,7 +92,7 @@
                                         Console.write(result);
                                         var sources = {
                                             selectedImage: result;
-                                        };
+                                    };
 
                                         loadImages(sources, function (images) {
                                             context.drawImage(images.selectedImage, 20, 20, 467, 631);
@@ -114,7 +116,6 @@
 
 
         <!-- Modal Folder-->
-
     <div class="modal fade" id="folder" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -122,42 +123,10 @@
                     <button type="button" class="close icon-lachs" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Choose Folder</h4>
                 </div>
-                <div class="modal-body"></div>
+                <div class="modal-body">
 
-                <div class="panel panel-default">
-                        <!-- Default panel contents -->
-                    <div class="panel-heading">Dein Upload</div>
-                    <div class="panel-body">
-                        <p>Hier sieht man drei Zebras.</p>
-                    </div>
-                        <!-- Table -->
-                    <table class="table">
-                        <thead>
-                            <tr class="table-header">
-                                <th>#</th><th>Datei</th><th>Sprache</th><th>Typ des Dokuments</th><th>Bereich anpassen</th><th>Löschen</th><th>Ordner</th>
-                            </tr>
-                        </thead>
-                        <tbody data-bind="foreach: jobs">
-                            <tr>
-                                <td data-bind="text: id"></td>
-                                <td data-bind="text: job().name"></td>
-                                <td> <select data-bind="options: $root.languages"></select></td>
-                                <td> <select data-bind="options: $root.jobTypes"></select></td>
-                                <td>
-                                    <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
-                                    data-toggle="modal" data-target="#myModal"></span></a>
-                                </td>
-                                <td>
-                                    <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" aria-hidden="true"></span></a>
-                                </td>
-                                <td>
-                                    <a href="#"><span class="glyphicon glyphicon-folder-open icon-lachs" aria-hidden="true" data-id="job().id"
-                                    data-toggle="modal" data-target="#folder"></span></a>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
+
 
                 <div class="modal-footer">
 
@@ -166,7 +135,11 @@
                 </div>
             </div>
         </div>
+
+
     </div>
+
+
 }
 
 
