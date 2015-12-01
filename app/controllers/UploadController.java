@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import modules.upload.FileContainer;
 import modules.upload.UploadHandler;
 import play.Logger;
 import play.cache.CacheApi;
@@ -31,9 +32,14 @@ public class UploadController extends Controller {
         Logger.debug("File upload started from " + session().get("session"));
         Http.MultipartFormData body = request().body().asMultipartFormData();
         List<Http.MultipartFormData.FilePart> pictures = body.getFiles();
-
         //Json Answer
-        ObjectNode result = uploadHandler.addFilesToCache(uploadId, pictures);
+        ObjectNode result = null;
+        try {
+            result = uploadHandler.addFilesToCache(uploadId, pictures);
+        } catch (IOException e) {
+            Logger.error(e.getMessage(), e);
+            return internalServerError(e.getMessage());
+        }
 
         Logger.debug(result.toString());
         return ok(result);
@@ -46,9 +52,10 @@ public class UploadController extends Controller {
     }
 
     public Result getFile(String uploadId, String file){
-        Optional<File> of = uploadHandler.loadFile(uploadId, file);
+        Optional<FileContainer> of = uploadHandler.loadFile(uploadId, file);
         if(of.isPresent()){
-            return ok(of.get());
+            FileContainer fc = of.get();
+            return ok().sendPath(fc.getFile().toPath(), false, fc.getFileName());
         } else {
             return (badRequest("No such file"));
         }
