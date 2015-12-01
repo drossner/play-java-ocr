@@ -219,7 +219,7 @@ canvas {
 
 .pic
 {
-    background: darkgray;
+    /*background: darkgray;*/
 
 }
 
@@ -227,4 +227,28 @@ canvas {
 {
     margin-left: 0;
 
+}
+
+#canvas {
+    width:  800px;
+    height: 800px;
+    border: 10px solid transparent;
+
+}
+.rectangle {
+    border: 1px solid #FF0000;
+    position: absolute;
+}
+
+/*Css welches die größe des Vorschau bildes
+  bestimmt. */
+div img{
+
+    max-width: 400px;
+    max-height: 400px;
+}
+
+input {
+    width: 100px;
+    float: left;
 }
