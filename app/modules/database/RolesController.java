@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
  */
 public class RolesController extends DatabaseController<User, SecurityRole>{
 
-    public List<SecurityRole> getRoles(List<Role> roles) {
+    public List<SecurityRole> getRoles(List<OcrRole> roles) {
         return roles.stream().map(role -> (getRole(role))).collect(Collectors.toList());
     }
 
-    public SecurityRole getRole(Role role){
+    public SecurityRole getRole(OcrRole role){
         if(role.getName().equals(OcrRole.USER.getName())){
             return new SecurityRole(OcrRole.USER);
         }else if(role.getName().equals(OcrRole.ADMIN.getName())){

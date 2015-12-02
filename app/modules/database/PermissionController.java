@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 public class PermissionController extends DatabaseController<User, UserPermission>{
 
 
-    public List<UserPermission> getPermissions(List<Permission> permissions) {
+    public List<UserPermission> getPermissions(List<OcrPermission> permissions) {
         return permissions.stream().map(permission -> (getPermission(permission))).collect(Collectors.toList());
     }
 
-    public UserPermission getPermission(Permission permission){
+    public UserPermission getPermission(OcrPermission permission){
         UserPermission rc = new UserPermission();
         if(permission.getValue().equals(OcrPermission.NONE.getValue())){
             rc.setValue(OcrPermission.NONE);
