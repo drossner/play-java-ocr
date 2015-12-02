@@ -17,10 +17,12 @@ public class SimpleJobFactory {
 
     private Image image;
 
+    private LayoutConfig layoutConfig;
+
     public Job persist(){
 
-        if(image != null){
-            new JobController().persistJob(job, image);
+        if(image != null && layoutConfig != null){
+            new JobController().persistJob(job, image, layoutConfig);
         }else{
             Logger.error("no image set!");
         }
@@ -58,7 +60,8 @@ public class SimpleJobFactory {
     }
 
     public SimpleJobFactory setLayoutParameters(LayoutConfig layoutConfig){
-        job.setLayoutConfig(layoutConfig);
+
+        this.layoutConfig = layoutConfig;
 
         return this;
     }
