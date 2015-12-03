@@ -7,6 +7,7 @@ import controllers.security.OcrRole;
 import modules.database.entities.Country;
 import modules.database.entities.User;
 import org.hibernate.criterion.Projection;
+import play.db.jpa.Transactional;
 
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class UserController extends DatabaseController<User, Country> {
         permissionController = new PermissionController();
     }
 
+    @Transactional
     public void persistUser(User user, int countryISO, List<OcrRole> roles, List<OcrPermission> permissions) throws Exception {
         Country where = new Country();
         where.setIsoCode(countryISO);
@@ -41,7 +43,8 @@ public class UserController extends DatabaseController<User, Country> {
         persistObject(user);
     }
 
-    public void persist(User user, int countryISO) throws Exception {
+    @Transactional
+    public void persistUser(User user, int countryISO) throws Exception {
         Country where = new Country();
         where.setIsoCode(countryISO);
 

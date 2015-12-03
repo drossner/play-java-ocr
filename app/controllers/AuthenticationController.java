@@ -83,34 +83,16 @@ public class AuthenticationController extends Controller{
 
 
     public Promise<Result> stubLogin() {
-        //TODO DANIEL gugg mal!
         return Promise.promise(() -> JPA.withTransaction(() -> {
             session().clear();
             final String userEmail = "test@test.de";
-            //lokup stub user userEmail
-            //session creation
-            //Session hibSession = JPA.em().unwrap(Session.class); // not recommendet: http://www.theserverside.com/news/2240186700/The-JPA-20-EntityManager-vs-the-Hibernate-Session-Which-one-to-use
-            //hibSession.beginTransaction(); //done by transactional
 
-            CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
-            CriteriaQuery<Long> cq = qb.createQuery(Long.class);
-            Root user = cq.from(User.class);
-            cq.select(qb.count(user));
-            cq.where(qb.equal(user.get("eMail"), userEmail));
-            boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;
+            new SimpleUserFactory()
+                    .setEmail(userEmail)
+                    .setPassword("test")
+                    .addRole(OcrRole.USER)
+                    .persist();
 
-            /*TypedQuery<Integer> q = JPA.em().createQuery("COUNT from User u where u.eMail = :email", Integer.class);
-            q.setParameter("email", userEmail); */
-            //boolean exists = q.getSingleResult() == 1;
-            if (!exists) {new SimpleUserFactory()
-                        .setEmail(userEmail)
-                        .setPassword("test")
-                        .addRole(OcrRole.USER)
-                        .persist();
-            }
-
-            //hibSession.getTransaction().commit(); //done by transactional
-            //hibSession.close(); //done by transactional
             session("session", userEmail);
             return redirect(routes.Application.index());
         }));
