@@ -1,7 +1,7 @@
 /**
 * Item view model
 */
-function ItemViewModel(parent, isFolder, id, title, folderId) {
+function ItemViewModel(parent, isFolder, id, title, description, folderId) {
     var self = this;
 
     // Observable properties
@@ -11,10 +11,12 @@ function ItemViewModel(parent, isFolder, id, title, folderId) {
 
     // Create title with required extension
     self.title = ko.observable().extend({ required: true });
+    self.description = ko.observable();
+
 
     // Properties, that never changes dinamically, can be created non-observable
     self.parent = parent;
-    self.folderId = '';
+    self.folderId = folderId;
     self.isFolder = isFolder;
 
     // Temporary properties for keeping old values, when editing row
@@ -35,44 +37,7 @@ function ItemViewModel(parent, isFolder, id, title, folderId) {
         }
     });
 
-    /**
-    * Computed KnockOut function, returns class name for row, depending on item type and active status
-    */
-    self.rowClassNames = ko.computed(function () {
-        var classes;
-        if (self.isFolder) {
-            classes = 'demo-folder-box';
-            if (self.isActive()) {
-                classes += ' demo-folder-box-active';
-            }
-        } else {
-            classes = 'demo-file-box';
-            if (self.isActive()) {
-                classes += ' demo-file-box-active';
-            }
-        }
 
-        return classes;
-    });
-
-    /**
-    * Computed KnockOut function, returns class name for div, which displays file's or folders icon
-    */
-    self.iconClassNames = ko.computed(function () {
-        var classes;
-
-        if (self.isFolder) {
-            classes = 'demo-system-folder';
-        } else {
-            classes = 'demo-system-file';
-
-            if (self.extension()) {
-                classes += getFileExtensionCssClassName(self.extension());
-            }
-        }
-
-        return classes;
-    });
 
     /** 
     * Saves an item
@@ -87,7 +52,6 @@ function ItemViewModel(parent, isFolder, id, title, folderId) {
 
             self.id(self.parent.getNewId());
         }
-        alert(folderId);
         // Set extension
         setExtension();
 
@@ -167,8 +131,10 @@ function ItemViewModel(parent, isFolder, id, title, folderId) {
         }
     };
 
+
     // Set properties with chain syntax
     self.id(id).title(title);
+    self.id(id).description(description);
     setExtension();
     self.folderId = folderId;
 

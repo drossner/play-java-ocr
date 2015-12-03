@@ -15,7 +15,7 @@
 			// Add folders to list
 				for (var j = 0; j < result.length; j++) {
 					var folder = result[j],
-							folderViewModel = new ItemViewModel(listViewModel, true, folder.id, folder.title, folder.parentId);
+							folderViewModel = new ItemViewModel(listViewModel, true, folder.id, folder.title, folder.description, folder.parentId);
 
 					listViewModel.allItems.push(folderViewModel);
 				}

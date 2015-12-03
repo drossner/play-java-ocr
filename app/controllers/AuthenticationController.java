@@ -4,6 +4,7 @@ import be.objectify.deadbolt.java.actions.SubjectPresent;
 import modules.authentication.AuthResponse;
 import modules.authentication.FacebookAuthentication;
 import modules.authentication.OAuthentication;
+import modules.cms.SessionHolder;
 import play.Logger;
 import play.libs.F.Promise;
 import play.mvc.Controller;
@@ -77,6 +78,8 @@ public class AuthenticationController extends Controller{
     public Result stubLogin(){
         session().clear();
         session("session", "test@test.te");
+        //TODO BENE IS KACKE
+        SessionHolder.getInstance().getController("testuser", "test");
         return redirect(routes.Application.index());
     }
 

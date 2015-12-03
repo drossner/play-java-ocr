@@ -33,6 +33,30 @@ public class FolderController {
         return (Folder) cmsController.getSession().getObject(objectId);
     }
 
+    public ArrayList<Folder> getFolderTree(Folder parent) {
+        ArrayList<Folder> folders = new ArrayList<Folder>();
+        if (!cmsController.getSession().getRepositoryInfo().getCapabilities().isGetFolderTreeSupported()) {
+            Logger.warn("getFolderTree not supported in this repository");
+        } else {
+            for (Tree<FileableCmisObject> t : parent.getFolderTree(-1)) {
+                printFolderTree(t, folders);
+            }
+        }
+
+        printFolder(folders);
+        return folders;
+    }
+
+
+
+    private void printFolderTree(Tree<FileableCmisObject> tree, ArrayList<Folder> folders) {
+        Logger.info("Folder " + tree.getItem().getName());
+        folders.add((Folder) tree.getItem());
+        for (Tree<FileableCmisObject> t : tree.getChildren()) {
+            printFolderTree(t, folders);
+        }
+    }
+
     public Folder createFolder(Folder parentFolder, String folderName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.NAME, folderName);
@@ -155,14 +179,14 @@ public class FolderController {
             }
         }
 
-        printSharedfolder(sharedFolder);
+        printFolder(sharedFolder);
 
         return sharedFolder;
     }
 
 
-    private void printSharedfolder(ArrayList<Folder> folders){
-
+    private void printFolder(ArrayList<Folder> folders){
+        Logger.info("Folderlist: ");
         for (Folder folder : folders){
             String objectId = folder.getId();
             String name = folder.getName();

@@ -39,6 +39,10 @@ function ListViewModel() {
         addNewItem(false);
     };
 
+    self.saveInFolder = function(){
+        saveInFolder();
+    }
+
     /**
     * Searches a folder for given search query
     */
@@ -178,6 +182,13 @@ function ListViewModel() {
         newItem.isActive(true);
         // Add new item to the top of showing items
         self.items.unshift(newItem);
+    }
+
+
+    function saveInFolder() {
+        console.log("bin im save in folder methode");
+        console.log(self.folderId());
+        $("#launchBT").text(self.folderId());
     }
 
     /**
