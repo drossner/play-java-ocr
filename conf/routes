@@ -9,6 +9,14 @@ GET        /verwalten                controllers.Application.verwalten()
 GET        /ablage                   controllers.Application.ablage()
 GET        /hilfe                    controllers.Application.hilfe()
 
+# json Endpoint
+GET         /json/jobHistory        controllers.JobController.getJobHistory
+GET         /json/jobType           controllers.JobController.getJobTypes
+GET         /json/jobLanguage       controllers.JobController.getLanguages
+GET         /json/getPhotoFromJobID controllers.JobController.getImageFromJobID(id: Int)
+
+GET         /json/getUserFolders    controllers.FolderController.getUserFolders
+
 # oAuth
 GET        /login                    controllers.AuthenticationController.login(method: Int)
 GET        /oauth2callback           controllers.AuthenticationController.oauth(error: String ?=null, code: String ?=null, method: Int = 0)

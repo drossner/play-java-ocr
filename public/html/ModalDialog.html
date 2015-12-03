@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+
+<!-- Modal -->
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close icon-lachs" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Dein Bild bearbeiten</h4>
+            </div>
+            <div class="modal-body">
+                <br>
+
+                <div>
+                    <div class="pic" >
+                        <canvas class="can" id="myCanvas" width="600" height="700"></canvas>
+                        <script>
+                            function loadImages(sources, callback) {
+                                var images = {};
+                                var loadedImages = 0;
+                                var numImages = 0;
+                                // get num of sources
+                                for (var src in sources) {
+                                    numImages++;
+                                }
+                                for (var src in sources) {
+                                    images[src] = new Image();
+                                    images[src].onload = function () {
+                                        if (++loadedImages >= numImages) {
+                                            callback(images);
+                                        }
+                                    };
+                                    images[src].src = sources[src];
+                                }
+                            }
+                            var canvas = document.getElementById('myCanvas');
+                            var context = canvas.getContext('2d');
+
+                            var sources = {
+                                selectedImage: '@routes.Assets.versioned("images/rechnungtest.png")'
+                            };
+
+                            loadImages(sources, function (images) {
+                                context.drawImage(images.selectedImage, 20, 20, 467, 631);
+                            });
+
+                        </script>
+                    </div>
+
+                </div>
+
+
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-default btn-lachs" data-dismiss="modal">Abbrechen</button>
+                <button type="button" class="btn btn-default btn-lila">Speicher dein Template</button>
+            </div>
+        </div>
+    </div>
+</div>

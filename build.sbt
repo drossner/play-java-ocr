@@ -62,6 +62,11 @@ libraryDependencies ++= Seq(
   "org.webjars" % "knockout" % "3.0.0"
 )
 
+
+libraryDependencies ++= Seq(
+  "org.apache.chemistry.opencmis" % "chemistry-opencmis-commons-api" % "0.13.0",
+  "org.apache.chemistry.opencmis" % "chemistry-opencmis-client-impl" % "0.13.0"
+)
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
 routesGenerator := InjectedRoutesGenerator

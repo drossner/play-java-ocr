@@ -26,9 +26,9 @@ public class LdapController {
 
     public static final String INITIAL_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     public static final String PROVIDER_URL = "ldap://v22015042759824376.yourvserver.net:389/";
-    public static final String BASE_DN = "dc=somuchocr,dc=iisys,dc=de";
+    public static final String BASE_DN = "dc=somuchocr,dc=iisys,dc=net";
     public static final String SECURITY_PRINCIPAL = "cn=admin";
-    public static final String SECURITY_CREDENTIALS = "slapd101&";
+    public static final String SECURITY_CREDENTIALS = "slapd101";
 
     private Hashtable<String, String> env = new Hashtable<String, String>();
 
