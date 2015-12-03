@@ -83,6 +83,7 @@ public class AuthenticationController extends Controller{
 
 
     public Promise<Result> stubLogin() {
+        //TODO DANIEL gugg mal!
         return Promise.promise(() -> JPA.withTransaction(() -> {
             session().clear();
             final String userEmail = "test@test.de";
@@ -101,12 +102,11 @@ public class AuthenticationController extends Controller{
             /*TypedQuery<Integer> q = JPA.em().createQuery("COUNT from User u where u.eMail = :email", Integer.class);
             q.setParameter("email", userEmail); */
             //boolean exists = q.getSingleResult() == 1;
-            if (!exists) {
-                JPA.em().persist(new SimpleUserFactory()
+            if (!exists) {new SimpleUserFactory()
                         .setEmail(userEmail)
                         .setPassword("test")
                         .addRole(OcrRole.USER)
-                        .build());
+                        .persist();
             }
 
             //hibSession.getTransaction().commit(); //done by transactional

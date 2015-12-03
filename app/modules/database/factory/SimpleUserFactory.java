@@ -1,10 +1,15 @@
 package modules.database.factory;
 
+import controllers.security.OcrPermission;
 import controllers.security.OcrRole;
+import modules.database.UserController;
 import modules.database.entities.Country;
 import modules.database.entities.User;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
+
+import javax.management.relation.Role;
+import java.util.ArrayList;
 
 /**
  * Created by Daniel on 25.11.2015.
@@ -12,14 +17,27 @@ import play.db.jpa.Transactional;
 public class SimpleUserFactory{
 
     private User user = new User();
+    private ArrayList<OcrRole> roleList = new ArrayList<>();
+    private ArrayList<OcrPermission> permissionList = new ArrayList<>();
 
-    public User build(){
-        Country c = new Country("Deutschland", 276);
+    public User persist(){
+        UserController controller = new UserController();
 
-        JPA.em().persist(c);
+        try {
+            controller.persistUser(user, user.getCountry().getIsoCode(), roleList, permissionList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        user.setCountry(c);
         return user;
+    }
+
+    public SimpleUserFactory setCountryIso(int countryIso){
+        Country country = new Country();
+        country.setIsoCode(countryIso);
+
+        user.setCountry(country);
+        return this;
     }
 
     public SimpleUserFactory setEmail(String email){
@@ -32,9 +50,13 @@ public class SimpleUserFactory{
         return this;
     }
 
-    @Transactional
     public SimpleUserFactory addRole(OcrRole role){
-        user.addRole(role);
+        roleList.add(role);
+        return this;
+    }
+
+    public SimpleUserFactory addPermission(OcrPermission permission){
+        permissionList.add(permission);
         return this;
     }
 }

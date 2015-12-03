@@ -39,8 +39,19 @@ public class Job extends DomainObject{
     @OneToOne
     private LayoutConfig layoutConfig;
 
+    @OneToOne
+    private Image image;
+
     @Column
     private String resultFile;
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
 
     public int getId() {
         return id;
