@@ -1,5 +1,5 @@
 @import be.objectify.deadbolt.java.views.html.{subjectPresent, subjectPresentOr}
-@(title: String)(section: String = "NULL")(content: Html)
+@(title: String, scripts: Html = Html(""))(section: String = "NULL")(content: Html)
 
 <!DOCTYPE html>
 
@@ -17,6 +17,7 @@
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("knockout.js"))'></script>
         <script type='text/javascript' src='@routes.WebJarAssets.at(WebJarAssets.locate("bootstrap.min.js"))'></script>
 
+        @scripts
     </head>
     <body>
         @subjectPresent(){
