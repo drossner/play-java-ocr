@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by daniel on 23.11.15.
  */
 @Entity(name="SecurityRole")
-@Table(name="SecurityRole")
+@Table(name="SecurityRole" , uniqueConstraints = {@UniqueConstraint(columnNames = "name")})
 /*
         @NamedQuery(
                 name = "findSecurityRoleByName",

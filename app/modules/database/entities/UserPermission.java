@@ -9,7 +9,7 @@ import javax.persistence.*;
  * Created by daniel on 23.11.15.
  */
 @Entity(name="UserPermission")
-@Table(name="UserPermission")
+@Table(name="UserPermission", uniqueConstraints = {@UniqueConstraint(columnNames = "permission_value")})
 /*
         @NamedQuery(
                 name = "findUserPermissionByName",
