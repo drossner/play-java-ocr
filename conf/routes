@@ -9,6 +9,8 @@ GET        /verwalten                controllers.Application.verwalten()
 GET        /ablage                   controllers.Application.ablage()
 GET        /hilfe                    controllers.Application.hilfe()
 
+GET        /template                 controllers.Application.template()
+
 # json Endpoint
 GET         /json/jobHistory        controllers.JobController.getJobHistory
 GET         /json/jobType           controllers.JobController.getJobTypes
