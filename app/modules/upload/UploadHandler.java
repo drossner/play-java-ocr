@@ -134,6 +134,7 @@ public class UploadHandler {
                         .put("name", part.getFilename())
                         .put("size", f.length())
                         .put("error", "File-type is not valid");
+                f.delete();
             }
         }
         return result;
