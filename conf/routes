@@ -15,6 +15,8 @@ DELETE        /delete/:uploadId/:file         controllers.UploadController.delet
 GET           /getfile/:uploadId/:file        controllers.UploadController.getFile(uploadId, file)
 GET           /getPrev/:uploadId/:file        controllers.UploadController.getThumbnail(uploadId, file)
 
+GET        /template                 controllers.Application.template()
+
 # json Endpoint
 GET         /json/jobHistory        controllers.JobController.getJobHistory
 GET         /json/jobType           controllers.JobController.getJobTypes

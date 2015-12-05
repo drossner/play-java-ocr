@@ -82,6 +82,10 @@ public class Application extends Controller {
         return ok(hilfe.render());
     }
 
+    public Result template(){
+        return ok(views.html.modals.templating.render());
+    }
+
    /* @Transactional
     public Result testDatabase(){
         User temp = new DataCreator().getUser();
