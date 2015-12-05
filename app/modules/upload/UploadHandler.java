@@ -119,14 +119,22 @@ public class UploadHandler {
                     .setFileName(part.getFilename())
                     .build();
 
-            arrayNode.addObject()
-                    .put("name", part.getFilename())
-                    .put("size", f.length())
-                    .put("url", calcDownloadPath(uploadId, f))
-                    .put("thumbnailUrl", calcDownloadThumbnailPath(uploadId, f))
-                    .put("deleteUrl", calcDeletePath(uploadId, f))
-                    .put("deleteType", "DELETE");
-            cachedFiles.add(fc);
+            //check if file is a readable img
+            if(imageHelper.fileIsValid(fc)){
+                arrayNode.addObject()
+                        .put("name", part.getFilename())
+                        .put("size", f.length())
+                        .put("url", calcDownloadPath(uploadId, f))
+                        .put("thumbnailUrl", calcDownloadThumbnailPath(uploadId, f))
+                        .put("deleteUrl", calcDeletePath(uploadId, f))
+                        .put("deleteType", "DELETE");
+                cachedFiles.add(fc);
+            } else {
+                arrayNode.addObject()
+                        .put("name", part.getFilename())
+                        .put("size", f.length())
+                        .put("error", "File-type is not valid");
+            }
         }
         return result;
     }
@@ -148,7 +156,7 @@ public class UploadHandler {
                 cachedFiles.remove(fc);
             }
         }
-        return  result;
+        return result;
     }
 
     public ByteArrayOutputStream getThumbnail(final String uploadId, String filename) throws IOException {

@@ -37,6 +37,16 @@ public class ImageHelper {
         } else throw new IOException("Unsupported file-type");
     }
 
+    public boolean fileIsValid(FileContainer fc){
+        boolean readable = false;
+        try {
+            readable = ImageIO.read(fc.getFile()) != null;
+        } catch (IOException e) {
+            Logger.debug(e.getMessage(), e);
+        }
+        return readable;
+    }
+
     private String getFileType(FileContainer fc){
         String contentType = fc.getContentType();
         String[] splittedType = contentType.split("/");
