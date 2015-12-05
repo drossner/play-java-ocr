@@ -1,5 +1,6 @@
 package controllers;
 
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import modules.upload.FileContainer;
 import modules.upload.UploadHandler;
@@ -28,6 +29,7 @@ public class UploadController extends Controller {
         this.uploadHandler = uploadHandler;
     }
 
+    @SubjectPresent
     public Result upload(String uploadId){
         Logger.debug("File upload started from " + session().get("session"));
         Http.MultipartFormData body = request().body().asMultipartFormData();
@@ -45,12 +47,14 @@ public class UploadController extends Controller {
         return ok(result);
     }
 
+    @SubjectPresent
     public Result delete(String uploadId, String file){
         ObjectNode result = uploadHandler.deleteFileFromCache(uploadId, file);
         Logger.debug(result.toString());
         return ok(result);
     }
 
+    @SubjectPresent
     public Result getFile(String uploadId, String file){
         Optional<FileContainer> of = uploadHandler.loadFile(uploadId, file);
         if(of.isPresent()){
@@ -61,6 +65,7 @@ public class UploadController extends Controller {
         }
     }
 
+    @SubjectPresent
     public Result getThumbnail(String uploadId, String file){
         ByteArrayOutputStream baos = null;
         try {
@@ -69,7 +74,7 @@ public class UploadController extends Controller {
             Logger.error(e.getMessage(), e);
             return internalServerError(e.getMessage());
         }
-        return ok(baos.toByteArray()).as("image/jpg");
+        return ok(baos.toByteArray()).as("image/jpeg");
     }
 
 
