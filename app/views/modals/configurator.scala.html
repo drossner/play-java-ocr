@@ -1,0 +1,76 @@
+@(){
+    <link rel="stylesheet" media="screen" href='@routes.Assets.versioned("js/jquery.selectareas.css")'>
+    <link rel="stylesheet" media="screen" href='@routes.Assets.versioned("js/example.css")'>
+
+    <script src='@routes.Assets.versioned("js/jquery.selectareas.js")'></script>
+    <script src='@routes.Assets.versioned("js/configurator/app.js")'></script>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close icon-lachs" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Dein Bild bearbeiten</h4>
+                </div>
+                <div class="modal-body">
+                    <div id="wrapper" class="row">
+                        <h1>Wähle deine Bereiche</h1>
+
+                        <div class="col-md-6 image-decorator">
+                            <img id="example" src='@routes.Assets.versioned("images/rechnungtest.png")'/>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="penis">Test</div>
+                            <input type="button" id="penisBtn" value="Display" class="actionOn"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default btn-lachs" data-dismiss="modal">Abbrechen</button>
+                    <button type="button" class="btn btn-default btn-lila">Speicher dein Template</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+    <!--
+        <canvas class="can" id="myCanvas" width="600" height="700"></canvas>
+                            <scridivt>
+                                    function loadImages(sources, callback) {
+                                        var images = {};
+                                        var loadedImages = 0;
+                                        var numImages = 0;
+                                        // get num of sources
+                                        for (var src in sources) {
+                                            numImages++;
+                                        }
+                                        for (var src in sources) {
+                                            images[src] = new Image();
+                                            images[src].onload = function () {
+                                                if (++loadedImages >= numImages) {
+                                                    callback(images);
+                                                }
+                                            };
+                                            images[src].src = sources[src];
+                                        }
+                                    }
+                                    var canvas = document.getElementById('myCanvas');
+                                    var context = canvas.getContext('2d');
+
+                                    var jobID = document.getElementById('myModal').data['id'];
+                                    Console.write("hole bild!");
+                                    $.getJSON("/json/getdivhotoFromJobID", { id: jobID}, function(result){
+                                        Console.write(result);
+                                        var sources = {
+
+                                        };
+
+                                        loadImages(sources, function (images) {
+                                            context.drawImage(images.selectedImage, 20, 20, 467, 631);
+                                        });
+                                    });
+                            </scridivt>
+                                    -->

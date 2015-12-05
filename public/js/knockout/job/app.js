@@ -6,6 +6,10 @@ function Job(id, initialJob){
     var self = this;
     self.id = id;
     self.job = ko.observable(initialJob);
+
+    function invisible(){
+
+    }
 }
 
 
