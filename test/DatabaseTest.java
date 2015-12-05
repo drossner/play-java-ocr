@@ -19,9 +19,9 @@ import static play.test.Helpers.*;
  */
 public class DatabaseTest {
 
+<<<<<<< Temporary merge branch 1
 
     @Test
-    @Transactional
     public void createUserTest(){
         running(fakeApplication(), () -> {
             JPA.withTransaction(this::create);

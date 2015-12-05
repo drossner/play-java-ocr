@@ -15,6 +15,14 @@ DELETE        /delete/:uploadId/:file         controllers.UploadController.delet
 GET           /getfile/:uploadId/:file        controllers.UploadController.getFile(uploadId, file)
 GET           /getPrev/:uploadId/:file        controllers.UploadController.getThumbnail(uploadId, file)
 
+# json Endpoint
+GET         /json/jobHistory        controllers.JobController.getJobHistory
+GET         /json/jobType           controllers.JobController.getJobTypes
+GET         /json/jobLanguage       controllers.JobController.getLanguages
+GET         /json/getPhotoFromJobID controllers.JobController.getImageFromJobID(id: Int)
+
+GET         /json/getUserFolders    controllers.FolderController.getUserFolders
+
 # oAuth
 GET           /login                          controllers.AuthenticationController.login(method: Int)
 GET           /oauth2callback                 controllers.AuthenticationController.oauth(error: String ?=null, code: String ?=null, method: Int = 0)

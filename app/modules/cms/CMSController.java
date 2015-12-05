@@ -2,6 +2,7 @@ package modules.cms;
 
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.hibernate.mapping.List;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,7 +36,6 @@ public class CMSController {
     }
 
     // Folder
-
     public Folder getWorkspaceFolder(){
         return folderController.getUserWorkspaceFolder();
     }
@@ -46,6 +46,10 @@ public class CMSController {
 
     public Folder getFolderById (String objectId){
         return folderController.getFolderByObjectId(objectId);
+    }
+
+    public ArrayList<Folder> getFolderTree(Folder parent){
+        return  folderController.getFolderTree(parent);
     }
 
     public void getChildren(Folder folder){
