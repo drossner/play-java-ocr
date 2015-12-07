@@ -15,7 +15,6 @@ libraryDependencies ++= Seq(
   javaWs,
   evolutions
 )
-
 //user and role management
 libraryDependencies ++= Seq(
   "be.objectify" %% "deadbolt-java" % "2.4.3"

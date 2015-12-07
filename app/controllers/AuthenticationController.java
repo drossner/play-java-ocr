@@ -88,14 +88,15 @@ public class AuthenticationController extends Controller{
             session().clear();
             final String userEmail = "test@test.de";
 
-            new SimpleUserFactory()
+            if(new SimpleUserFactory()
                     .setEmail(userEmail)
                     .setCountry(CountryImpl.GERMAN)
                     .setPassword("test")
                     .addRole(OcrRole.USER)
-                    .persist();
+                    .persist() != null){
+                session("session", userEmail);
+            }
 
-            session("session", userEmail);
             return redirect(routes.Application.index());
         }));
     }

@@ -2,19 +2,24 @@ package modules.database;
 
 import controllers.security.OcrPermission;
 import controllers.security.OcrRole;
+import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
+import modules.database.entities.SecurityRole;
+import modules.database.entities.UserPermission;
+import play.Application;
 import play.Logger;
+import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 /**
  * Created by florian on 02.12.15.
  */
-//@Singleton
 public class InitDatabase extends DatabaseController {
 
-    private static InitDatabase INSTANCE;
+    /*private static InitDatabase INSTANCE;
 
     public static InitDatabase getInstance(){
         if(INSTANCE == null){
@@ -22,14 +27,17 @@ public class InitDatabase extends DatabaseController {
         }
 
         return INSTANCE;
-    }
+    }*/
 
-    private InitDatabase(){
-        createCountries();
+    public InitDatabase(){
+        Logger.info("Contructor Init Database");
+        JPA.withTransaction(() -> {
+            createCountries();
 
-        createSecurityRoles();
+            createSecurityRoles();
 
-        createUserPermissions();
+            createUserPermissions();
+        });
     }
 
     private void createCountries(){
@@ -39,7 +47,12 @@ public class InitDatabase extends DatabaseController {
         if(possibleValues != null){
             for (Object obj :
                     possibleValues) {
-                persistObject(obj);
+                Country temp = new Country();
+                temp.setCountry((CountryImpl) obj);
+
+                if(selectEntity(Country.class, (CountryImpl) obj) == null){
+                    persistObject(temp);
+                }
             }
         }
 
@@ -53,7 +66,10 @@ public class InitDatabase extends DatabaseController {
         if(possibleValues != null){
             for (Object obj :
                     possibleValues) {
-                persistObject(obj);
+                SecurityRole role = new SecurityRole((OcrRole) obj);
+                if(selectEntity(SecurityRole.class, (OcrRole) obj) == null){
+                    persistObject(role);
+                }
             }
         }
 
@@ -67,7 +83,12 @@ public class InitDatabase extends DatabaseController {
         if(possibleValues != null){
             for (Object obj :
                     possibleValues) {
-                persistObject(obj);
+                UserPermission permission = new UserPermission();
+                permission.setValue((OcrPermission) obj);
+
+                if(selectEntity(UserPermission.class, (OcrPermission) obj) == null){
+                    persistObject(permission);
+                }
             }
         }
 

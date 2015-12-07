@@ -24,7 +24,9 @@ public class SimpleUserFactory{
     public User persist(){
         UserController controller = new UserController();
 
-        controller.persistUser(user, roleList, permissionList);
+        if(controller.selectUserFromMail(user) == null){
+            controller.persistUser(user, roleList, permissionList);
+        }
 
         return user;
     }

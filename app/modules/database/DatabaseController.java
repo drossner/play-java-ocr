@@ -1,6 +1,7 @@
 package modules.database;
 
 import modules.database.entities.DomainObject;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 
@@ -18,12 +19,32 @@ import java.util.List;
  */
 public abstract class DatabaseController<T extends DomainObject, T2> {
 
-    public DatabaseController(){
-        InitDatabase.getInstance();
+    @Transactional
+    public <T> T selectEntity(Class<T> type, String whereColumn, String where){
+        CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
+
+        CriteriaQuery<T> rc = builder.createQuery(type);
+        Root<T> rootQuery = rc.from(type);
+
+        rc.where(builder.equal(rootQuery.get(whereColumn), where));
+
+        TypedQuery<T> query = JPA.em().createQuery(rc);
+
+        List<T> list = query.getResultList();
+
+        if(list.size() == 0){
+            return null;
+        }
+
+        if(list.size() > 1){
+            return list.get(0);
+        }
+
+        return query.getSingleResult();
     }
 
     @Transactional
-    public  <T> T selectEntity(Class<T> type, T2 where){
+    public <T> T selectEntity(Class<T> type, T2 where){
         CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
 
         CriteriaQuery<T> rc = builder.createQuery(type);
@@ -31,8 +52,14 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
         createWhere(builder, type, rc, where);
         TypedQuery<T> query = JPA.em().createQuery(rc);
 
-        if(query.getMaxResults() > 1){
-            return query.getResultList().get(0);
+        List<T> list = query.getResultList();
+
+        if(list.size() == 0){
+            return null;
+        }
+
+        if(list.size() > 1){
+            return list.get(0);
         }
 
         return query.getSingleResult();
@@ -47,7 +74,13 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
         createWhere(builder, type, rc, where);
         TypedQuery<T> query = JPA.em().createQuery(rc);
 
-        return query.getResultList();
+        List<T> list = query.getResultList();
+
+        if(list.size() == 0){
+            return null;
+        }
+
+        return list;
     }
 
     private <T> void createWhere(CriteriaBuilder builder, Class<T> type, CriteriaQuery<T> rc, T2 where) {
