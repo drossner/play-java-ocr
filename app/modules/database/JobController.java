@@ -22,4 +22,6 @@ public class JobController extends  DatabaseController<Image, User>{
 
         JPA.em().persist(job);
     }
+
+
 }

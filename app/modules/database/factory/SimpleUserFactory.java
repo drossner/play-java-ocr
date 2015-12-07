@@ -28,7 +28,7 @@ public class SimpleUserFactory{
             controller.persistUser(user, roleList, permissionList);
         }
 
-        return user;
+        return controller.selectUserFromMail(user);
     }
 
     public SimpleUserFactory setCountry(CountryImpl c){
