@@ -25,18 +25,7 @@ public class UserController extends DatabaseController<User, Country> {
     }
 
     @Transactional
-    public void persistUser(User user, int countryISO, List<OcrRole> roles, List<OcrPermission> permissions) throws Exception {
-        Country where = new Country();
-        where.setIsoCode(countryISO);
-
-        Country country = selectEntity(Country.class, where);
-
-        if(country != null){
-            user.setCountry(country);
-        }else{
-            throw new Exception("false country iso");
-        }
-
+    public void persistUser(User user, List<OcrRole> roles, List<OcrPermission> permissions){
         user.setRoles(rolesController.getRoles(roles));
         user.setPermission(permissionController.getPermissions(permissions));
 
@@ -44,18 +33,7 @@ public class UserController extends DatabaseController<User, Country> {
     }
 
     @Transactional
-    public void persistUser(User user, int countryISO) throws Exception {
-        Country where = new Country();
-        where.setIsoCode(countryISO);
-
-        Country country = selectEntity(Country.class, where);
-
-        if(country != null){
-            user.setCountry(country);
-        }else{
-            throw new Exception("false country iso");
-        }
-
+    public void persistUser(User user) {
         persistObject(user);
     }
 }

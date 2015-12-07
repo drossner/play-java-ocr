@@ -30,6 +30,10 @@ public class SecurityRole extends DomainObject implements Role
         name = role;
     }
 
+    public SecurityRole(){
+
+    }
+
     public String getName()
     {
         return name.getName();

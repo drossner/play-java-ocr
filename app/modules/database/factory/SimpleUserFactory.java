@@ -4,6 +4,7 @@ import controllers.security.OcrPermission;
 import controllers.security.OcrRole;
 import modules.database.UserController;
 import modules.database.entities.Country;
+import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -23,18 +24,14 @@ public class SimpleUserFactory{
     public User persist(){
         UserController controller = new UserController();
 
-        try {
-            controller.persistUser(user, user.getCountry().getIsoCode(), roleList, permissionList);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        controller.persistUser(user, roleList, permissionList);
 
         return user;
     }
 
-    public SimpleUserFactory setCountryIso(int countryIso){
+    public SimpleUserFactory setCountry(CountryImpl c){
         Country country = new Country();
-        country.setIsoCode(countryIso);
+        country.setCountry(c);
 
         user.setCountry(country);
         return this;

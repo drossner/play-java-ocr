@@ -16,7 +16,11 @@ import java.util.List;
  * für alle krassen Party leute: http://stackoverflow.com/questions/24572092/using-java-generics-for-jpa-findall-query-with-where-clause
  * Created by FRudi on 26.11.2015.
  */
-public abstract class DatabaseController<T extends DomainObject, T2 extends DomainObject> {
+public abstract class DatabaseController<T extends DomainObject, T2> {
+
+    public DatabaseController(){
+        InitDatabase.getInstance();
+    }
 
     @Transactional
     public  <T> T selectEntity(Class<T> type, T2 where){
@@ -26,6 +30,10 @@ public abstract class DatabaseController<T extends DomainObject, T2 extends Doma
 
         createWhere(builder, type, rc, where);
         TypedQuery<T> query = JPA.em().createQuery(rc);
+
+        if(query.getMaxResults() > 1){
+            return query.getResultList().get(0);
+        }
 
         return query.getSingleResult();
     }

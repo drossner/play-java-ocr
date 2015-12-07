@@ -5,6 +5,7 @@ import controllers.security.OcrRole;
 import modules.authentication.AuthResponse;
 import modules.authentication.FacebookAuthentication;
 import modules.authentication.OAuthentication;
+import modules.database.entities.CountryImpl;
 import modules.database.factory.SimpleUserFactory;
 import modules.database.entities.User;
 import play.Logger;
@@ -89,6 +90,7 @@ public class AuthenticationController extends Controller{
 
             new SimpleUserFactory()
                     .setEmail(userEmail)
+                    .setCountry(CountryImpl.GERMAN)
                     .setPassword("test")
                     .addRole(OcrRole.USER)
                     .persist();
