@@ -2,13 +2,10 @@ package modules.upload;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.google.inject.Inject;
 import controllers.routes;
 import org.imgscalr.Scalr;
 import play.Logger;
 import play.Play;
-import play.cache.CacheApi;
-import play.cache.NamedCache;
 import play.libs.Akka;
 import play.libs.Json;
 import play.mvc.Http.MultipartFormData.FilePart;
@@ -21,7 +18,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -39,15 +35,15 @@ public class UploadHandler {
     private final String TEMP_DIR_NAME = "/uploadTemp/";
     private final File TEMP_DIR;
 
-    /*@Inject
-    @NamedCache("upload-cache")
-    private CacheApi cache;*/
     private ConcurrentSkipListMap<String, Long> uploadIds;
     private ConcurrentSkipListMap<String, CopyOnWriteArrayList<FileContainer>> fileList;
+
+    private ImageHelper imageHelper;
 
     public UploadHandler() throws IOException {
         this.uploadIds = new ConcurrentSkipListMap<String, Long>();
         this.fileList = new ConcurrentSkipListMap<>();
+        this.imageHelper = new ImageHelper();
 
         //cleanup code
         Akka.system().scheduler().schedule(
@@ -123,14 +119,23 @@ public class UploadHandler {
                     .setFileName(part.getFilename())
                     .build();
 
-            arrayNode.addObject()
-                    .put("name", part.getFilename())
-                    .put("size", f.length())
-                    .put("url", calcDownloadPath(uploadId, f))
-                    .put("thumbnailUrl", calcDownloadThumbnailPath(uploadId, f))
-                    .put("deleteUrl", calcDeletePath(uploadId, f))
-                    .put("deleteType", "DELETE");
-            cachedFiles.add(fc);
+            //check if file is a readable img
+            if(imageHelper.fileIsValid(fc)){
+                arrayNode.addObject()
+                        .put("name", part.getFilename())
+                        .put("size", f.length())
+                        .put("url", calcDownloadPath(uploadId, f))
+                        .put("thumbnailUrl", calcDownloadThumbnailPath(uploadId, f))
+                        .put("deleteUrl", calcDeletePath(uploadId, f))
+                        .put("deleteType", "DELETE");
+                cachedFiles.add(fc);
+            } else {
+                arrayNode.addObject()
+                        .put("name", part.getFilename())
+                        .put("size", f.length())
+                        .put("error", "File-type is not valid");
+                f.delete();
+            }
         }
         return result;
     }
@@ -152,19 +157,18 @@ public class UploadHandler {
                 cachedFiles.remove(fc);
             }
         }
-        return  result;
+        return result;
     }
 
     public ByteArrayOutputStream getThumbnail(final String uploadId, String filename) throws IOException {
         Optional<FileContainer> of = loadFile(uploadId, filename);
 
         if(of.isPresent()){
-            File f = of.get().getFile();
-            BufferedImage image = ImageIO.read(f);
+            BufferedImage image = imageHelper.convertFile(of.get());
             BufferedImage thumbnail =
-                    Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_WIDTH, THUMBNAIL_WIDTH, THUMBNAIL_HEIGTH, Scalr.OP_ANTIALIAS);
+                    Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, THUMBNAIL_WIDTH, THUMBNAIL_HEIGTH, Scalr.OP_ANTIALIAS);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(thumbnail, "jpg", baos);
+            ImageIO.write(thumbnail, "jpeg", baos);
             return baos;
         }
         return null; //handled in controller

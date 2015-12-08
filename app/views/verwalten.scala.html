@@ -2,30 +2,30 @@
 @(user: User)
 
 @main("Verwalten")("verwalten"){
-  <div class="container">
-      <!-- content begins here -->
+<div class="container">
+    <!-- content begins here -->
 
-      <table class="table table-bordered">
-          <tr>
-              <th>Field</th>
-              <th>Value</th>
-          </tr>
-          <tr>
-              <td>ID</td>
-              <td>@user.getId</td>
-          </tr>
-          <tr>
-              <td>E-Mail</td>
-              <td>@user.geteMail()</td>
-          </tr>
-          <tr>
-              <td>Roles</td>
-              <td>@for(role <- user.getRoles()) {
-                  <span>@role.getName </span>
-              }
-              </td>
-          </tr>
-      </table>
+    <table class="table table-bordered">
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>ID</td>
+            <td>@user.getId</td>
+        </tr>
+        <tr>
+            <td>E-Mail</td>
+            <td>@user.geteMail()</td>
+        </tr>
+        <tr>
+            <td>Roles</td>
+            <td>@for(role <- user.getRoles()) {
+                <span>@role.getName </span>
+                }
+            </td>
+        </tr>
+    </table>
 
-  </div>
+</div>
 }

@@ -1,0 +1,44 @@
+input {
+	display: block;
+	width: 120px;
+	/*margin: 10px;*/
+}
+
+#output {
+	/*margin: 0 20px;
+	padding: 20px;*/
+	width: 200px;
+	height: 200px;
+	position: relative;
+	background-color: #000;
+	color: #090;
+	font-weight: bold;
+	font-size: 16px;
+	font-family: monospace;
+	overflow-x: auto;
+	overflow-y: scroll;
+}
+
+.actions {
+	width: 150px;
+}
+
+table {
+	margin: auto;
+}
+
+
+#select-areas-outline {
+	-moz-border-radius : 5px 5px 5px 5px;
+	-moz-box-shadow : 0 0 6px #c8c8c8;
+	-webkit-border-radius : 5px 5px 5px 5px;
+	-webkit-box-shadow : 0 0 6px #c8c8c8;
+	background-color : #ffffff;
+	border : 1px solid #c8c8c8;
+	border-radius : 5px 5px 5px 5px;
+	box-shadow : 0 0 6px #c8c8c8;
+	display : inline-block;
+	padding : 5px 5px 5px 5px;
+	position: relative;
+	margin-bottom: 10px;
+}

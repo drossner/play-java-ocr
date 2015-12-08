@@ -39,8 +39,12 @@ libraryDependencies ++= Seq(
   "org.scribe" % "scribe" % "1.3.6"
 )
 
+//Image stuff
 libraryDependencies ++= Seq(
-  "org.imgscalr" % "imgscalr-lib" % "4.2"
+  "org.imgscalr" % "imgscalr-lib" % "4.2",
+  "com.twelvemonkeys.imageio" % "imageio-core" % "3.2",
+  "com.twelvemonkeys.common" % "common-lang" % "3.2",
+  "com.twelvemonkeys.imageio" % "imageio-tiff" % "3.2"
 )
 
 //Persistence
@@ -50,6 +54,7 @@ libraryDependencies ++= Seq(
   "org.hibernate" % "hibernate-entitymanager" % "5.0.3.Final",
   javaJpa
 )
+
 
 //Junit test
 libraryDependencies += "junit" % "junit" % "4.11"

@@ -19,8 +19,10 @@ $(function () {
         // Uncomment the following to send cross-domain cookies:
         //xhrFields: {withCredentials: true},
         //url: 'server/php/'
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|tiff?|pdf)$/i,
+        //28MB
+        maxFileSize: 29360128
     });
-
     // Enable iframe cross-domain access via redirect option:
     $('#fileupload').fileupload(
         'option',

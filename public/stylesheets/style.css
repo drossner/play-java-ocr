@@ -291,3 +291,26 @@ canvas {
     margin: auto;
 }
 
+
+.pic
+{
+    /*background: darkgray;*/
+
+}
+
+.can
+{
+    margin-left: 0;
+
+}
+
+#canvas {
+    width:  800px;
+    height: 800px;
+    border: 10px solid transparent;
+
+}
+.rectangle {
+    border: 1px solid #FF0000;
+    position: absolute;
+}

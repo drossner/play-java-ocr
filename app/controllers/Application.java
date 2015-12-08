@@ -44,7 +44,9 @@ public class Application extends Controller {
     @SubjectPresent
     public Result hochladen(int step){
         if(step == 1) {
-            return ok(hochladen_1.render(uploadHandler.createUploadId()));
+            String uploadId = uploadHandler.createUploadId();
+            //session().put(uploadId, ""+step);
+            return ok(hochladen_1.render(uploadId));
         } else if (step == 2){
             return ok(hochladen_2.render());
         } else {
@@ -78,6 +80,10 @@ public class Application extends Controller {
     @SubjectPresent
     public Result hilfe(){
         return ok(hilfe.render());
+    }
+
+    public Result template(){
+        return ok(views.html.modals.templating.render());
     }
 
    /* @Transactional
