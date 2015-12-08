@@ -101,7 +101,7 @@ public class AuthenticationController extends Controller{
                     .setEmail(userEmail)
                     .setPassword("")
                     .addRole(OcrRole.USER)
-                    .build());
+                    .persist());
         }
         //session init
         session().put("session", userEmail);
