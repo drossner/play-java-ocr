@@ -24,7 +24,8 @@
                     <tr>
                         <td data-bind="text: id"></td>
                         <td data-bind="text: job().name"></td>
-                        <td> <select data-bind="options: $root.languages"></select></td>
+                        <td> <select data-bind="options: $root.languages, optionsText: function(item) {
+                                                                return item.language }"></select></td>
                         <td> <select data-bind="options: $root.jobTypes"></select></td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
