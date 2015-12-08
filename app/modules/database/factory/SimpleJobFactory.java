@@ -20,9 +20,8 @@ public class SimpleJobFactory {
     private LayoutConfig layoutConfig;
 
     public Job persist(){
-
-        if(image != null && layoutConfig != null){
-            new JobController().persistJob(job, image, layoutConfig);
+        if(image != null && layoutConfig != null && job.getUser() != null){
+            new JobController().persistJob(job, image, layoutConfig, job.getUser());
         }else{
             Logger.error("no image set!");
         }
