@@ -5,18 +5,16 @@ import be.objectify.deadbolt.core.models.Role;
 import be.objectify.deadbolt.core.models.Subject;
 import be.objectify.deadbolt.java.AbstractDeadboltHandler;
 import be.objectify.deadbolt.java.DynamicResourceHandler;
+import controllers.Application;
 import controllers.routes;
+import errorhandling.ErrorHandler;
 import modules.database.UserController;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import play.cache.CacheApi;
 import play.db.jpa.JPA;
 import play.libs.F;
 import play.mvc.*;
-import views.html.index;
 
 import javax.inject.Inject;
-import javax.persistence.TypedQuery;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -79,7 +77,9 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
                                            final String content) {
         // you can return any result from here - forbidden, etc
         //return F.Promise.promise(() -> ok(accessFailed.render()));
-        return F.Promise.promise(() -> forbidden("forbidden"));
+        String target = context.request().uri();
+        context.session().put("target", target);
+        return F.Promise.promise(() -> redirect(routes.Application.index()));
     }
 
     private class User implements Subject {

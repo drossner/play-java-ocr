@@ -32,7 +32,8 @@ public class Application extends Controller {
         if(session().get("session") != null){
             return redirect(routes.Application.hochladen(2));
         } else {
-            return ok(index.render());
+            String target = session().get("target");
+            return ok(index.render(target != null, target));
         }
     }
 
