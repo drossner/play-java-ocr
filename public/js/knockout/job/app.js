@@ -6,10 +6,12 @@ function Job(id, initialJob){
     var self = this;
     self.id = id;
     self.job = ko.observable(initialJob);
+}
 
-    function invisible(){
-
-    }
+function Language(id, initialLanguage){
+    var self = this;
+    self.id = id;
+    self.language = ko.observable(initialLanguage);
 }
 
 
@@ -18,12 +20,18 @@ function JobHistoryViewModel(){
 
     self.jobs = ko.observableArray([]);
 
+    self.languages = ko.observableArray([]);
+    self.jobTypes = ko.observableArray([]);
+
     $.getJSON("/json/jobType", function(result){
         self.jobTypes = result;
     });
 
     $.getJSON("/json/jobLanguage", function(result){
-        self.languages = result;
+        for(var i = 0; i < result.length; i++){
+            console.log(result[i].name);
+            self.languages.push(new Language(i + 1, result[i].name));
+        }
     });
 
     $.getJSON("/json/jobHistory", function(result){
