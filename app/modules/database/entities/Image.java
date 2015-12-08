@@ -9,7 +9,7 @@ import java.util.Date;
  */
 @Entity
 @Table(name="Image")
-public class Image {
+public class Image extends DomainObject{
 
     @Id
     @GeneratedValue
@@ -41,4 +41,86 @@ public class Image {
 
     @Column
     private double latitude;
+
+    @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Blob getSource() {
+        return source;
+    }
+
+    public void setSource(Blob source) {
+        this.source = source;
+    }
+
+    public String getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public String getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(String orientation) {
+        this.orientation = orientation;
+    }
+
+    public double getFocalLength() {
+        return focalLength;
+    }
+
+    public void setFocalLength(double focalLength) {
+        this.focalLength = focalLength;
+    }
+
+    public double getIsoValue() {
+        return isoValue;
+    }
+
+    public void setIsoValue(double isoValue) {
+        this.isoValue = isoValue;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
 }

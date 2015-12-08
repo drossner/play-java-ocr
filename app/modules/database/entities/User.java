@@ -14,7 +14,7 @@ import java.util.List;
  */
 @Entity
 @Table(name="Users")
-public class User implements Subject {
+public class User extends DomainObject implements Subject {
 
     @Id
     @GeneratedValue
@@ -108,4 +108,15 @@ public class User implements Subject {
         return geteMail();
     }
 
+    public void setRoles(List<SecurityRole> roles) {
+        this.roles = roles;
+    }
+
+    public List<UserPermission> getPermission() {
+        return permission;
+    }
+
+    public void setPermission(List<UserPermission> permission) {
+        this.permission = permission;
+    }
 }

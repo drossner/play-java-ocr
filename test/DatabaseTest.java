@@ -19,7 +19,6 @@ import static play.test.Helpers.*;
  */
 public class DatabaseTest {
 
-<<<<<<< Temporary merge branch 1
 
     @Test
     public void createUserTest(){

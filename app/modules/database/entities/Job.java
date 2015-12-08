@@ -9,7 +9,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name="Job")
-public class Job {
+public class Job extends DomainObject{
 
     @Id
     @GeneratedValue
@@ -39,8 +39,19 @@ public class Job {
     @OneToOne
     private LayoutConfig layoutConfig;
 
+    @OneToOne
+    private Image image;
+
     @Column
     private String resultFile;
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
+    }
 
     public int getId() {
         return id;
