@@ -24,13 +24,13 @@
   display: none;
 }
 .fileupload-processing .fileupload-process,
-.files .processing .preview {
+/*.files .processing .preview {
   display: block;
   width: 32px;
   height: 32px;
   background: url("../img/loading.gif") center no-repeat;
   background-size: contain;
-}
+}*/
 .files audio,
 .files video {
   max-width: 300px;

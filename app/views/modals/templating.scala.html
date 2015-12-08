@@ -27,6 +27,23 @@
 
 			});
 
+			function output (text) {
+				$('#output').html(text);
+			}
+
+			$('#btnView').click(function () {
+				var areas = $('img#example').selectAreas('areas');
+				displayAreas(areas);
+			});
+
+			// Display areas coordinates in a div
+			function displayAreas (areas) {
+				var text = "";
+				$.each(areas, function (id, area) {
+					text += areaToString(area);
+				});
+				output(text);
+			};
 
 			// Log the quantity of selections
 			function debugQtyAreas (event, id, areas) {
@@ -41,7 +58,31 @@
 			};
 
 
-			function targetFunction(){
+			function targetFunctionMeta(){
+
+				var areaOptions = {
+					x: Math.floor((Math.random() * 200)),
+					y: Math.floor((Math.random() * 200)),
+					width: Math.floor((Math.random() * 100)) + 50,
+					height: Math.floor((Math.random() * 100)) + 20,
+				};
+
+				$('img#example').selectAreas('add', areaOptions);
+			};
+
+			function targetFunctionBild(){
+
+				var areaOptions = {
+					x: Math.floor((Math.random() * 200)),
+					y: Math.floor((Math.random() * 200)),
+					width: Math.floor((Math.random() * 100)) + 50,
+					height: Math.floor((Math.random() * 100)) + 20,
+				};
+
+				$('img#example').selectAreas('add', areaOptions);
+			};
+
+			function targetFunctionText(){
 
 				var areaOptions = {
 					x: Math.floor((Math.random() * 200)),
