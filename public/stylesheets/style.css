@@ -291,3 +291,18 @@ canvas {
     margin: auto;
 }
 
+.tablespacing2 {
+
+    width: 40%;
+    min-width: 400px;
+    margin: auto;
+}
+
+.warning-lachs {
+    color: #FFFFFF;
+    background-color: #F25260;
+    border-color: #F25260;
+    margin-bottom: 15px;
+    margin-left: 10%;
+    margin-right: 10%;
+}
