@@ -84,7 +84,9 @@ public class AuthenticationController extends Controller{
     }
 
     private Result setUpSession(AuthResponse authResponse){
-        //first of all clear the session()
+        //Is there a target present?
+        String target = session().get("target");
+        //clear the session()
         session().clear();
         //get the email of the user
         final String userEmail = authResponse.getEmail();
@@ -105,7 +107,12 @@ public class AuthenticationController extends Controller{
         }
         //session init
         session().put("session", userEmail);
-        return redirect(routes.Application.index());
+        if(target != null){
+            return redirect(target);
+        } else {
+            return redirect(routes.Application.index());
+        }
+
     }
 
     private OAuthentication getOAuthenticationImpl(int method) throws InvalidParameterException{
@@ -117,6 +124,7 @@ public class AuthenticationController extends Controller{
 
     public Promise<Result> stubLogin() {
         return Promise.promise(() -> JPA.withTransaction(() -> {
+            String target = session().get("target");
             session().clear();
             final String userEmail = "test@test.de";
 
@@ -129,7 +137,11 @@ public class AuthenticationController extends Controller{
                 session("session", userEmail);
             }
 
-            return redirect(routes.Application.index());
+            if(target != null){
+                return redirect(target);
+            } else {
+                return redirect(routes.Application.index());
+            }
         }));
     }
 
