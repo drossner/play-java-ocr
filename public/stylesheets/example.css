@@ -1,12 +1,14 @@
-input {
+/*Warscheinlich nicht genutzt und kann, sollten keine UI Bugs beim Auswählen der Berreiche auftreten gelöscht werden.*/
+
+/*input {
 	display: block;
 	width: 120px;
-	/*margin: 10px;*/
+	margin: 10px;
 }
 
 #output {
-	/*margin: 0 20px;
-	padding: 20px;*/
+	margin: 0 20px;
+	padding: 20px;
 	width: 200px;
 	height: 200px;
 	position: relative;
@@ -42,3 +44,4 @@ table {
 	position: relative;
 	margin-bottom: 10px;
 }
+*/
