@@ -54,6 +54,10 @@ libraryDependencies ++= Seq(
   javaJpa
 )
 
+//Export
+libraryDependencies ++= Seq{
+  "org.docx4j" % "docx4j" % "3.2.2"
+}
 
 //Junit test
 libraryDependencies += "junit" % "junit" % "4.11"
