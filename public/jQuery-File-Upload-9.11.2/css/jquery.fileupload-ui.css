@@ -24,6 +24,8 @@
   display: none;
 }
 .fileupload-processing .fileupload-process,
+
+/*UI-BUG File Upload*/
 /*.files .processing .preview {
   display: block;
   width: 32px;
