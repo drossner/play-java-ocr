@@ -1,5 +1,5 @@
 @main("Hochladen")("hochladen") {
-    <div class="container">
+    <div id="main-layout" class="container">
             <!-- content begins here -->
         <script src='@routes.Assets.versioned("js/knockout/job/bindings.js")' type="text/javascript"></script>
         <br/>
@@ -28,11 +28,11 @@
                         <td> <select data-bind="options: $root.jobTypes"></select></td>
                         <td>
                             <span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
-                            data-toggle="modal" data-target="#modal-sample-1""></span>
+                            data-toggle="modal" data-target="#modal-sample-1"></span>
                         </td>
                         <td>
                             <span class="input-group-addon"><a class="comment"
-                            data-bind="click: $root.showModal, attr: { title: id }">
+                            data-bind="id: id, click: $root.showModal">
                                 <span class="glyphicon glyphicon-comment"></span></a>
                             </span>
                         </td>
@@ -56,6 +56,8 @@
 
     @modals.configurator()
 
+    <script src='@routes.Assets.versioned("js/knockout/job/loadData.js")' type="text/javascript"></script>
+    <script src='@routes.Assets.versioned("js/knockout/job/modal.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/knockout/job/app.js")' type="text/javascript"></script>
 
     @modals.folder()
