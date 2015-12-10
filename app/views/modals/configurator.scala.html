@@ -1,28 +1,29 @@
 @()
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script type='text/javascript' src='http://code.jquery.com/ui/1.11.4/jquery-ui.min.js'></script>
 
-    <script src='@routes.Assets.versioned("js/configurator/preprocessing/caman.full.js")'></script>
-    <script src='@routes.Assets.versioned("js/configurator/preprocessing/preprocessing.js")'></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script type='text/javascript' src='http://code.jquery.com/ui/1.11.4/jquery-ui.min.js'></script>
+
+<script src='@routes.Assets.versioned("js/configurator/preprocessing/caman.full.js")'></script>
+<script src='@routes.Assets.versioned("js/configurator/preprocessing/preprocessing.js")'></script>
 
 
     <!-- Modal -->
-    <div id="modal-sample-1" class="modal fade">
-        <div class="modal-dialog modal-lg">
-
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="js-title-step"></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="row hide" data-step="1" data-title="This is the first step">
-                        <div class="col-md-12">
-                            <div class="col-md-12">
-                                <div class="container-fluid">
+    <script id="commentsModal" class="modal-dialog" type="text/html">
+    <div id="modal-sample-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-bind="click:close" aria-hidden="true">&times;</button>
+                        <h4 data-bind="html:header" class="modal-title"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row hide" data-step="1" data-title="This is the first step">
+                            <div class="col-md-12 container-fluid">
+                                <textarea class="form-control" rows="3" data-bind="value: comment"></textarea>
                                     <div class="row">
                                         <div class="col-xs-8">
                                             <div id="image-area">
-                                                <img id="canvas" src='@routes.Assets.versioned("images/rechnungtest.png")' style="width:100%;" />
+                                                 <img id="canvas" src='@routes.Assets.versioned("images/rechnungtest.png")' style="width:100%;" />
                                             </div>
                                         </div>
                                         <div class="col-xs-2">
@@ -35,56 +36,28 @@
                                             <button id="reset" class="btn btn-lila actionOn">Zurücksetzen</button>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row hide" data-step="2" data-title="This is the second step!">
-                        <div class="col-md-12">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-xs-8">
-                                        <iframe id= "templating" src="@routes.Application.template()"  style="width: 100%; height:700px;"> </iframe>
-                                    </div>
-                                    <!--Zuweisung der Boxen-->
-                                    <div class="col-xs-2">
-                                        <div>
-                                            <button id="metadata" value="Add New" class="btn btn-lila actionOn">Metadaten</button>
-                                            <button class="btn btn-lila">Textfeld</button>
-                                            <button class="btn btn-lila">Bild</button>
-                                        </div>
-                                        <p id="coordinaten"></p>
-                                        <script>
-                                            function getValuesOfSelectedArea(area){
-                                                $('#coordinaten').text("heigth: " + area.height + ", width: "+ area.width );
-                                            }
+                        <div class="row hide" data-step="2" data-title="This is the second step!">test</div>
 
-                                            $('#metadata').click(function(){
-                                                document.getElementById('templating').contentWindow.createNewArea();
-                                            });
-                                        </script>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button>
-                    <button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button>
-                    <button type="button" class="btn btn-success js-btn-step" data-orientation="next"></button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button>
+                        <button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button>
+                        <button type="button" class="btn btn-success js-btn-step" data-orientation="next"></button>
+                        <button type="button" class="btn btn-default" data-bind="click:close,html:closeLabel">Close</button>
+                        <button type="button" class="btn btn-primary" data-bind="click:action,html:primaryLabel" id="save-changes">Save changes</button>
+                    </div>
                 </div>
             </div>
-        </div>
+
     </div>
+</script>
 
-
+<div data-bind="bootstrapModal:modal" class="modal fade" id="commentsModal" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static"></div>
 <script src='@routes.Assets.versioned("jquery-bootstrap-modal-steps-master/jquery-bootstrap-modal-steps.min.js")' type="text/javascript"></script>
 
-<script type="text/javascript">
-    $('#modal-sample-1').modalSteps();
-</script>
+
 
 
 
