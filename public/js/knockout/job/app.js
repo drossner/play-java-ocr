@@ -39,6 +39,22 @@ function JobHistoryViewModel(){
             self.jobs.push(new Job(i + 1, result[i]));
         }
     });
+
+    self.showModal = function(job){
+        console.log("öffne!");
+        console.log(job);
+
+
+        $("#modal-sample-1").modal('show');
+    }
+
+    self.onNext = function(){
+        console.log("next pressed");
+    }
+}
+
+onNext = function(){
+    console.log("next pressed");
 }
 
 ko.applyBindings(new JobHistoryViewModel());
