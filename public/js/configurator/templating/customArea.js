@@ -6,7 +6,6 @@ $(document).ready(function () {
     $('img#example').selectAreas({
         minSize: [10, 10],
         onChanged: debugQtyAreas,
-        onChanged: getValues,
         width: 500,
         allowSelect: false
     });
@@ -22,7 +21,8 @@ function debugQtyAreas (event, id, areas) {
 
 // Display Valuse in parentView
 function getValues (event, id, areas) {
-    window.parent.getValuesOfSelectedArea(areas[id]);
+
+    //window.parent.getValuesOfSelectedArea(areas[id]);
 };
 
 

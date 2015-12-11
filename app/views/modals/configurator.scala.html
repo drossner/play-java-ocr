@@ -52,12 +52,22 @@
                                             <button id="metadata" value="Add New" class="btn btn-lila actionOn">Metadaten</button>
                                             <button class="btn btn-lila">Textfeld</button>
                                             <button class="btn btn-lila">Bild</button>
+                                            <button id="deleteAreas" class="btn btn-lila">Delete all areas</button>
                                         </div>
                                         <p id="coordinaten"></p>
                                         <script>
+                                            /*
                                             function getValuesOfSelectedArea(area){
                                                 $('#coordinaten').text("heigth: " + area.height + ", width: "+ area.width );
+                                            }*/
+
+                                            function reset(){
+                                                document.getElementById('templating').contentWindow.resetAreas();
                                             }
+
+                                            $('#deleteAreas').click(function(){
+                                                reset();
+                                            })
 
                                             $('#metadata').click(function(){
                                                 document.getElementById('templating').contentWindow.createNewArea();
@@ -73,7 +83,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button>
                     <button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button>
-                    <button type="button" class="btn btn-success js-btn-step"  data-bind="click: $root.onNext" data-orientation="next"></button>
+                    <button type="button" class="btn btn-success js-btn-step" data-orientation="next"></button>
                 </div>
             </div>
         </div>
@@ -83,7 +93,17 @@
 <script src='@routes.Assets.versioned("jquery-bootstrap-modal-steps-master/jquery-bootstrap-modal-steps.min.js")' type="text/javascript"></script>
 
 <script type="text/javascript">
-    $('#modal-sample-1').modalSteps();
+    $('#modal-sample-1').modalSteps({
+        callbacks: {
+            '1': function(){
+                console.log("step 1");
+            },
+            '2': function(){
+                console.log("step 2");
+            }
+        }
+    });
+
 </script>
 
 

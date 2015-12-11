@@ -2,35 +2,11 @@
  * Created by Benedikt Linke on 08.12.2015.
  */
 
+var caman = Caman('#canvas');
+
+var rotation = 0;
+
 $(function() {
-
-    var caman = Caman('#canvas');
-
-    var rotation = 0;
-
-    function applyFilters() {
-        caman.revert(false);
-
-        $('.slider').each(function() {
-            var op = $(this).attr('id');
-            var value = $(this).data('val');
-
-            if (value === 0) {
-                return;
-            }
-
-            caman[op](value);
-        });
-    }
-
-    function resetFilters() {
-        $('.slider').each(function() {
-            var op = $(this).attr('id');
-
-            $('#' + op).slider('option', 'value', $(this).attr('data-val'));
-        });
-    }
-
     $('.slider').each(function() {
         var op = $(this).attr('id');
 
@@ -53,17 +29,11 @@ $(function() {
     });
 
     $('#rotate-left').click(function() {
-        rotation += 90;
-        caman.rotate(90);
-        applyFilters();
-        caman.render();
+        rotateLeft();
     });
 
     $('#rotate-right').click(function() {
-        rotation -= 90;
-        caman.rotate(-90);
-        applyFilters();
-        caman.render();
+        rotateRight();
     });
 
     $('.preset').click(function() {
@@ -85,3 +55,42 @@ $(function() {
     });
 
 });
+function applyFilters() {
+    caman.revert(false);
+
+    $('.slider').each(function() {
+        var op = $(this).attr('id');
+        var value = $(this).data('val');
+
+        if (value === 0) {
+            return;
+        }
+
+        caman[op](value);
+    });
+}
+
+function resetFilters() {
+    $('.slider').each(function() {
+        var op = $(this).attr('id');
+
+        $('#' + op).slider('option', 'value', $(this).attr('data-val'));
+    });
+
+    caman.reset();
+    caman.render();
+}
+
+function rotateRight () {
+    rotation += 90;
+    caman.rotate(90);
+    applyFilters();
+    caman.render();
+};
+
+function rotateLeft () {
+    rotation -= 90;
+    caman.rotate(-90);
+    applyFilters();
+    caman.render();
+};

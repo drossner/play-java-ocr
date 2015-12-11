@@ -40,21 +40,21 @@ function JobHistoryViewModel(){
         }
     });
 
+    function initModal(job) {
+        console.log("init modal!");
+    }
+
     self.showModal = function(job){
         console.log("öffne!");
         console.log(job);
 
+        resetFilters();
+        reset();
+        initModal(job);
 
         $("#modal-sample-1").modal('show');
     }
 
-    self.onNext = function(){
-        console.log("next pressed");
-    }
-}
-
-onNext = function(){
-    console.log("next pressed");
 }
 
 ko.applyBindings(new JobHistoryViewModel());
