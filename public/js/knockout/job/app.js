@@ -39,16 +39,9 @@ function JobHistoryViewModel(){
 
         if (!template) throw new Error("options.template or options.viewModel.template is required.");
 
-        return createModalElement(template, viewModel)
-            .pipe($) // jQueryify the DOM element
-            .pipe(function($ui) {
-                var deferredModalResult = $.Deferred();
-                addModalHelperToViewModel(viewModel, deferredModalResult, context);
-                showTwitterBootstrapModal($ui);
-                whenModalResultCompleteThenHideUI(deferredModalResult, $ui);
-                whenUIHiddenThenRemoveUI($ui);
-                return deferredModalResult;
-            });
+        var modal = createModalElement(template, viewModel);
+
+        modal.show(true);
     };
 };
 

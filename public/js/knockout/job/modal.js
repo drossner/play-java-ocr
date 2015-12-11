@@ -24,6 +24,7 @@ var createModalElement = function(templateName, viewModel) {
         "replaceNode"
     );
     // Return the deferred DOM element so callers can wait until it's ready for use.
+
     return deferredElement;
 };
 
