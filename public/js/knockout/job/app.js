@@ -6,6 +6,8 @@ var Job = function(id, initialJob){
     var self = this;
     self.id = id;
     self.job = ko.observable(initialJob);
+
+    self.rotation = ko.observable(0);
 }
 
 function Language(id, initialLanguage){
@@ -14,6 +16,15 @@ function Language(id, initialLanguage){
     self.language = ko.observable(initialLanguage);
 }
 
+
+function initModalData(modal) {
+    console.log("ressetting");
+    resetFilters();
+    if(modal.entryData.rotation() !== 0){
+         console.log("muss gedreht werden! " + modal.entryData.rotation());
+        rotateLeft();
+    }
+}
 
 function JobHistoryViewModel(){
     var self = this;
@@ -40,14 +51,11 @@ function JobHistoryViewModel(){
         }
     });
 
-
-
     self.modal = {
-        header: "Add/Edit Comment",
-        comment: ko.observable(""),
+        header: "Templating",
         closeLabel: "Cancel",
         primaryLabel: "Save",
-        entryData: undefined,
+        entryData: ko.observable(undefined),
         show: ko.observable(false),
         /* Set to true to show initially */
         onClose: function () {
@@ -58,12 +66,13 @@ function JobHistoryViewModel(){
         }
     };
 
-    console.log(ko.isObservable(self.modal.comment));
+    console.log(ko.isObservable(self.modal.entryData));
 
     self.showModal = function (jobDataModel) {
-        self.modal.comment(jobDataModel.id);
         self.modal.entryData = jobDataModel;
         self.modal.show(true);
+
+        initModalData(self.modal);
     };
 
     self.onModalClose = function () {
@@ -71,9 +80,11 @@ function JobHistoryViewModel(){
     };
     self.onModalAction = function () {
         // alert("ACTION!");
-        self.modal.entryData.comment(self.modal.comment());
         self.modal.show(false);
+
+        self.modal.entryData.rotation(90);
     };
 }
+
 
 ko.applyBindings(new JobHistoryViewModel());

@@ -1,7 +1,6 @@
 /**
  * Created by florian on 29.11.15.
  */
-
 /* Custom binding for making modals */
 ko.bindingHandlers.bootstrapModal = {
     init: function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
