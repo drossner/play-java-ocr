@@ -9,7 +9,7 @@ public interface Export {
 
     void initialize(String path, String fileName);
 
-    void export(String content);
+    void export(Fragment fragment);
 
     File finish();
 }

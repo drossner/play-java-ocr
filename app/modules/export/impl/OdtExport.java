@@ -1,6 +1,7 @@
 package modules.export.impl;
 
 import modules.export.Export;
+import modules.export.Fragment;
 
 import java.io.File;
 
@@ -14,7 +15,7 @@ public class OdtExport implements Export {
     }
 
     @Override
-    public void export(String content) {
+    public void export(Fragment fragment) {
 
     }
 
