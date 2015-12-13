@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import modules.database.entities.Job;
 import modules.database.entities.LayoutConfig;
 import play.mvc.Controller;
@@ -75,5 +76,15 @@ public class JobController extends Controller {
         File file = new File("./public/images/rechnungtest.png");
 
         return ok(file);
+    }
+
+    public Result process(){
+        Logger.info(request().toString());
+
+        JsonNode jobs = request().body().asJson();
+
+        Logger.info(jobs.toString());
+
+        return ok();
     }
 }

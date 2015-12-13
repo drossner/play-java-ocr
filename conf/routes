@@ -21,17 +21,11 @@ GET        /template                 controllers.Application.template()
 GET         /json/jobHistory        controllers.JobController.getJobHistory
 GET         /json/jobType           controllers.JobController.getJobTypes
 GET         /json/jobLanguage       controllers.JobController.getLanguages
-GET         /json/getPhotoFromJobID controllers.JobController.getImageFromJobID(id: Int)
+GET         /json/getPhotoFromJobID/:id controllers.JobController.getImageFromJobID(id: Int)
 
 GET         /json/getUserFolders    controllers.FolderController.getUserFolders
 
-# json Endpoint
-GET         /json/jobHistory        controllers.JobController.getJobHistory
-GET         /json/jobType           controllers.JobController.getJobTypes
-GET         /json/jobLanguage       controllers.JobController.getLanguages
-GET         /json/getPhotoFromJobID controllers.JobController.getImageFromJobID(id: Int)
-
-GET         /json/getUserFolders    controllers.FolderController.getUserFolders
+GET         /json/processJobs       controllers.JobController.process
 
 # oAuth
 GET           /login                          controllers.AuthenticationController.login(method: Int)

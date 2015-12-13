@@ -100,7 +100,10 @@ function JobHistoryViewModel(){
     }
 
     self.processJobs = function () {
-        console.log("erkenne: " + self.jobs);
+        console.log("erkenne: " + self.jobs());
+        var data = self.jobs();
+
+        $.getJSON("/json/processJobs", data);
     }
 }
 
