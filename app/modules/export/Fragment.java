@@ -5,42 +5,42 @@ package modules.export;
  */
 public class Fragment {
 
-    int startX;
-    int startY;
-    int endX;
-    int endY;
+    double startX;
+    double startY;
+    double endX;
+    double endY;
 
     String content;
 
-    public int getStartX() {
+    public double getStartX() {
         return startX;
     }
 
-    public void setStartX(int startX) {
+    public void setStartX(double startX) {
         this.startX = startX;
     }
 
-    public int getStartY() {
+    public double getStartY() {
         return startY;
     }
 
-    public void setStartY(int startY) {
+    public void setStartY(double startY) {
         this.startY = startY;
     }
 
-    public int getEndX() {
+    public double getEndX() {
         return endX;
     }
 
-    public void setEndX(int endX) {
+    public void setEndX(double endX) {
         this.endX = endX;
     }
 
-    public int getEndY() {
+    public double getEndY() {
         return endY;
     }
 
-    public void setEndY(int endY) {
+    public void setEndY(double endY) {
         this.endY = endY;
     }
 

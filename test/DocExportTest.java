@@ -36,7 +36,10 @@ public class DocExportTest {
             Fragment fragment = new Fragment();
 
             fragment.setContent("HelloWorld");
-
+            fragment.setStartX(50);
+            fragment.setStartY(50);
+            fragment.setEndX(70);
+            fragment.setEndY(70);
             return fragment;
         }
 
