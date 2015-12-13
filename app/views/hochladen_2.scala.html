@@ -44,10 +44,14 @@
         </div>
         <label class="pull-right">
             <span class="lightfont"> <input type="checkbox" value="">&nbspzu einem Dokument zusammenfassen</span>
-            <button type="button" class="btn btn-lila pull-right" href="#">Erkennen</button>
+            <button type="button" class="btn btn-lila pull-right" data-bind="click: $root.processJobs" href="#">Erkennen</button>
         </label>
 
     </div>
+
+    <script src='@routes.Assets.versioned("js/knockout/job/data/PreProcessor.js")' type="text/javascript"></script>
+    <script src='@routes.Assets.versioned("js/knockout/job/data/SelectAreas.js")' type="text/javascript"></script>
+    <script src='@routes.Assets.versioned("js/knockout/job/loadData.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/knockout/job/app.js")' type="text/javascript"></script>
     @modals.folder()
     @modals.configurator()

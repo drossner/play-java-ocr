@@ -1,6 +1,7 @@
 /**
  * Created by Benedikt Linke on 08.12.15.
  */
+var areas = [];
 
 $(document).ready(function () {
     $('img#example').selectAreas({
@@ -16,12 +17,12 @@ $(document).ready(function () {
 function debugQtyAreas (event, id, areas) {
     //window.parent.myfunction(areas[id]);
     console.log(areas.length + " areas", arguments);
-
+    this.areas = areas;
 };
 
 // Display Valuse in parentView
-function getValues (event, id, areas) {
-
+function getValues () {
+    return this.areas;
     //window.parent.getValuesOfSelectedArea(areas[id]);
 };
 

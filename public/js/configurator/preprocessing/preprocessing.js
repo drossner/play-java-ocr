@@ -86,11 +86,23 @@ function rotateRight () {
     caman.rotate(90);
     applyFilters();
     caman.render();
-};
+}
 
 function rotateLeft () {
     rotation -= 90;
     caman.rotate(-90);
     applyFilters();
     caman.render();
-};
+}
+
+function rotatePreProcess(rotationAncle){
+    while(rotationAncle != 0 ){
+        if(rotationAncle < 0){
+            rotateLeft()
+            rotationAncle += 90;
+        }else{
+            rotateRight()
+            rotationAncle -= 90;
+        }
+    }
+}
