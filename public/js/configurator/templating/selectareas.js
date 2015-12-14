@@ -198,6 +198,7 @@
                         break;
 
                     //case "releaseSelection":
+                      //  releaseSelection();
                     default:
                         updateSelection();
                         updateResizeHandlers(true);
