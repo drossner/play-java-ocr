@@ -7,6 +7,8 @@ function Job(id, initialJob){
     self.id = id;
     self.job = ko.observable(initialJob);
 
+    self.folderId = ko.observable();
+
     self.preProcessing = ko.observableArray([]);
     self.areas = ko.observableArray([]);
 }
@@ -100,7 +102,7 @@ function JobHistoryViewModel(){
     }
 
     self.processJobs = function () {
-        console.log("erkenne: " + self.jobs());
+        console.log(self.jobs());
         var data = self.jobs();
 
         $.getJSON("/json/processJobs", data);

@@ -40,8 +40,8 @@ function ListViewModel() {
     };
 
     self.saveInFolder = function(){
-        saveInFolder();
-    }
+       saveInFolder();
+    };
 
     /**
     * Searches a folder for given search query
@@ -189,6 +189,8 @@ function ListViewModel() {
         console.log("bin im save in folder methode");
         console.log(self.folderId());
         $("#launchBT").text(self.folderId());
+
+        job.folderId = self.folderId;
     }
 
     /**
