@@ -116,9 +116,16 @@ function JobHistoryViewModel(){
 
     self.processJobs = function () {
         console.log(self.jobs());
-        var data = self.jobs();
+        console.log(self.jobs()[0].areas());
+        //var data = self.jobs();
 
-        $.getJSON("/json/processJobs", data);
+        //$.getJSON("/json/processJobs", data);
+
+        $.ajax("/json/processJobs", {
+            data: ko.toJSON({ jobs: self.jobs }),
+            type: "post", contentType: "application/json",
+            success: function(result) { alert(result) }
+        });
     }
 }
 

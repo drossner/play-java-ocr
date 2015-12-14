@@ -25,7 +25,7 @@ GET         /json/getPhotoFromJobID/:id controllers.JobController.getImageFromJo
 
 GET         /json/getUserFolders    controllers.FolderController.getUserFolders
 
-GET         /json/processJobs       controllers.JobController.process
+POST         /json/processJobs       controllers.JobController.process
 
 # oAuth
 GET           /login                          controllers.AuthenticationController.login(method: Int)
