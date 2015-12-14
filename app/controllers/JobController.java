@@ -2,10 +2,8 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import modules.database.entities.Job;
-import modules.database.entities.LayoutConfig;
 import play.mvc.Controller;
 import play.Logger;
-import play.libs.F.Promise;
 import play.mvc.Result;
 import play.libs.Json;
 
@@ -84,9 +82,18 @@ public class JobController extends Controller {
     public Result getImageFromJobID(int id){
         Logger.info("id erhalten: " + id);
 
-        File file = new File("./public/images/rechnungtest.png");
+        Job job = null;
+        try {
+            job = new modules.database.JobController().getJobById(id);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
 
-        return ok(file);
+        File file = new File(job.getImage().getSource());
+
+        Logger.info("returning: " + file);
+        return ok(file.getAbsolutePath());
+        //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
     public Result process(){

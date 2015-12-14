@@ -17,7 +17,7 @@
                 <thead>
                     <tr class="table-header">
                         <th>#</th><th>Datei</th><th>Sprache</th><th>Typ des Dokuments</th><th>Bereich anpassen</th><th>
-                        Löschen</th><th>Speicherpunkt</th>
+                        Löschen</th><th>Speicherpunkt</th><th>Bild</th>
                     </tr>
                 </thead>
                 <tbody data-bind="foreach: jobs">
@@ -37,6 +37,9 @@
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-folder-open icon-lachs" aria-hidden="true"
                             data-toggle="modal" data-target="#folderModal"></span></a> <span id="launchBT"></span>
+                        </td>
+                        <td>
+                            <img data-bind="attr:{src: image}" />
                         </td>
                     </tr>
                 </tbody>

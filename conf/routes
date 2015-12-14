@@ -21,7 +21,7 @@ GET        /template                 controllers.Application.template()
 GET         /json/jobHistory        controllers.JobController.getJobHistory
 GET         /json/jobType           controllers.JobController.getJobTypes
 GET         /json/jobLanguage       controllers.JobController.getLanguages
-GET         /json/getPhotoFromJobID/:id controllers.JobController.getImageFromJobID(id: Int)
+GET         /json/getImageFromJobID/:id controllers.JobController.getImageFromJobID(id: Int)
 
 GET         /json/getUserFolders    controllers.FolderController.getUserFolders
 

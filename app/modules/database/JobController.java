@@ -31,8 +31,8 @@ public class JobController extends DatabaseController<Job, Object> {
         return selectEntityList(Job.class, user);
     }
 
-    public Job getJobById(int id) {
-        return selectEntity(Job.class, "id", Integer.toString(id));
+    public Job getJobById(int id) throws Throwable {
+        return JPA.withTransaction(() ->selectEntity(Job.class, "id", Integer.toString(id)));
     }
 
     public List<Language> getAllCountryLanguages() throws Throwable {

@@ -8,9 +8,20 @@ function Job(id, initialJob){
     self.job = ko.observable(initialJob);
 
     self.folderId = ko.observable();
+    self.image = ko.observable();
 
     self.preProcessing = ko.observableArray([]);
     self.areas = ko.observableArray([]);
+
+    console.log("loading json");
+    var path = "/json/getImageFromJobID/" + self.job().id;
+    $.getJSON(path, {},
+        function(data){
+        console.log(data);
+    }).error(function (msg) {
+        console.log(msg)
+        self.image = msg.responseText;
+    });
 }
 
 function Language(id, initialLanguage){
@@ -105,6 +116,9 @@ function JobHistoryViewModel(){
 
     self.showModal = function(job){
         console.log(job);
+        console.log(job.image);
+        $("#canvas").attr("src", job.image);
+        //$("#canvas").src= job.image;
 
         resetFilters();
         reset();

@@ -81,7 +81,7 @@ public class SimpleJobFactory {
             Logger.debug("create job: " + arrayNode.get(i));
             job = new Job();
             JsonNode fileNode = arrayNode.get(i);
-            String path = fileNode.get("url").asText();
+            String path = fileNode.get("name").asText();
 
             //TODO DANIEL noch zu richtiger file machen (daniel is kacke, Zitat:14.12.2015 12:35 Benedikt Linke)
             File file = new File("./public/images/rechnungtest.png");
@@ -93,6 +93,8 @@ public class SimpleJobFactory {
                     .setFocalLength(2.0)
                     .setSource(file.getAbsolutePath())
                     .build();
+
+            Logger.info("setting path: " + file.getAbsolutePath());
 
             setName(path);
             setStartTime(new DateTime());
