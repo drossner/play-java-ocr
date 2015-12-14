@@ -56,17 +56,22 @@
                                         </div>
                                         <p id="coordinaten"></p>
                                         <script>
-                                            /*
-                                            function getValuesOfSelectedArea(area){
-                                                $('#coordinaten').text("heigth: " + area.height + ", width: "+ area.width );
-                                            }*/
+                                            var areas;
+
+                                            function getValuesOfSelectedArea(areas){
+                                                this.areas = areas;
+                                            }
 
                                             function reset(){
                                                 document.getElementById('templating').contentWindow.resetAreas();
                                             }
 
                                             function getAreas(){
-                                                return document.getElementById('templating').contentWindow.getValues();
+                                                return this.areas;
+                                            }
+
+                                            function createArea(options){
+                                                document.getElementById('templating').contentWindow.createArea(options);
                                             }
 
                                             $('#deleteAreas').click(function(){
@@ -74,7 +79,7 @@
                                             })
 
                                             $('#metadata').click(function(){
-                                                document.getElementById('templating').contentWindow.createNewArea();
+                                                document.getElementById('templating').contentWindow.createNewArea('meta');
                                             });
                                         </script>
 

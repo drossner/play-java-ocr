@@ -63,13 +63,12 @@ function saveData() {
         console.log("saving: contrast: " + sliderContrastValue);
     }
 
-    var areas = Singleton.getInstance().getAreas();
+    var areas = getAreas();
     console.log(areas);
     for(var i = 0; i < areas.length; i++){
         var area = areas[i];
-        console.log(area);
-        currentJob.areas.push(new SelectArea(area.x, area.x2, area.y, area.y2, "metadata"));
-
+        console.log(area.type);
+        currentJob.areas.push(new SelectArea(area.x, area.x + area.width, area.y, area.y + area.height, area.type));
     }
 }
 
@@ -88,6 +87,20 @@ function JobHistoryViewModel(){
             job.preProcessing()[i].process();
         }
 
+        for(var i = 0; i < job.areas().length; i++){
+            var area = job.areas()[i];
+            console.log(area);
+
+            var options = {
+                x: area.xStart,
+                width: area.xEnd - area.xStart,
+                y: area.yStart,
+                height: area.yEnd - area.yStart,
+                type: area.type
+            };
+
+            createArea(options);
+        }
     }
 
     self.showModal = function(job){

@@ -190,7 +190,6 @@ function ListViewModel() {
         console.log(self.folderId());
         $("#launchBT").text(self.folderId());
 
-        job.folderId = self.folderId;
     }
 
     /**

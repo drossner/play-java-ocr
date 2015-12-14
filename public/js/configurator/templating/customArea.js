@@ -17,26 +17,32 @@ $(document).ready(function () {
 function debugQtyAreas (event, id, areas) {
     //window.parent.myfunction(areas[id]);
     console.log(areas.length + " areas", arguments);
-    Singleton.getInstance().setAreas(areas);
-};
+
+    window.parent.getValuesOfSelectedArea(areas);
+}
 
 // Display Valuse in parentView
 function getValues () {
     return this.areas;
     //window.parent.getValuesOfSelectedArea(areas[id]);
-};
+}
 
 
-function createNewArea(){
+function createNewArea(type){
     var areaOptions = {
         x: Math.floor((Math.random() * 200)),
         y: Math.floor((Math.random() * 200)),
         width: Math.floor((Math.random() * 100)) + 50,
         height: Math.floor((Math.random() * 100)) + 20,
+        type: type
     };
 
     $('img#example').selectAreas('add', areaOptions);
-};
+}
+
+function createArea(options){
+    $('img#example').selectAreas('add', options);
+}
 
 function deleteSelectedArea(){
     $('img#example').selectAreas('destroy');
