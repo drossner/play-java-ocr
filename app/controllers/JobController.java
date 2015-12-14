@@ -89,10 +89,10 @@ public class JobController extends Controller {
             throwable.printStackTrace();
         }
 
-        File file = new File(job.getImage().getSource());
+        String file = job.getImage().getSource();
 
         Logger.info("returning: " + file);
-        return ok(file.getAbsolutePath());
+        return ok(Json.toJson(file));
         //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 

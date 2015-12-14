@@ -17,10 +17,7 @@ function Job(id, initialJob){
     var path = "/json/getImageFromJobID/" + self.job().id;
     $.getJSON(path, {},
         function(data){
-        console.log(data);
-    }).error(function (msg) {
-        console.log(msg)
-        self.image = msg.responseText;
+            console.log(data);
     });
 }
 
