@@ -11,6 +11,7 @@ import play.libs.Json;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -19,11 +20,16 @@ import java.util.ArrayList;
 public class JobController extends Controller {
 
     public Result getJobHistory(){
-        ArrayList<Job> jobs = new ArrayList<>();
+        List<Job> jobs = null;
         String username = session().get("session");
 
-        //TODO select from database
+        try {
+            jobs = new modules.database.JobController().getUnProcessedJobs();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
 
+        /*
         Job job = new Job();
         job.setName("test.png");
         job.setId(18);
@@ -38,8 +44,13 @@ public class JobController extends Controller {
         job.setName("test3.png");
         job.setId(38);
         jobs.add(job);
+        */
 
-        return ok(Json.toJson(jobs));
+        if(jobs == null){
+            return ok(Json.toJson(new ArrayList<Job>()));
+        }else{
+            return ok(Json.toJson(jobs));
+        }
     }
 
     public Result getJobTypes(){

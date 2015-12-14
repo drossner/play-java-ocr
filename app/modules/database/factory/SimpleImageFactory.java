@@ -18,12 +18,8 @@ public class SimpleImageFactory {
         return image;
     }
 
-    public SimpleImageFactory setSource(byte[] source) {
-        try {
-            image.setSource(new SerialBlob(source));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public SimpleImageFactory setSource(String source) {
+        image.setSource(source);
 
         return this;
     }

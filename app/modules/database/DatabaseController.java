@@ -43,6 +43,25 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
         return query.getSingleResult();
     }
 
+    public <T> List<T> selectEntityList(Class<T> type, String whereColumn, Object where){
+        CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
+
+        CriteriaQuery<T> rc = builder.createQuery(type);
+        Root<T> rootQuery = rc.from(type);
+
+        rc.where(builder.equal(rootQuery.get(whereColumn), where));
+
+        TypedQuery<T> query = JPA.em().createQuery(rc);
+
+        List<T> list = query.getResultList();
+
+        if(list.size() == 0){
+            return null;
+        }
+
+        return list;
+    }
+
     @Transactional
     public <T> T selectEntity(Class<T> type, T2 where){
         CriteriaBuilder builder = JPA.em().getCriteriaBuilder();

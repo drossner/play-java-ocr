@@ -2,6 +2,7 @@ package controllers;
 
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import modules.database.factory.SimpleJobFactory;
 import modules.upload.FileContainer;
 import modules.upload.UploadHandler;
 import play.Logger;
@@ -40,6 +41,8 @@ public class UploadController extends Controller {
             ObjectNode result = null;
             try {
                 result = uploadHandler.addFilesToCache(uploadId, pictures);
+
+                new SimpleJobFactory().createJobsJsonBulk(result, session().get("session"));
             } catch (IOException e) {
                 Logger.error(e.getMessage(), e);
                 return internalServerError(e.getMessage());

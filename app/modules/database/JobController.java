@@ -58,6 +58,22 @@ public class JobController extends DatabaseController<Job, Object> {
         return selectEntityList(LayoutConfig.class, null);
     }
 
+    public void persistJob(Job job, Image image, String session) {
+        JPA.withTransaction(() -> {
+            JPA.em().persist(image);
+
+            job.setImage(image);
+            job.setUser(selectEntity(User.class, "eMail", session));
+            job.setProcessed(false);
+
+            JPA.em().persist(job);
+        });
+    }
+
+    public List<Job> getUnProcessedJobs() throws Throwable {
+        return JPA.withTransaction(() -> selectEntityList(Job.class, "processed", false));
+    }
+
     private class Language{
         public String name;
 
