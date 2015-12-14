@@ -61,7 +61,7 @@ function saveData() {
         console.log("saving: contrast: " + sliderContrastValue);
     }
 
-    var areas = getAreas();
+    var areas = Singleton.getInstance().getAreas();
     console.log(areas);
     for(var i = 0; i < areas.length; i++){
         var area = areas[i];

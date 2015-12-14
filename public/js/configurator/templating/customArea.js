@@ -1,7 +1,7 @@
 /**
  * Created by Benedikt Linke on 08.12.15.
  */
-var areas = [];
+var areas;
 
 $(document).ready(function () {
     $('img#example').selectAreas({
@@ -17,7 +17,7 @@ $(document).ready(function () {
 function debugQtyAreas (event, id, areas) {
     //window.parent.myfunction(areas[id]);
     console.log(areas.length + " areas", arguments);
-    this.areas = areas;
+    Singleton.getInstance().setAreas(areas);
 };
 
 // Display Valuse in parentView
