@@ -21,7 +21,7 @@
                                     <div class="row">
                                         <div class="col-xs-8">
                                             <div id="image-area">
-                                                <img id="canvas" style="width:100%;" />
+                                                <img id="canvas" src="" style="height: 100%; width:100%;" />
                                             </div>
                                         </div>
                                         <div class="col-xs-2">
@@ -56,6 +56,41 @@
                                         <p id="coordinaten"></p>
                                         <script>
                                             var areas;
+
+                                            function setImageSource(data, callback, job){
+                                                var image = $('#canvas');
+                                                image.remove();
+
+                                                image = $("#image-area").add("#canvas", '<img id="canvas" src="" style="height: 100%; width:100%;" />');
+
+                                                image.attr("src", data);
+
+                                                preProcessing.setCaman(Caman('#canvas', function () {
+                                                    this.render();
+
+                                                    callback(job);
+                                                }));
+
+                                                /*
+                                                 $('#canvas').attr("src", data);
+
+                                                preProcessing.caman.reset();
+                                                */
+
+                                                /*
+                                                var ctx = $('#canvas')[0].getContext("2d");
+                                                var img = new Image();
+                                                img.src = data;
+                                                img.onload = function() {
+                                                    ctx.drawImage(img, 0, 0);
+                                                };*/
+                                                /*
+                                                $.get(data,
+                                                        function(rs){
+                                                            var ctx = $('#canvas').getContext("2d");
+                                                            ctx.drawImage(rs, 0, 0);
+                                                        });*/
+                                            }
 
                                             function getValuesOfSelectedArea(areas){
                                                 this.areas = areas;

@@ -2,6 +2,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import modules.database.entities.Job;
+import org.imgscalr.Scalr;
 import play.api.Play;
 import play.mvc.Controller;
 import play.Logger;
@@ -10,10 +11,7 @@ import play.libs.Json;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,10 +93,20 @@ public class JobController extends Controller {
             throwable.printStackTrace();
         }
 
-        ByteArrayInputStream input = null;
-
+        Logger.info(job.getImage().getSource());
         File file = new File(job.getImage().getSource());
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
+        try {
+            BufferedImage image = ImageIO.read(file);
+            Logger.info("image: " + image);
+            ImageIO.write(image, "jpeg", baos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return ok(baos.toByteArray()).as("image/jpeg");
+        /*
         FileInputStream fileInputStream = null;
         byte[] bFile = new byte[(int) file.length()];
         try
@@ -115,8 +123,8 @@ public class JobController extends Controller {
 
         input = new ByteArrayInputStream(bFile);
 
-        return ok(input).as("image/jpeg");
-        /*
+        return ok(input).as("image/png");
+        *//*
         File file = new File(job.getImage().getSource());
 
         Logger.info("returning: " + file);
