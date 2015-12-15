@@ -8,15 +8,54 @@
     </div>
     <div class="purple-line">
     </div>
-    <div class="container-fluid">
-            <!-- content begins here -->
-        <p><a href="@routes.AuthenticationController.login(0)">Google login</a></p>
-        <p><a href="@routes.AuthenticationController.login(1)">Facebook login</a></p>
-        <p><a href="@routes.AuthenticationController.stubLogin()">Stub Login</a></p>
-        <p><a href="@routes.AuthenticationController.logout()">Logout</a>
-            Sollte nur fehlerfrei nach Stub Login funktionieren
-        </p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-3 purple-background">
+
+            <a href="@routes.AuthenticationController.login(1)" class="btn btn-facebook">
+
+                <span>Mit Facebook anmelden</span>
+            </a>
+            <br>
+            <a href="@routes.AuthenticationController.login(0)" class="btn btn-google">
+
+                <span>Mit Google+ anmelden</span>
+            </a>
+
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-4">
+            <br>
+            <br>
+            <i class="glyphicon glyphicon glyphicon glyphicon glyphicon-file btn-lg pull-left iconstyle"
+               aria-hidden="true"></i>
+
+            <h3 class="headlinestyle">Dokumente einscannen</h3>
+
+            <p class="paragraphmargin">Cras justo odio, dapibus ac facilisis in, egestas eget quam.</p>
+            <i class="glyphicon glyphicon glyphicon-edit btn-lg pull-left iconstyle" aria-hidden="true"></i>
+
+            <h3 class="headlinestyle">Nachträglich editieren</h3>
+
+            <p class="paragraphmargin">Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh
+                ultricies vehicula ut id elit.</p>
+            <i class="glyphicon glyphicon-align-left btn-lg pull-left iconstyle" aria-hidden="true"></i>
+
+            <h3 class="headlinestyle">So much Ergebnis haben!</h3>
+
+            <p class="paragraphmargin">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non
+                mi porta gravida at eget metus.</p>
+
+        </div>
+        <div class="col-md-2"></div>
     </div>
 
+    <a href="@routes.AuthenticationController.stubLogin()" class="btn btn-lila pull-left">
 
+        <span>stub login</span>
+    </a>
+    <br><br>
+
+</div>
 }

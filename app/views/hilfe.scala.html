@@ -4,12 +4,12 @@
           <div class="col-md-2"></div>
           <div class="col-md-3 purple-background">
 
-              <button href="#" class="btn btn-facebook">
+              <button href="@routes.AuthenticationController.login(1)" class="btn btn-facebook">
 
                   <span>Mit Facebook anmelden</span>
               </button>
               <br>
-              <button href="#" class="btn btn-google">
+              <button href="@routes.AuthenticationController.login(0)" class="btn btn-google">
 
                   <span>Mit Google+ anmelden</span>
               </button>
@@ -42,7 +42,7 @@
           <div class="col-md-2"></div>
       </div>
       <br><br><br><br>
-      <button href="#" class="btn btn-lila pull-left">
+      <button href="@routes.AuthenticationController.stubLogin()" class="btn btn-lila pull-left">
 
           <span>stub login</span>
       </button>
