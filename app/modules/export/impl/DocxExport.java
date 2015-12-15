@@ -2,16 +2,31 @@ package modules.export.impl;
 
 import modules.export.Export;
 import modules.export.Fragment;
+import org.docx4j.XmlUtils;
+import org.docx4j.dml.picture.Pic;
+import org.docx4j.dml.wordprocessingDrawing.Anchor;
+import org.docx4j.dml.wordprocessingDrawing.Inline;
+import org.docx4j.dml.wordprocessingDrawing.STAlignH;
+import org.docx4j.dml.wordprocessingDrawing.STRelFromH;
 import org.docx4j.jaxb.Context;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
+import org.docx4j.openpackaging.parts.relationships.Namespaces;
 import org.docx4j.vml.*;
 import org.docx4j.wml.*;
+import org.docx4j.wml.CTBackground;
 
+import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by Bendikt Linke on 12.12.2015.
@@ -58,9 +73,20 @@ public class DocxExport implements Export {
         P p = new P();
         mainDocumentPart.getContent().add(p);
 
-        R r = Context.getWmlObjectFactory().createR();
-        r.getContent().add(createTextBox(style , createContent(fragment.getContent())));
-        p.getContent().add(r);
+
+        if(fragment.getContent() instanceof String) {
+            R r = Context.getWmlObjectFactory().createR();
+            r.getContent().add(createTextBox(style, createContent(((String) fragment.getContent()))));
+            p.getContent().add(r);
+        }else{
+            R r = Context.getWmlObjectFactory().createR();
+            try {
+                r.getContent().add(createTextBox(style, createImageInTextBox((BufferedImage)fragment.getContent())));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            p.getContent().add(r);
+        }
     }
 
     @Override
@@ -128,7 +154,7 @@ public class DocxExport implements Export {
         CTTxbxContent txbxcontent = wmlObjectFactory.createCTTxbxContent();
         textbox.setTxbxContent(txbxcontent);
 
-        txbxcontent.getContent().add( textboxContent);
+        txbxcontent.getContent().add(textboxContent);
 
 
         shape.setVmlId("TextBox");
@@ -151,5 +177,52 @@ public class DocxExport implements Export {
         text.setValue( textContent);
 
         return p;
+    }
+
+    private P createImageInTextBox(BufferedImage content) throws Exception {
+
+        P p = Context.getWmlObjectFactory().createP();
+
+        String filenameHint = null;
+        String altText = null;
+        int id1 = 0;
+        int id2 = 1;
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] imageBytes;
+        ImageIO.write(content, "png", baos);
+        imageBytes = baos.toByteArray();
+
+        BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imageBytes);
+        Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, false);
+
+        // Now add the inline in w:p/w:r/w:drawing
+        org.docx4j.wml.ObjectFactory factory = Context.getWmlObjectFactory();
+
+        R  run = factory.createR();
+        Drawing drawing = factory.createDrawing();
+        run.getContent().add(drawing);
+        drawing.getAnchorOrInline().add(inline);
+        p.getContent().add(run);
+
+        return p;
+    }
+
+    // Create image, without specifying width
+    private R newImage(byte[] bytes, String filenameHint, String altText, int id1, int id2) throws Exception {
+
+        BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, bytes);
+        Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, false);
+
+
+        // Now add the inline in w:p/w:r/w:drawing
+        org.docx4j.wml.ObjectFactory factory = Context.getWmlObjectFactory();
+
+        org.docx4j.wml.R  run = factory.createR();
+        org.docx4j.wml.Drawing drawing = factory.createDrawing();
+        run.getContent().add(drawing);
+        drawing.getAnchorOrInline().add(inline);
+        return run;
+
     }
 }

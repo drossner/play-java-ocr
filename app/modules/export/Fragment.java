@@ -10,7 +10,7 @@ public class Fragment {
     double endX;
     double endY;
 
-    String content;
+    Object content;
 
     public double getStartX() {
         return startX;
@@ -44,11 +44,11 @@ public class Fragment {
         this.endY = endY;
     }
 
-    public String getContent() {
+    public Object getContent() {
         return content;
     }
 
-    public void setContent(String content) {
+    public void setContent(Object content) {
         this.content = content;
     }
 }
