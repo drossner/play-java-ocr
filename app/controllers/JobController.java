@@ -1,5 +1,6 @@
 package controllers;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import modules.database.entities.Job;
 import modules.database.entities.LayoutConfig;
 import play.mvc.Controller;
@@ -55,18 +56,18 @@ public class JobController extends Controller {
         return ok(Json.toJson(rc));
     }
 
-    public Result getLanguages(){
-        ArrayList<String> rc = new ArrayList<>();
+    public Result getLanguages() throws Throwable {
+        /*ArrayList<String> rc = new ArrayList<>();
         String username = session().get("session");
-
-        //TODO select from database
 
         rc.add("Detusch");
         rc.add("Anglisch");
         rc.add("Schwiezerdütsch");
-        rc.add("Fränggisch");
+        rc.add("Fränggisch"); */
 
-        return ok(Json.toJson(rc));
+        modules.database.JobController controller = new modules.database.JobController();
+
+        return ok(Json.toJson(controller.getAllCountryLanguages()));
     }
 
     public Result getImageFromJobID(int id){
@@ -75,5 +76,15 @@ public class JobController extends Controller {
         File file = new File("./public/images/rechnungtest.png");
 
         return ok(file);
+    }
+
+    public Result process(){
+        Logger.info(request().toString());
+
+        JsonNode jobs = request().body().asJson();
+
+        Logger.info(jobs.toString());
+
+        return ok();
     }
 }

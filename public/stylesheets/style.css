@@ -237,7 +237,6 @@ a.dropdown-toggle
 font-weight: lighter;
 }
 
-
 canvas {
     padding: 0;
     margin: auto;
@@ -292,25 +291,3 @@ canvas {
 }
 
 
-.pic
-{
-    /*background: darkgray;*/
-
-}
-
-.can
-{
-    margin-left: 0;
-
-}
-
-#canvas {
-    width:  800px;
-    height: 800px;
-    border: 10px solid transparent;
-
-}
-.rectangle {
-    border: 1px solid #FF0000;
-    position: absolute;
-}

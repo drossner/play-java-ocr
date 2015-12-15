@@ -32,7 +32,8 @@ public class Application extends Controller {
         if(session().get("session") != null){
             return redirect(routes.Application.hochladen(2));
         } else {
-            return ok(index.render());
+            String target = session().get("target");
+            return ok(index.render(target != null, target));
         }
     }
 
@@ -85,6 +86,10 @@ public class Application extends Controller {
     public Result template(){
         return ok(views.html.modals.templating.render());
     }
+
+    public Result imgEdit(){
+            return ok(views.html.modals.imageEdit.render());
+        }
 
    /* @Transactional
     public Result testDatabase(){

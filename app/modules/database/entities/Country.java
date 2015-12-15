@@ -7,43 +7,15 @@ import javax.persistence.*;
  */
 
 @Entity
-@Table(name="Country")
-public class Country {
+@Table(name="Country", uniqueConstraints = {@UniqueConstraint(columnNames = "country")})
+public class Country extends DomainObject{
 
     @Id
     @GeneratedValue
     private int id;
 
-    @Column
-    private String name;
-
-    @Column
-    private int isoCode;
-
-    public Country(String name, int isoCode){
-        setName(name);
-        setIsoCode(isoCode);
-    }
-
-    public Country() {
-
-    }
-
-    public int getIsoCode() {
-        return isoCode;
-    }
-
-    public void setIsoCode(int isoCode) {
-        this.isoCode = isoCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
+    @Enumerated(EnumType.STRING)
+    private CountryImpl country;
 
     public int getId() {
         return id;
@@ -51,5 +23,13 @@ public class Country {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public CountryImpl getCountry() {
+        return country;
+    }
+
+    public void setCountry(CountryImpl country) {
+        this.country = country;
     }
 }

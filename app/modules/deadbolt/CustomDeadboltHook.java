@@ -18,6 +18,8 @@ public class CustomDeadboltHook extends Module
     public Seq<Binding<?>> bindings(final Environment environment,
                                     final Configuration configuration)
     {
-        return seq(bind(HandlerCache.class).to(DeadboltHandlerCache.class).in(Singleton.class));
+        return seq(bind(HandlerCache.class)
+                .to(DeadboltHandlerCache.class)
+                .in(Singleton.class));
     }
 }

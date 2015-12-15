@@ -5,19 +5,16 @@ import controllers.security.OcrRole;
 import modules.authentication.AuthResponse;
 import modules.authentication.FacebookAuthentication;
 import modules.authentication.OAuthentication;
-import modules.database.SimpleUserFactory;
+import modules.database.entities.CountryImpl;
+import modules.database.factory.SimpleUserFactory;
 import modules.database.entities.User;
-import org.hibernate.Session;
 import play.Logger;
 import play.db.jpa.JPA;
-import play.db.jpa.Transactional;
 import play.libs.F.Promise;
 import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -87,7 +84,9 @@ public class AuthenticationController extends Controller{
     }
 
     private Result setUpSession(AuthResponse authResponse){
-        //first of all clear the session()
+        //Is there a target present?
+        String target = session().get("target");
+        //clear the session()
         session().clear();
         //get the email of the user
         final String userEmail = authResponse.getEmail();
@@ -104,11 +103,16 @@ public class AuthenticationController extends Controller{
                     .setEmail(userEmail)
                     .setPassword("")
                     .addRole(OcrRole.USER)
-                    .build());
+                    .persist());
         }
         //session init
         session().put("session", userEmail);
-        return redirect(routes.Application.index());
+        if(target != null){
+            return redirect(target);
+        } else {
+            return redirect(routes.Application.index());
+        }
+
     }
 
     private OAuthentication getOAuthenticationImpl(int method) throws InvalidParameterException{
@@ -120,35 +124,24 @@ public class AuthenticationController extends Controller{
 
     public Promise<Result> stubLogin() {
         return Promise.promise(() -> JPA.withTransaction(() -> {
+            String target = session().get("target");
             session().clear();
             final String userEmail = "test@test.de";
-            //lokup stub user userEmail
-            //session creation
-            //Session hibSession = JPA.em().unwrap(Session.class); // not recommendet: http://www.theserverside.com/news/2240186700/The-JPA-20-EntityManager-vs-the-Hibernate-Session-Which-one-to-use
-            //hibSession.beginTransaction(); //done by transactional
 
-            CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
-            CriteriaQuery<Long> cq = qb.createQuery(Long.class);
-            Root user = cq.from(User.class);
-            cq.select(qb.count(user));
-            cq.where(qb.equal(user.get("eMail"), userEmail));
-            boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;
-
-            /*TypedQuery<Integer> q = JPA.em().createQuery("COUNT from User u where u.eMail = :email", Integer.class);
-            q.setParameter("email", userEmail); */
-            //boolean exists = q.getSingleResult() == 1;
-            if (!exists) {
-                JPA.em().persist(new SimpleUserFactory()
-                        .setEmail(userEmail)
-                        .setPassword("test")
-                        .addRole(OcrRole.USER)
-                        .build());
+            if(new SimpleUserFactory()
+                    .setEmail(userEmail)
+                    .setCountry(CountryImpl.GERMAN)
+                    .setPassword("test")
+                    .addRole(OcrRole.USER)
+                    .persist() != null){
+                session("session", userEmail);
             }
 
-            //hibSession.getTransaction().commit(); //done by transactional
-            //hibSession.close(); //done by transactional
-            session("session", userEmail);
-            return redirect(routes.Application.index());
+            if(target != null){
+                return redirect(target);
+            } else {
+                return redirect(routes.Application.index());
+            }
         }));
     }
 
