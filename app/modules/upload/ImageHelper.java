@@ -5,6 +5,7 @@ import modules.database.entities.Image;
 import play.Logger;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -33,7 +34,11 @@ public class ImageHelper {
         String fileType = getFileType(inputFile);
         //ImageIO does the job
         if(ioExtensions.contains(fileType)){
-            return ImageIO.read(f);
+            BufferedImage image = ImageIO.read(f);
+            BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
+            //fill transparent pixels with white
+            img.getGraphics().drawImage(image, 0, 0, Color.WHITE, null);
+            return img;
         } else throw new IOException("Unsupported file-type");
     }
 
