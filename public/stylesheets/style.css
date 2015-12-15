@@ -54,6 +54,7 @@ a.navbar-text
     height: 105px;
     max-width: 250px;
     margin-left: 30px;
+    margin-top: -5px;
 }
 
 .iconstyle {
