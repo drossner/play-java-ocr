@@ -7,6 +7,7 @@ import org.docx4j.jaxb.Context;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.docx4j.openpackaging.parts.DocPropsCustomPart;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.vml.*;
@@ -14,9 +15,11 @@ import org.docx4j.wml.*;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * Created by Bendikt Linke on 12.12.2015.
@@ -77,6 +80,7 @@ public class DocxExport implements Export {
             }
             p.getContent().add(r);
         }
+
     }
 
     /**
@@ -84,7 +88,6 @@ public class DocxExport implements Export {
      */
     @Override
     public void newPage() {
-
         Br breakObj = new Br();
         breakObj.setType(STBrType.PAGE);
 
@@ -95,7 +98,6 @@ public class DocxExport implements Export {
         } catch (Docx4JException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -217,21 +219,28 @@ public class DocxExport implements Export {
         return p;
     }
 
-    // Create image, without specifying width
-    private R newImage(byte[] bytes, String filenameHint, String altText, int id1, int id2) throws Exception {
+    private void addCustomDocProp(String key, String value){
+        DocPropsCustomPart docPropsCustomPart = null;
+        try {
+            docPropsCustomPart = new DocPropsCustomPart();
+            wordMLPackage.addTargetPart(docPropsCustomPart);
+            org.docx4j.docProps.custom.ObjectFactory cpfactory = new org.docx4j.docProps.custom.ObjectFactory();
+            org.docx4j.docProps.custom.Properties customProps = cpfactory.createProperties();
+            docPropsCustomPart.setJaxbElement(customProps);
 
-        BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, bytes);
-        Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, false);
+            // Ok, let's add a custom property.
+            org.docx4j.docProps.custom.Properties.Property newProp = cpfactory.createPropertiesProperty();
+            newProp.setName(key);
+            newProp.setFmtid(docPropsCustomPart.fmtidValLpwstr ); // Magic string
+            newProp.setPid( customProps.getNextId() );
+            newProp.setLpwstr(value);
 
+            // .. add it
+            customProps.getProperty().add(newProp);
 
-        // Now add the inline in w:p/w:r/w:drawing
-        org.docx4j.wml.ObjectFactory factory = Context.getWmlObjectFactory();
-
-        org.docx4j.wml.R  run = factory.createR();
-        org.docx4j.wml.Drawing drawing = factory.createDrawing();
-        run.getContent().add(drawing);
-        drawing.getAnchorOrInline().add(inline);
-        return run;
+        } catch (InvalidFormatException e) {
+            e.printStackTrace();
+        }
 
     }
 }
