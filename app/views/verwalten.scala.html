@@ -2,30 +2,74 @@
 @(user: User)
 
 @main("Verwalten")("verwalten"){
-<div class="container">
-    <!-- content begins here -->
+<div class="container tablespacing2">
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Verwalten</div>
+        <div class="panel-body">
+            <p>Hier verwirren wir Sie mit Benutzerkonten</p>
+        </div>
+        <!-- Table -->
+        <table class="table">
+            <thead>
+            <tr class="table-header">
+                <th>oAuth</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Nutzername:</td>
+                <td>alfons123</td>
+            </tr>
+            <tr>
+                <td>E-Mail:</td>
+                <td>alfons123[at]quantentunnel.de</td>
+            </tr>
 
-    <table class="table table-bordered">
-        <tr>
-            <th>Field</th>
-            <th>Value</th>
-        </tr>
-        <tr>
-            <td>ID</td>
-            <td>@user.getId</td>
-        </tr>
-        <tr>
-            <td>E-Mail</td>
-            <td>@user.geteMail()</td>
-        </tr>
-        <tr>
-            <td>Roles</td>
-            <td>@for(role <- user.getRoles()) {
-                <span>@role.getName </span>
-                }
-            </td>
-        </tr>
-    </table>
 
+            </tbody>
+
+            <thead>
+            <tr class="table-header">
+                <th>unser Brei</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Sprache:</td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">Deutsch<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">Englisch</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Passwort ändern:</td>
+                <td>
+                    <div><input type="password" class="form-control" id="pw1" placeholder="Passwort">
+                    </div>
+            </tr>
+            <tr>
+                </td>
+                <td>Passwort wiederholen:</td>
+                <td>
+                    <div><input type="password" class="form-control" id="pw2" placeholder="Passwort">
+
+                    </div>
+            </tr>
+
+
+            </tbody>
+        </table>
+    </div>
+    <p class="warning-lachs">Passwort stimmt nicht überein!</p>
+    <button type="button" class="btn btn-lila pull-right" href="#">Übernehmen</button>
+</div>
 </div>
 }
