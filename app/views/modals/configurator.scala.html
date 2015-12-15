@@ -61,9 +61,9 @@
                                                 var image = $('#canvas');
                                                 image.remove();
 
-                                                image = $("#image-area").add("#canvas", '<img id="canvas" src="" style="height: 100%; width:100%;" />');
+                                                $("#image-area").html('<img id="canvas" src="" style="height: 100%; width:100%;" />');
 
-                                                image.attr("src", data);
+                                                $('#canvas').attr("src", data);
 
                                                 preProcessing.setCaman(Caman('#canvas', function () {
                                                     this.render();
