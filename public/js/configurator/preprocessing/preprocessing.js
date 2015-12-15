@@ -5,6 +5,7 @@
 var caman = Caman('#canvas');
 
 var rotation = 0;
+var bild = caman.toBase64;
 
 $(function() {
     $('.slider').each(function() {
@@ -50,11 +51,23 @@ $(function() {
         resetFilters();
     });
 
-    $('#save').click(function() {
-        window.open(caman.toBase64());
-    });
-
 });
+
+function saveStuff(){
+    //alert("SaveStuff in preprocessing.js wurde aufgerufen");
+    bild = caman.toBase64();
+    console.log(bild);
+    return bild;
+}
+
+function getCanvasHeigth(){
+    return $('#canvas').height();
+}
+
+function getCanvasWidth(){
+    return $('#canvas').width();
+}
+
 function applyFilters() {
     caman.revert(false);
 

@@ -2,6 +2,7 @@
  * Created by Benedikt Linke on 08.12.15.
  */
 var areas;
+var IMG;
 
 $(document).ready(function () {
     $('img#example').selectAreas({
@@ -69,3 +70,23 @@ function output(text) {
 
 }
 
+function loadImageForSecondStep(imageBase64, canvasHeigth, canvasWidth){
+
+    console.log("load second step");
+    $('#example').attr('heigth', canvasHeigth);
+    $('#example').attr('width', canvasWidth);
+    $('#example').attr('src',  imageBase64);
+
+
+    //Get width and height from base64
+    $("body").append("<img id='hiddenImage' src='"+ imageBase64 +"' />");
+    var width = $('#hiddenImage').width();
+    var height = $('#hiddenImage').height();
+
+    $('#hiddenImage').remove();
+
+
+    //Set width and height for the overlay
+    $(".select-areas-overlay").css({"height": canvasHeigth, "width": canvasWidth});
+    $( "div.image-decorator > div").css({"height": canvasHeigth, "width": canvasWidth});
+}
