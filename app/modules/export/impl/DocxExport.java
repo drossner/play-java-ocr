@@ -79,8 +79,22 @@ public class DocxExport implements Export {
         }
     }
 
+    /**
+     * Adds a page break to the document.
+     */
     @Override
     public void newPage() {
+
+        Br breakObj = new Br();
+        breakObj.setType(STBrType.PAGE);
+
+        P paragraph = Context.getWmlObjectFactory().createP();
+        paragraph.getContent().add(breakObj);
+        try {
+            mainDocumentPart.getContents().getBody().getContent().add(paragraph);
+        } catch (Docx4JException e) {
+            e.printStackTrace();
+        }
 
     }
 

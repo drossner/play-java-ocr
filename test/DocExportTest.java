@@ -2,6 +2,7 @@ import modules.export.Export;
 import modules.export.Fragment;
 import modules.export.impl.DocxExport;
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import play.Logger;
 
@@ -24,24 +25,43 @@ public class DocExportTest {
 
     @Before
     public void setupTest(){
+        export = new DocxExport();
+        export.initialize(path, fileName);
     }
 
     @Test
     public void createDocxTextTest(){
-        export = new DocxExport();
-        export.initialize(path, fileName);
+
         Fragment temp = new DataCreator().getTextFragment();
         export.export(temp);
+        export.newPage();
+
         assertNotNull(export.finish());
     }
 
     @Test
     public void createDocxPicTest() throws IOException {
-        export = new DocxExport();
-        export.initialize(path, fileName);
         Fragment temp = new DataCreator().getImageFragment();
         export.export(temp);
         assertNotNull(export.finish());
+    }
+
+    @Test
+    public void createNewPageTest() throws IOException {
+        Fragment temp = new DataCreator().getTextFragment();
+        export.export(temp);
+        export.newPage();
+
+        Fragment tempImg = new DataCreator().getImageFragment();
+        export.export(tempImg);
+        assertNotNull(export.finish());
+    }
+
+
+
+    @After
+    public void finishDocxTest(){
+
     }
 
 
@@ -61,10 +81,10 @@ public class DocExportTest {
             Fragment fragment = new Fragment();
 
             fragment.setContent(ImageIO.read(new File("/Users/Ben/OCR/play-java-ocr/test/testFiles/Wissenschaftlicher_Artikel.PNG")));
-            fragment.setStartX(50);
-            fragment.setStartY(50);
-            fragment.setEndX(70);
-            fragment.setEndY(70);
+            fragment.setStartX(10);
+            fragment.setStartY(30);
+            fragment.setEndX(300);
+            fragment.setEndY(60);
             return fragment;
         }
 
