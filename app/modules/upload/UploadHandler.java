@@ -213,6 +213,6 @@ public class UploadHandler {
         for(FileContainer fc : files){
             fc.getFile().delete();
         }
-        fileList.remove(files);
+        fileList.remove(uploadId);
     }
 }
