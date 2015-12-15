@@ -2,12 +2,18 @@ package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import modules.database.entities.Job;
+import play.api.Play;
 import play.mvc.Controller;
 import play.Logger;
 import play.mvc.Result;
 import play.libs.Json;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,10 +95,32 @@ public class JobController extends Controller {
             throwable.printStackTrace();
         }
 
-        String file = job.getImage().getSource();
+        ByteArrayInputStream input = null;
+
+        File file = new File(job.getImage().getSource());
+
+        FileInputStream fileInputStream = null;
+        byte[] bFile = new byte[(int) file.length()];
+        try
+        {
+            //convert file into array of bytes
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bFile);
+            fileInputStream.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        input = new ByteArrayInputStream(bFile);
+
+        return ok(input).as("image/jpeg");
+        /*
+        File file = new File(job.getImage().getSource());
 
         Logger.info("returning: " + file);
-        return ok(Json.toJson(file));
+        return ok(Json.toJson(file));*/
         //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
