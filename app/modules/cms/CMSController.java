@@ -78,6 +78,10 @@ public class CMSController {
         return documentController.createDocument(target, file, fileType);
     }
 
+    public Document getDocumentById(String id) {
+        return documentController.getDocumentById(id);
+    }
+
     public boolean deleteDocument(String objectId){
         return documentController.deleteDocument(objectId);
     }

@@ -1,7 +1,13 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import modules.cms.CMSController;
+import modules.cms.SessionHolder;
 import modules.database.entities.Job;
+import modules.upload.ImageHelper;
+import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.util.FileUtils;
+import org.apache.chemistry.opencmis.commons.impl.Base64;
 import org.imgscalr.Scalr;
 import play.api.Play;
 import play.mvc.Controller;
@@ -13,6 +19,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -83,7 +90,7 @@ public class JobController extends Controller {
         return ok(Json.toJson(controller.getAllCountryLanguages()));
     }
 
-    public Result getImageFromJobID(int id){
+    public Result getImageFromJobID(int id) throws IOException {
         Logger.info("id erhalten: " + id);
 
         Job job = null;
@@ -93,19 +100,27 @@ public class JobController extends Controller {
             throwable.printStackTrace();
         }
 
-        Logger.info(job.getImage().getSource());
-        File file = new File(job.getImage().getSource());
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        if(job != null){
+            if(session().get("session").equals(job.getUser().geteMail())){
+                //TODO DANIEL ERRROR
+                return internalServerError();
+            }
 
-        try {
-            BufferedImage image = ImageIO.read(file);
-            Logger.info("image: " + image);
-            ImageIO.write(image, "jpeg", baos);
-        } catch (IOException e) {
-            e.printStackTrace();
+            CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
+            Document doc = controller.getDocumentById(job.getImage().getSource());
+
+            String path = "./temp_" + new Date().getTime();
+
+            FileUtils.download(doc.getId(), path, controller.getSession());
+
+            File file = new File(path);
+            byte[] rc = new ImageHelper().convertBaos(file).toByteArray();
+
+            file.delete();
+            return ok(rc).as("image/jpeg");
         }
-
-        return ok(baos.toByteArray()).as("image/jpeg");
+        //TODO DANIEL ERROR
+        return internalServerError();
         /*
         FileInputStream fileInputStream = null;
         byte[] bFile = new byte[(int) file.length()];

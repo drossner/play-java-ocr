@@ -6,6 +6,7 @@ import play.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -37,6 +38,19 @@ public class ImageHelper {
         } else throw new IOException("Unsupported file-type");
     }
 
+    public ByteArrayOutputStream convertBaos(File file) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try {
+            BufferedImage image = ImageIO.read(file);
+            ImageIO.write(image, "jpeg", baos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return baos;
+    }
+
     public boolean fileIsValid(FileContainer fc){
         boolean readable = false;
         try {
@@ -53,5 +67,4 @@ public class ImageHelper {
         assert(splittedType.length == 2);
         return splittedType[1].toLowerCase();
     }
-
 }
