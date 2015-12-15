@@ -24,6 +24,7 @@ GET         /json/jobLanguage       controllers.JobController.getLanguages
 GET         /json/getImageFromJobID/:id controllers.JobController.getImageFromJobID(id: Int)
 
 GET         /json/getUserFolders    controllers.FolderController.getUserFolders
+GET         /json/deleteJob/:id     controllers.JobController.delete(id: Int)
 
 POST         /json/processJobs       controllers.JobController.process
 

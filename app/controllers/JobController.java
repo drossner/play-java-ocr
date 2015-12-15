@@ -124,6 +124,10 @@ public class JobController extends Controller {
         //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
+    public Result delete(int id){
+        return ok();
+    }
+
     public Result process(){
         Logger.info(request().toString());
 

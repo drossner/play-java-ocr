@@ -16,7 +16,6 @@ function Job(id, initialJob){
     var path = "/json/getImageFromJobID/" + self.job().id;
     $.get(path, {},
         function(data){
-            console.log(data);
             self.image(data);
     });
 }
@@ -123,6 +122,16 @@ function JobHistoryViewModel(){
         currentJob = job;
 
         $("#modal-sample-1").modal('show');
+    }
+
+    self.delete = function(job){
+        console.log("delete: " + job);
+        self.jobs.remove(job);
+
+        var path = "/json/delete/" + job.id;
+        $.get(path, function(result){
+            console.log(result);
+        });
     }
 
     self.processJobs = function () {
