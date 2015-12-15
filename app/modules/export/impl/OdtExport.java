@@ -20,6 +20,11 @@ public class OdtExport implements Export {
     }
 
     @Override
+    public void newPage() {
+
+    }
+
+    @Override
     public File finish() {
         return null;
     }

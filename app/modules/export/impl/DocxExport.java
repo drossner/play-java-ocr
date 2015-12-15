@@ -2,31 +2,21 @@ package modules.export.impl;
 
 import modules.export.Export;
 import modules.export.Fragment;
-import org.docx4j.XmlUtils;
-import org.docx4j.dml.picture.Pic;
-import org.docx4j.dml.wordprocessingDrawing.Anchor;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
-import org.docx4j.dml.wordprocessingDrawing.STAlignH;
-import org.docx4j.dml.wordprocessingDrawing.STRelFromH;
 import org.docx4j.jaxb.Context;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
-import org.docx4j.openpackaging.parts.relationships.Namespaces;
 import org.docx4j.vml.*;
 import org.docx4j.wml.*;
-import org.docx4j.wml.CTBackground;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by Bendikt Linke on 12.12.2015.
@@ -87,6 +77,11 @@ public class DocxExport implements Export {
             }
             p.getContent().add(r);
         }
+    }
+
+    @Override
+    public void newPage() {
+
     }
 
     @Override
