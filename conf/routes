@@ -4,7 +4,7 @@
 
 # Home page
 GET           /                               controllers.Application.index()
-GET           /hochladen                      controllers.Application.hochladen(step: Int ?= 1)
+GET           /hochladen                      controllers.Application.hochladen(step: Int ?= 1, uploadId: String ?= null)
 GET           /verwalten                      controllers.Application.verwalten()
 GET           /ablage                         controllers.Application.ablage()
 GET           /hilfe                          controllers.Application.hilfe()

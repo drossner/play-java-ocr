@@ -30,7 +30,7 @@ public class Application extends Controller {
 
     public Result index() {
         if(session().get("session") != null){
-            return redirect(routes.Application.hochladen(2));
+            return redirect(routes.Application.hochladen(1, null));
         } else {
             String target = session().get("target");
             return ok(index.render(target != null, target));
@@ -38,17 +38,13 @@ public class Application extends Controller {
     }
 
     @SubjectPresent
-    public Result secured(){
-        return ok("this site is protected!");
-    }
-
-    @SubjectPresent
-    public Result hochladen(int step){
+    public Result hochladen(int step, String inUploadId){
         if(step == 1) {
             String uploadId = uploadHandler.createUploadId();
             //session().put(uploadId, ""+step);
             return ok(hochladen_1.render(uploadId));
         } else if (step == 2){
+            //use inUploadId
             return ok(hochladen_2.render());
         } else {
             return badRequest();
