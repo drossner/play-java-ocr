@@ -101,23 +101,23 @@ public class JobController extends Controller {
         }
 
         if(job != null){
-            if(session().get("session").equals(job.getUser().geteMail())){
+            Logger.info("job erhalten");
+
+            //TODO geht irgendwie net ^^
+            /*
+            if(session().get("session").trim().equals(job.getUser().geteMail().trim())){
+                Logger.info("session not user email => " + session().get("session") + " != " + job.getUser().geteMail());
                 //TODO DANIEL ERRROR
                 return internalServerError();
-            }
+            }*/
 
             CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
-            Document doc = controller.getDocumentById(job.getImage().getSource());
 
-            String path = "./temp_" + new Date().getTime();
+            BufferedImage image = controller.readingAImage(job.getImage().getSource());
 
-            FileUtils.download(doc.getId(), path, controller.getSession());
+            Logger.info("image: " + image);
 
-            File file = new File(path);
-            byte[] rc = new ImageHelper().convertBaos(file).toByteArray();
-
-            file.delete();
-            return ok(rc).as("image/jpeg");
+            return ok(new ImageHelper().convertBaos(image).toByteArray()).as("image/jpeg");
         }
         //TODO DANIEL ERROR
         return internalServerError();

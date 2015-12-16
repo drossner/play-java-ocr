@@ -42,7 +42,6 @@ public class UploadController extends Controller {
             try {
                 result = uploadHandler.addFilesToCache(uploadId, pictures);
 
-                new SimpleJobFactory().createJobsJsonBulk(result, session().get("session"));
             } catch (IOException e) {
                 Logger.error(e.getMessage(), e);
                 return internalServerError(e.getMessage());

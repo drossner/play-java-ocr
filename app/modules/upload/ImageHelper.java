@@ -43,6 +43,18 @@ public class ImageHelper {
         } else throw new IOException("Unsupported file-type");
     }
 
+    public ByteArrayOutputStream convertBaos(BufferedImage image) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        try {
+            ImageIO.write(image, "jpeg", baos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return baos;
+    }
+
     public ByteArrayOutputStream convertBaos(File file) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
