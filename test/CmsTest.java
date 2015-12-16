@@ -79,7 +79,7 @@ public class CmsTest {
         try {
             Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
             Logger.info("Start to downloading");
-            assertTrue(cmsController.downloadDocumant(testDocument.getId(), path + "/downloaded/downloadTest.png"));
+            assertTrue(cmsController.downloadDocument(testDocument.getId(), path + "/downloaded/downloadTest.png"));
             assertTrue(cmsController.deleteDocument(testDocument.getId()));
 
         } catch (FileNotFoundException e) {
