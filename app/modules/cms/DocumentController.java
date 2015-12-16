@@ -1,15 +1,16 @@
 package modules.cms;
 
 import org.apache.chemistry.opencmis.client.api.*;
+import org.apache.chemistry.opencmis.client.util.FileUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import play.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +69,31 @@ public class DocumentController {
             Logger.info("Dokument not found");
             return false;
         }
+    }
+
+    public boolean downloadDocument(String object, String destinationPath){
+        try {
+            FileUtils.download((Document) cmsController.getSession().getObject(object), destinationPath);
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public BufferedImage readingImage(String object){
+        Document document = (Document) cmsController.getSession().getObject(object);
+        String filename = document.getName();
+        InputStream stream = document.getContentStream().getStream();
+
+        BufferedImage bufferedImage = null;
+        try {
+             bufferedImage = ImageIO.read(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return bufferedImage;
     }
 
 

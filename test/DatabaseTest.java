@@ -19,7 +19,7 @@ import static play.test.Helpers.*;
  */
 public class DatabaseTest {
 
-
+/*
     @Test
     public void createUserTest(){
         running(fakeApplication(), () -> {
@@ -52,4 +52,5 @@ public class DatabaseTest {
         }
 
     }
+    */
 }

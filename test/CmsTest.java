@@ -6,8 +6,11 @@ import org.junit.Before;
 import org.junit.Test;
 import play.Logger;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
@@ -20,8 +23,8 @@ public class CmsTest {
 
     CMSController cmsController;
 
-    String user = "test";
-    String password = "test";
+    String user = "ocr";
+    String password = "ocr";
 
 
     @Before
@@ -61,6 +64,46 @@ public class CmsTest {
 
         } catch (FileNotFoundException e) {
             Logger.info("File not found",e);
+        }
+    }
+
+    @Test
+    public void downloadDocumentTest(){
+        String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
+
+        File file = new File(path + "Wissenschaftlicher_Artikel.PNG");
+        String fileType = "File";
+
+        Folder workspaceFolder = cmsController.getWorkspaceFolder();
+
+        try {
+            Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
+            Logger.info("Start to downloading");
+            assertTrue(cmsController.downloadDocumant(testDocument.getId(), path + "/downloaded/downloadTest.png"));
+            assertTrue(cmsController.deleteDocument(testDocument.getId()));
+
+        } catch (FileNotFoundException e) {
+            Logger.info("File not found",e);
+        }
+    }
+
+    @Test
+    public void readingAImageTest(){
+        String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
+
+        File file = new File(path + "Wissenschaftlicher_Artikel.PNG");
+        String fileType = "File";
+
+        Folder workspaceFolder = cmsController.getWorkspaceFolder();
+        try {
+            Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
+
+            BufferedImage bufferedImage = cmsController.readingAImage(testDocument.getId());
+            File f = new File(path+"downloaded/testFile.png");
+            assertTrue(ImageIO.write(bufferedImage, "png", f));
+            assertTrue(cmsController.deleteDocument(testDocument.getId()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
