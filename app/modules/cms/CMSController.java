@@ -4,6 +4,7 @@ import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.hibernate.mapping.List;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -78,7 +79,18 @@ public class CMSController {
         return documentController.createDocument(target, file, fileType);
     }
 
+    public Document getDocument(String objectId) {
+        return documentController.getDocumentById(objectId);
+    }
+
     public boolean deleteDocument(String objectId){
         return documentController.deleteDocument(objectId);
+    }
+    public boolean downloadDocumant(String objectId, String destinationPath){
+        return documentController.downloadDocument(objectId, destinationPath);
+    }
+
+    public BufferedImage readingAImage (String objectId){
+        return documentController.readingAImage(objectId);
     }
 }
