@@ -1,14 +1,11 @@
 /**
  * Created by Benedikt Linke on 08.12.15.
  */
-var areas;
-var IMG;
 
 $(document).ready(function () {
     $('img#example').selectAreas({
         minSize: [10, 10],
         onChanged: debugQtyAreas,
-        width: 500,
         allowSelect: false
     });
 });
@@ -24,8 +21,7 @@ function debugQtyAreas (event, id, areas) {
 
 // Display Valuse in parentView
 function getValues () {
-    return this.areas;
-    //window.parent.getValuesOfSelectedArea(areas[id]);
+    return $('img#example').selectAreas.areas;
 }
 
 
@@ -70,23 +66,13 @@ function output(text) {
 
 }
 
-function loadImageForSecondStep(imageBase64, canvasHeigth, canvasWidth){
-
-    console.log("load second step");
-    $('#example').attr('heigth', canvasHeigth);
-    $('#example').attr('width', canvasWidth);
-    $('#example').attr('src',  imageBase64);
-
-
-    //Get width and height from base64
-    $("body").append("<img id='hiddenImage' src='"+ imageBase64 +"' />");
-    var width = $('#hiddenImage').width();
-    var height = $('#hiddenImage').height();
-
-    $('#hiddenImage').remove();
-
+function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
+    var exampleImage = $('img#example');
+    exampleImage.attr('heigth', canvasHeight);
+    exampleImage.attr('width', canvasWidth);
+    exampleImage.attr('src',  imageBase64);
 
     //Set width and height for the overlay
-    $(".select-areas-overlay").css({"height": canvasHeigth, "width": canvasWidth});
-    $( "div.image-decorator > div").css({"height": canvasHeigth, "width": canvasWidth});
+    $(".select-areas-overlay").css({"height": canvasHeight, "width": canvasWidth});
+    $("div.image-decorator > div").css({"height": canvasHeight, "width": canvasWidth});
 }

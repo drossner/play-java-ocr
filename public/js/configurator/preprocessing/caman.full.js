@@ -1,12 +1,12 @@
 
 (function() {
     var $, Analyze, Blender, Calculate, Caman, CamanParser, Canvas, Convert, Event, Fiber, Filter, IO, Image, Layer, Log, Module, Pixel, Plugin, Renderer, Root, Store, Util, fs, http, moduleKeywords, slice, vignetteFilters, __indexOf = [].indexOf || function(item) {
-        for (var i = 0, l = this.length; i < l; i++) {
-            if (i in this && this[i] === item)
-                return i;
-        }
-        return - 1;
-    }, __slice = [].slice, __hasProp = {}.hasOwnProperty, __bind = function(fn, me) {
+            for (var i = 0, l = this.length; i < l; i++) {
+                if (i in this && this[i] === item)
+                    return i;
+            }
+            return - 1;
+        }, __slice = [].slice, __hasProp = {}.hasOwnProperty, __bind = function(fn, me) {
         return function() {
             return fn.apply(me, arguments);
         };
@@ -284,11 +284,11 @@
                 return;
             }
             switch (typeof args[1]) {
-            case"string":
-                this.imageUrl = args[1];
-                break;
-            case"function":
-                this.callback = args[1];
+                case"string":
+                    this.imageUrl = args[1];
+                    break;
+                case"function":
+                    this.callback = args[1];
             }
             if (args.length === 2) {
                 return;
@@ -324,12 +324,12 @@
         };
         Caman.prototype.setup = function() {
             switch (this.initType) {
-            case"node":
-                return this.initNode();
-            case"img":
-                return this.initImage();
-            case"canvas":
-                return this.initCanvas();
+                case"node":
+                    return this.initNode();
+                case"img":
+                    return this.initImage();
+                case"canvas":
+                    return this.initCanvas();
             }
         };
         Caman.prototype.initNode = function() {
@@ -1015,12 +1015,12 @@
                 s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
                 h = (function() {
                     switch (max) {
-                    case r:
-                        return (g - b) / d + (g < b ? 6 : 0);
-                    case g:
-                        return (b - r) / d + 2;
-                    case b:
-                        return (r - g) / d + 4;
+                        case r:
+                            return (g - b) / d + (g < b ? 6 : 0);
+                        case g:
+                            return (b - r) / d + 2;
+                        case b:
+                            return (r - g) / d + 4;
                     }
                 })();
                 h/=6;
@@ -1086,12 +1086,12 @@
             } else {
                 h = (function() {
                     switch (max) {
-                    case r:
-                        return (g - b) / d + (g < b ? 6 : 0);
-                    case g:
-                        return (b - r) / d + 2;
-                    case b:
-                        return (r - g) / d + 4;
+                        case r:
+                            return (g - b) / d + (g < b ? 6 : 0);
+                        case g:
+                            return (b - r) / d + 2;
+                        case b:
+                            return (r - g) / d + 4;
                     }
                 })();
                 h/=6;
@@ -1110,35 +1110,35 @@
             q = v * (1 - f * s);
             t = v * (1 - (1 - f) * s);
             switch (i%6) {
-            case 0:
-                r = v;
-                g = t;
-                b = p;
-                break;
-            case 1:
-                r = q;
-                g = v;
-                b = p;
-                break;
-            case 2:
-                r = p;
-                g = v;
-                b = t;
-                break;
-            case 3:
-                r = p;
-                g = q;
-                b = v;
-                break;
-            case 4:
-                r = t;
-                g = p;
-                b = v;
-                break;
-            case 5:
-                r = v;
-                g = p;
-                b = q;
+                case 0:
+                    r = v;
+                    g = t;
+                    b = p;
+                    break;
+                case 1:
+                    r = q;
+                    g = v;
+                    b = p;
+                    break;
+                case 2:
+                    r = p;
+                    g = v;
+                    b = t;
+                    break;
+                case 3:
+                    r = p;
+                    g = q;
+                    b = v;
+                    break;
+                case 4:
+                    r = t;
+                    g = p;
+                    b = v;
+                    break;
+                case 5:
+                    r = v;
+                    g = p;
+                    b = q;
             }
             return {
                 r: Math.floor(r * 255),
@@ -1727,20 +1727,20 @@
             }
             this.currentJob = this.renderQueue.shift();
             switch (this.currentJob.type) {
-            case Filter.Type.LayerDequeue:
-                layer = this.c.canvasQueue.shift();
-                this.c.executeLayer(layer);
-                return this.processNext();
-            case Filter.Type.LayerFinished:
-                this.c.applyCurrentLayer();
-                this.c.popContext();
-                return this.processNext();
-            case Filter.Type.LoadOverlay:
-                return this.loadOverlay(this.currentJob.layer, this.currentJob.src);
-            case Filter.Type.Plugin:
-                return this.executePlugin();
-            default:
-                return this.executeFilter();
+                case Filter.Type.LayerDequeue:
+                    layer = this.c.canvasQueue.shift();
+                    this.c.executeLayer(layer);
+                    return this.processNext();
+                case Filter.Type.LayerFinished:
+                    this.c.applyCurrentLayer();
+                    this.c.popContext();
+                    return this.processNext();
+                case Filter.Type.LoadOverlay:
+                    return this.loadOverlay(this.currentJob.layer, this.currentJob.src);
+                case Filter.Type.Plugin:
+                    return this.executePlugin();
+                default:
+                    return this.executeFilter();
             }
         };
         Renderer.prototype.execute = function(callback) {
@@ -3355,4 +3355,3 @@
         });
     });
 }).call(this);
-

@@ -1,11 +1,28 @@
 /**
  * Created by Benedikt Linke on 08.12.2015.
+ * && awesome flo
  */
 function PreProcessing() {
     var self = this;
     self.rotation = 0;
 
-    self.caman = undefined;
+    self.caman;
+    self.img;
+
+    self.saveImage = function(){
+        //alert("SaveStuff in preprocessing.js wurde aufgerufen");
+        self.img = self.caman.toBase64();
+        console.log(self.img);
+        return self.img;
+    };
+
+    self.getCanvasHeight = function (){
+        return $('#canvas').height();
+    };
+
+    self.getCanvasWidth = function(){
+        return $('#canvas').width();
+    };
 
     $(function () {
         $('.slider').each(function () {
@@ -72,7 +89,7 @@ function PreProcessing() {
         });
 
         self.caman.render();
-    }
+    };
 
      self.resetFilters = function() {
         $('.slider').each(function () {
@@ -83,39 +100,40 @@ function PreProcessing() {
 
         self.caman.reset();
         self.caman.render();
-    }
+    };
 
     self.rotateRight = function() {
         self.rotation += 90;
         self.caman.rotate(90);
         self.applyFilters();
         self.caman.render();
-    }
+    };
 
     self.rotateLeft = function() {
         self.rotation -= 90;
         self.caman.rotate(-90);
         self.applyFilters();
         self.caman.render();
-    }
+    };
 
     self.rotatePreProcess = function(rotationAncle) {
         while (rotationAncle != 0) {
             if (rotationAncle < 0) {
-                self.rotateLeft()
+                self.rotateLeft();
                 rotationAncle += 90;
             } else {
-                self.rotateRight()
+                self.rotateRight();
                 rotationAncle -= 90;
             }
         }
-    }
+    };
 
     self.setCaman = function(caman){
         self.caman = caman;
-    }
+        self.img = self.caman.toBase64;
+    };
 
     self.getRotation = function(){
         return self.rotation;
-    }
+    };
 }
