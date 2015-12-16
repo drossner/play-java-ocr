@@ -1,16 +1,26 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import modules.cms.CMSController;
+import modules.cms.SessionHolder;
 import modules.database.entities.Job;
-import modules.database.entities.LayoutConfig;
+import modules.upload.ImageHelper;
+import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.util.FileUtils;
+import org.apache.chemistry.opencmis.commons.impl.Base64;
+import org.imgscalr.Scalr;
+import play.api.Play;
 import play.mvc.Controller;
 import play.Logger;
-import play.libs.F.Promise;
 import play.mvc.Result;
 import play.libs.Json;
 
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -19,11 +29,16 @@ import java.util.ArrayList;
 public class JobController extends Controller {
 
     public Result getJobHistory(){
-        ArrayList<Job> jobs = new ArrayList<>();
+        List<Job> jobs = null;
         String username = session().get("session");
 
-        //TODO select from database
+        try {
+            jobs = new modules.database.JobController().getUnProcessedJobs();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
 
+        /*
         Job job = new Job();
         job.setName("test.png");
         job.setId(18);
@@ -38,8 +53,13 @@ public class JobController extends Controller {
         job.setName("test3.png");
         job.setId(38);
         jobs.add(job);
+        */
 
-        return ok(Json.toJson(jobs));
+        if(jobs == null){
+            return ok(Json.toJson(new ArrayList<Job>()));
+        }else{
+            return ok(Json.toJson(jobs));
+        }
     }
 
     public Result getJobTypes(){
@@ -70,12 +90,65 @@ public class JobController extends Controller {
         return ok(Json.toJson(controller.getAllCountryLanguages()));
     }
 
-    public Result getImageFromJobID(int id){
+    public Result getImageFromJobID(int id) throws IOException {
         Logger.info("id erhalten: " + id);
 
-        File file = new File("./public/images/rechnungtest.png");
+        Job job = null;
+        try {
+            job = new modules.database.JobController().getJobById(id);
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
 
-        return ok(file);
+        if(job != null){
+            if(session().get("session").equals(job.getUser().geteMail())){
+                //TODO DANIEL ERRROR
+                return internalServerError();
+            }
+
+            CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
+            Document doc = controller.getDocumentById(job.getImage().getSource());
+
+            String path = "./temp_" + new Date().getTime();
+
+            FileUtils.download(doc.getId(), path, controller.getSession());
+
+            File file = new File(path);
+            byte[] rc = new ImageHelper().convertBaos(file).toByteArray();
+
+            file.delete();
+            return ok(rc).as("image/jpeg");
+        }
+        //TODO DANIEL ERROR
+        return internalServerError();
+        /*
+        FileInputStream fileInputStream = null;
+        byte[] bFile = new byte[(int) file.length()];
+        try
+        {
+            //convert file into array of bytes
+            fileInputStream = new FileInputStream(file);
+            fileInputStream.read(bFile);
+            fileInputStream.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        input = new ByteArrayInputStream(bFile);
+
+        return ok(input).as("image/png");
+        *//*
+        File file = new File(job.getImage().getSource());
+
+        Logger.info("returning: " + file);
+        return ok(Json.toJson(file));*/
+        //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
+    }
+
+    public Result delete(int id){
+        return ok();
     }
 
     public Result process(){

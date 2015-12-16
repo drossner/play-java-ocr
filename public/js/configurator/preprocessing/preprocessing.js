@@ -1,121 +1,121 @@
 /**
  * Created by Benedikt Linke on 08.12.2015.
  */
+function PreProcessing() {
+    var self = this;
+    self.rotation = 0;
 
-var caman = Caman('#canvas');
+    self.caman = undefined;
 
-var rotation = 0;
-var bild = caman.toBase64;
+    $(function () {
+        $('.slider').each(function () {
+            var op = $(this).attr('id');
 
-$(function() {
-    $('.slider').each(function() {
-        var op = $(this).attr('id');
+            $('#' + op).slider({
+                min: $(this).data('min'),
+                max: $(this).data('max'),
+                val: $(this).data('val'),
+                change: function (e, ui) {
+                    $('#v-' + op).html(ui.value);
+                    $(this).data('val', ui.value);
 
-        $('#' + op).slider({
-            min: $(this).data('min'),
-            max: $(this).data('max'),
-            val: $(this).data('val'),
-            change: function(e, ui) {
-                $('#v-'+op ).html(ui.value);
-                $(this).data('val', ui.value);
+                    if (e.originalEvent === undefined) {
+                        return;
+                    }
 
-                if(e.originalEvent === undefined) {
-                    return;
+                    self.applyFilters();
+                    self.caman.render();
                 }
-
-                applyFilters();
-                caman.render();
-            }
+            });
         });
+
+        $('#rotate-left').click(function () {
+            self.rotateLeft();
+        });
+
+        $('#rotate-right').click(function () {
+            self.rotateRight();
+        });
+
+        $('.preset').click(function () {
+            self.resetFilters();
+            var preset = $(this).data('preset');
+            self.caman.revert(true);
+            self.caman[preset]();
+            self.caman.render();
+        });
+
+        $('#reset').click(function () {
+            self.caman.reset();
+            self.caman.render();
+            self.resetFilters();
+        });
+
+        $('#save').click(function () {
+            window.open(self.caman.toBase64());
+        });
+
     });
 
-    $('#rotate-left').click(function() {
-        rotateLeft();
-    });
+    self.applyFilters = function() {
+        self.caman.revert(false);
 
-    $('#rotate-right').click(function() {
-        rotateRight();
-    });
+        $('.slider').each(function () {
+            var op = $(this).attr('id');
+            var value = $(this).data('val');
 
-    $('.preset').click(function() {
-        resetFilters();
-        var preset = $(this).data('preset');
-        caman.revert(true);
-        caman[preset]();
-        caman.render();
-    });
+            if (value === 0) {
+                return;
+            }
 
-    $('#reset').click(function() {
-        caman.reset();
-        caman.render();
-        resetFilters();
-    });
+            self.caman[op](value);
+        });
 
-});
+        self.caman.render();
+    }
 
-function saveStuff(){
-    //alert("SaveStuff in preprocessing.js wurde aufgerufen");
-    bild = caman.toBase64();
-    console.log(bild);
-    return bild;
-}
+     self.resetFilters = function() {
+        $('.slider').each(function () {
+            var op = $(this).attr('id');
 
-function getCanvasHeigth(){
-    return $('#canvas').height();
-}
+            $('#' + op).slider('option', 'value', $(this).attr('data-val'));
+        });
 
-function getCanvasWidth(){
-    return $('#canvas').width();
-}
+        self.caman.reset();
+        self.caman.render();
+    }
 
-function applyFilters() {
-    caman.revert(false);
+    self.rotateRight = function() {
+        self.rotation += 90;
+        self.caman.rotate(90);
+        self.applyFilters();
+        self.caman.render();
+    }
 
-    $('.slider').each(function() {
-        var op = $(this).attr('id');
-        var value = $(this).data('val');
+    self.rotateLeft = function() {
+        self.rotation -= 90;
+        self.caman.rotate(-90);
+        self.applyFilters();
+        self.caman.render();
+    }
 
-        if (value === 0) {
-            return;
+    self.rotatePreProcess = function(rotationAncle) {
+        while (rotationAncle != 0) {
+            if (rotationAncle < 0) {
+                self.rotateLeft()
+                rotationAncle += 90;
+            } else {
+                self.rotateRight()
+                rotationAncle -= 90;
+            }
         }
+    }
 
-        caman[op](value);
-    });
-}
+    self.setCaman = function(caman){
+        self.caman = caman;
+    }
 
-function resetFilters() {
-    $('.slider').each(function() {
-        var op = $(this).attr('id');
-
-        $('#' + op).slider('option', 'value', $(this).attr('data-val'));
-    });
-
-    caman.reset();
-    caman.render();
-}
-
-function rotateRight () {
-    rotation += 90;
-    caman.rotate(90);
-    applyFilters();
-    caman.render();
-}
-
-function rotateLeft () {
-    rotation -= 90;
-    caman.rotate(-90);
-    applyFilters();
-    caman.render();
-}
-
-function rotatePreProcess(rotationAncle){
-    while(rotationAncle != 0 ){
-        if(rotationAncle < 0){
-            rotateLeft()
-            rotationAncle += 90;
-        }else{
-            rotateRight()
-            rotationAncle -= 90;
-        }
+    self.getRotation = function(){
+        return self.rotation;
     }
 }

@@ -16,7 +16,7 @@ public class Image extends DomainObject{
     private int id;
 
     @Column
-    private Blob source;
+    private String source;
 
     @Column
     private String solution;
@@ -52,11 +52,11 @@ public class Image extends DomainObject{
         this.id = id;
     }
 
-    public Blob getSource() {
+    public String getSource() {
         return source;
     }
 
-    public void setSource(Blob source) {
+    public void setSource(String source) {
         this.source = source;
     }
 

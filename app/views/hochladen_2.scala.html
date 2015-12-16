@@ -1,6 +1,8 @@
 @main("Hochladen")("hochladen") {
 
     <script src='@routes.Assets.versioned("js/knockout/job/bindings.js")' type="text/javascript"></script>
+    <script src='@routes.Assets.versioned("js/knockout/knockout.dragdrop.js")' type="text/javascript"></script>
+
     <div class="container">
             <!-- content begins here -->
         <br/>
@@ -23,7 +25,16 @@
                 <tbody data-bind="foreach: jobs">
                     <tr>
                         <td data-bind="text: id"></td>
-                        <td data-bind="text: job().name"></td>
+                        <td data-bind="text: job().name,
+                                        css: { dragging: dragging },
+                                        dragZone: { name: 'sortable',
+                                            dragStart: $parent.dragStart,
+                                            dragEnd: $parent.dragEnd },
+                                        dragEvents: {
+                                            accepts: 'sortable',
+                                            dragOver: $parent.reorder,
+                                            data: { items: $root.jobs, item: job }
+                                        }"></td>
                         <td> <select data-bind="options: $root.languages, optionsText: function(item) {
                                                                 return item.language }"></select></td>
                         <td> <select data-bind="options: $root.jobTypes"></select></td>
@@ -32,7 +43,8 @@
                                               data-toggle="modal" data-bind="click: $root.showModal"></span></a>
                         </td>
                         <td>
-                            <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" aria-hidden="true"></span></a>
+                            <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" data-bind="click: $root.delete"
+                            aria-hidden="true"></span></a>
                         </td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-folder-open icon-lachs" aria-hidden="true"
@@ -51,7 +63,6 @@
 
     <script src='@routes.Assets.versioned("js/knockout/job/data/PreProcessor.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/knockout/job/data/SelectAreas.js")' type="text/javascript"></script>
-    <script src='@routes.Assets.versioned("js/knockout/job/data/AreaDataSingleton.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/knockout/job/loadData.js")' type="text/javascript"></script>
     <script src='@routes.Assets.versioned("js/knockout/job/app.js")' type="text/javascript"></script>
     @modals.folder()

@@ -34,7 +34,7 @@ public class Job extends DomainObject{
     private String notification;
 
     @Column
-    private boolean notificationSend;
+    private boolean processed;
 
     @OneToOne
     private LayoutConfig layoutConfig;
@@ -109,12 +109,12 @@ public class Job extends DomainObject{
         this.notification = notification;
     }
 
-    public boolean isNotificationSend() {
-        return notificationSend;
+    public boolean isProcessed() {
+        return processed;
     }
 
-    public void setNotificationSend(boolean notificationSend) {
-        this.notificationSend = notificationSend;
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 
     public LayoutConfig getLayoutConfig() {
