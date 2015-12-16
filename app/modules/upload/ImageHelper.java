@@ -47,7 +47,7 @@ public class ImageHelper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            ImageIO.write(image, "jpeg", baos);
+            ImageIO.write(image, "png", baos);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +60,7 @@ public class ImageHelper {
 
         try {
             BufferedImage image = ImageIO.read(file);
-            ImageIO.write(image, "jpeg", baos);
+            ImageIO.write(image, "png", baos);
         } catch (IOException e) {
             e.printStackTrace();
         }

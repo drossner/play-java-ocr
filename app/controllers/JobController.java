@@ -117,7 +117,7 @@ public class JobController extends Controller {
 
             Logger.info("image: " + image);
 
-            return ok(new ImageHelper().convertBaos(image).toByteArray()).as("image/jpeg");
+            return ok(new ImageHelper().convertBaos(image).toByteArray()).as("image/png");
         }
         //TODO DANIEL ERROR
         return internalServerError();

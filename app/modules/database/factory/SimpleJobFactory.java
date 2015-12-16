@@ -1,8 +1,5 @@
 package modules.database.factory;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import modules.cms.CMSController;
 import modules.cms.FolderController;
 import modules.cms.SessionHolder;
@@ -13,15 +10,11 @@ import modules.database.entities.Job;
 import modules.database.entities.LayoutConfig;
 import modules.database.entities.User;
 import modules.upload.FileContainer;
-import modules.upload.ImageHelper;
 import org.joda.time.DateTime;
 import play.Logger;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,13 +74,14 @@ public class SimpleJobFactory {
         return this;
     }
 
-    public void createJobsJsonBulk(List<FileContainer> files, String session) throws IOException {
+    public List<Job> createJobsJsonBulk(List<FileContainer> files, String session) throws IOException {
+        ArrayList<Job> rc = new ArrayList<>();
         CMSController cms = SessionHolder.getInstance().getController("ocr", "ocr");
         FolderController folderController = new FolderController(cms);
 
-        for(int i = 0; i < files.size(); i++){
+        for(int i = 0; files != null && i < files.size(); i++){
             Logger.debug("create job: " + files.get(i));
-            job = new Job();
+            Job job = new Job();
 
             String name = files.get(i).getFileName();
 
@@ -99,10 +93,13 @@ public class SimpleJobFactory {
                     .setSource(id)
                     .build();
 
-            setName(name);
-            setStartTime(new DateTime());
+            Logger.info("FileName: " + name);
+            job.setName(name);
+            job.setStartTime(new DateTime());
 
             new JobController().persistJob(job, image, session);
+            rc.add(job);
         }
+        return rc;
     }
 }

@@ -4,18 +4,23 @@ package controllers;
 import be.objectify.deadbolt.core.models.Subject;
 import com.google.inject.Inject;
 import modules.database.entities.Country;
+import modules.database.entities.Job;
 import modules.database.entities.User;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
+import modules.database.factory.SimpleJobFactory;
 import modules.upload.UploadHandler;
 import play.*;
 //import play.api.mvc.*;
 import play.cache.CacheApi;
 import play.db.jpa.JPA;
 import play.libs.F;
+import play.libs.Json;
 import play.mvc.*;
 
 import views.html.*;
+
 import javax.persistence.TypedQuery;
+import java.util.List;
 
 public class Application extends Controller {
 
@@ -23,13 +28,13 @@ public class Application extends Controller {
     private UploadHandler uploadHandler;
 
     @Inject
-    public Application(CacheApi cache, UploadHandler uploadHandler){
+    public Application(CacheApi cache, UploadHandler uploadHandler) {
         this.cache = cache;
         this.uploadHandler = uploadHandler;
     }
 
     public Result index() {
-        if(session().get("session") != null){
+        if (session().get("session") != null) {
             return redirect(routes.Application.hochladen(1, null));
         } else {
             String target = session().get("target");
@@ -38,21 +43,27 @@ public class Application extends Controller {
     }
 
     @SubjectPresent
-    public Result hochladen(int step, String inUploadId){
-        if(step == 1) {
-            String uploadId = uploadHandler.createUploadId();
-            //session().put(uploadId, ""+step);
-            return ok(hochladen_1.render(uploadId));
-        } else if (step == 2){
-            //use inUploadId
-            return ok(hochladen_2.render());
-        } else {
-            return badRequest();
-        }
+    public F.Promise<Result> hochladen(int step, String inUploadId) {
+        final String userMail = session().get("session");
+        return F.Promise.promise(() -> {
+            if (step == 1) {
+                String uploadId = uploadHandler.createUploadId();
+                //session().put(uploadId, ""+step);
+                return ok(hochladen_1.render(uploadId));
+            } else if (step == 2) {
+                //use inUploadId
+
+                new SimpleJobFactory().createJobsJsonBulk(uploadHandler.loadFiles(inUploadId), userMail);
+
+                return ok(hochladen_2.render());
+            } else {
+                return badRequest();
+            }
+        });
     }
 
     @SubjectPresent
-    public F.Promise<Result> verwalten(){
+    public F.Promise<Result> verwalten() {
         final String userMail = session().get("session");
         return F.Promise.promise(() ->
                 //auto open/close/commit transaction in this thread, readOnly = true
@@ -70,22 +81,22 @@ public class Application extends Controller {
     }
 
     @SubjectPresent
-    public Result ablage(){
+    public Result ablage() {
         return ok(ablage.render());
     }
 
     @SubjectPresent
-    public Result hilfe(){
+    public Result hilfe() {
         return ok(hilfe.render());
     }
 
-    public Result template(){
+    public Result template() {
         return ok(views.html.modals.templating.render());
     }
 
-    public Result imgEdit(){
-            return ok(views.html.modals.imageEdit.render());
-        }
+    public Result imgEdit() {
+        return ok(views.html.modals.imageEdit.render());
+    }
 
    /* @Transactional
     public Result testDatabase(){

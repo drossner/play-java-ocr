@@ -184,6 +184,10 @@ public class UploadHandler {
         return Optional.ofNullable(rcFile);
     }
 
+    public List<FileContainer> loadFiles(final String uploadId){
+        return fileList.get(uploadId);
+    }
+
     private String calcDownloadPath(final String uploadId, File f){
         return routes.UploadController.getFile(uploadId, f.getName()).path();
     }
