@@ -81,7 +81,7 @@ public class DocumentController {
         return false;
     }
 
-    public BufferedImage readingAImage(String object){
+    public BufferedImage readingImage(String object){
         Document document = (Document) cmsController.getSession().getObject(object);
         String filename = document.getName();
         InputStream stream = document.getContentStream().getStream();

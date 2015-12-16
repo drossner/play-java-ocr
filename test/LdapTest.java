@@ -14,6 +14,7 @@ import static play.test.Helpers.running;
  */
 public class LdapTest {
 
+    /*
     LdapController lc;
 
     @Before
@@ -49,4 +50,5 @@ public class LdapTest {
         }
 
     }
+    */
 }

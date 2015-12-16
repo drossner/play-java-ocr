@@ -86,11 +86,12 @@ public class CMSController {
     public boolean deleteDocument(String objectId){
         return documentController.deleteDocument(objectId);
     }
-    public boolean downloadDocumant(String objectId, String destinationPath){
+
+    public boolean downloadDocument(String objectId, String destinationPath){
         return documentController.downloadDocument(objectId, destinationPath);
     }
 
     public BufferedImage readingAImage (String objectId){
-        return documentController.readingAImage(objectId);
+        return documentController.readingImage(objectId);
     }
 }

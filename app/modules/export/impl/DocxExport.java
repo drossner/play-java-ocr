@@ -15,11 +15,9 @@ import org.docx4j.wml.*;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * Created by Bendikt Linke on 12.12.2015.
@@ -219,6 +217,8 @@ public class DocxExport implements Export {
         return p;
     }
 
+
+    // Add Metadata
     private void addCustomDocProp(String key, String value){
         DocPropsCustomPart docPropsCustomPart = null;
         try {
