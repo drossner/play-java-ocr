@@ -308,3 +308,9 @@ canvas {
     margin-left: 10%;
     margin-right: 10%;
 }
+
+.divStackParent{
+    z-index: 21;
+    position: relative;
+
+}

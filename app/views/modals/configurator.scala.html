@@ -1,5 +1,6 @@
 @()
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" media="screen" href='@routes.Assets.versioned("stylesheets/activiti-indicator.css")'>
     <script type='text/javascript' src='http://code.jquery.com/ui/1.11.4/jquery-ui.min.js'></script>
 
     <script src='@routes.Assets.versioned("js/configurator/preprocessing/caman.full.js")'></script>
@@ -20,10 +21,19 @@
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-xs-8">
-                                            <div id="image-area">
+
+
+                                            <div id="image-area" class="divStackParent">
+
                                                 <img id="canvas" src="" style="width:100%;" />
                                             </div>
+
+                                            <div class="cssload-container">
+                                                <div class="cssload-loading"><i></i><i></i></div>
+                                            </div>
+
                                         </div>
+
                                         <div class="col-xs-2">
                                             <button id="rotate-left" class="btn btn-lila actionOn">Drehen nach links</button>
                                             <button id="rotate-right" class="btn btn-lila actionOn">Drehen nach rechts</button>
