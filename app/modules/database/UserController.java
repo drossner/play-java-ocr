@@ -8,6 +8,7 @@ import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
 import org.hibernate.criterion.Projection;
+import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 
 import java.util.List;
@@ -38,8 +39,11 @@ public class UserController extends DatabaseController<User, CountryImpl> {
         persistObject(user);
     }
 
-
     public User selectUserFromMail(User user){
         return selectEntity(User.class, "eMail", user.geteMail());
+    }
+
+    public User selectUserFromMail(String userMail){
+        return selectEntity(User.class, "eMail", userMail);
     }
 }
