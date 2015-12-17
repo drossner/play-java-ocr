@@ -114,7 +114,7 @@ public class JobController extends Controller {
             CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
 
             BufferedImage image = controller.readingAImage(job.getImage().getSource());
-            image = new ImageHelper().scale(image, 1024, 0);
+            image = new ImageHelper().scale(image, 536, 0);
 
             Logger.info("image: " + image);
 
