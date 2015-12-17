@@ -54,26 +54,21 @@
             </thead>
             <tbody>
             <tr>
-                <td>Sprache:</td>
-                <td class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">Deutsch<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#">Englisch</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-            <tr>
                  <td>CMS-Nutzername:</td>
-                 <td>@user.getCmsAccount</td>
+                <td>
+                    <div><input type="text" class="form-control" placeholder="CMS-Nutzername"
+                    value="@user.getCmsAccount" @if(user.getCmsAccount!=null){
+                        disabled}
+                        >
+                    </div>
+                </td>
             </tr>
             <tr>
                 <td>CMS-Passwort ändern:</td>
                 <td>
                     <div><input type="password" class="form-control" id="pw1" placeholder="Passwort">
                     </div>
+                </td>
             </tr>
             <tr>
                 <td>Passwort wiederholen:</td>
