@@ -1,6 +1,7 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import modules.analyse.Analyse;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import modules.database.entities.Job;
@@ -10,10 +11,13 @@ import org.apache.chemistry.opencmis.client.util.FileUtils;
 import org.apache.chemistry.opencmis.commons.impl.Base64;
 import org.imgscalr.Scalr;
 import play.api.Play;
+import play.db.jpa.JPA;
+import play.libs.F;
 import play.mvc.Controller;
 import play.Logger;
 import play.mvc.Result;
 import play.libs.Json;
+import views.html.ablage;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -145,20 +149,24 @@ public class JobController extends Controller {
 
         Logger.info("returning: " + file);
         return ok(Json.toJson(file));*/
-        //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
     public Result delete(int id){
         return ok();
     }
 
-    public Result process(){
-        Logger.info(request().toString());
+    public F.Promise<Result> process(){
+        return F.Promise.promise(() -> {
+            JsonNode jobs = request().body().asJson();
+            Logger.info(jobs.toString());
 
-        JsonNode jobs = request().body().asJson();
+            for (JsonNode node : jobs.withArray("jobs")) {
+                JsonNode job = node.get("job");
 
-        Logger.info(jobs.toString());
+                Analyse.INSTANCE.calculate(job);
+            }
 
-        return ok();
+            return ok(ablage.render());
+        });
     }
 }
