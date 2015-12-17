@@ -112,10 +112,6 @@ public class User extends DomainObject implements Subject {
         this.roles = roles;
     }
 
-    public List<UserPermission> getPermission() {
-        return permission;
-    }
-
     public void setPermission(List<UserPermission> permission) {
         this.permission = permission;
     }
