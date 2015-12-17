@@ -25,6 +25,11 @@ public class SimpleUserFactory{
         UserController controller = new UserController();
 
         if(controller.selectUserFromMail(user) == null){
+            if(user.getCountry() == null){
+                Country country = new Country();
+                country.setCountry(CountryImpl.ENGLISCH);
+                user.setCountry(country);
+            }
             controller.persistUser(user, roleList, permissionList);
         }
 
