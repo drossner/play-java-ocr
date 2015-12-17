@@ -98,6 +98,7 @@ public class AuthenticationController extends Controller{
         cq.select(qb.count(user));
         cq.where(qb.equal(user.get("eMail"), userEmail));
         boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;*/
+        /*
         CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
         CriteriaQuery<User> cq = qb.createQuery(User.class);
         Root user = cq.from(User.class);
@@ -113,6 +114,13 @@ public class AuthenticationController extends Controller{
                     .addRole(OcrRole.USER)
                     .persist());
         }
+        */
+        User loadedUser = new SimpleUserFactory()
+                .setEmail(userEmail)
+                .setPassword("")
+                //TODO @DANIEL wie bekommen wir das land?
+                .addRole(OcrRole.USER)
+                .persist();
         //session init
         session().put("session", userEmail);
 

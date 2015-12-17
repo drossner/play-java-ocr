@@ -28,6 +28,9 @@ GET         /json/getUserFolders    controllers.FolderController.getUserFolders
 GET         /json/deleteJob/:id     controllers.JobController.delete(id: Int)
 
 POST         /json/processJobs       controllers.JobController.process
+GET          /json/getUser           controllers.UserController.getUser
+
+POST         /json/saveUser          controllers.UserController.saveUser
 
 # oAuth
 GET           /login                          controllers.AuthenticationController.login(method: Int)
