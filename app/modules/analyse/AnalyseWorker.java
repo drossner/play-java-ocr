@@ -4,12 +4,24 @@ import analyse.AnalyseType;
 import com.fasterxml.jackson.databind.JsonNode;
 import control.MainController;
 import control.configuration.LayoutConfiguration;
-import control.factories.LayoutConfigurationFactory;
+import control.result.Result;
+import modules.cms.CMSController;
+import modules.cms.FolderController;
+import modules.cms.SessionHolder;
+import modules.cms.data.FileType;
 import modules.database.entities.Job;
-import modules.database.entities.LayoutConfig;
+import org.apache.chemistry.opencmis.client.api.Document;
+import play.db.jpa.JPA;
+import play.libs.Json;
 import preprocessing.PreProcessor;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,8 +42,34 @@ public class AnalyseWorker implements Runnable {
 
     @Override
     public void run() {
+        Result result = controller.analyse(image, configuration);
 
-        controller.analyse(image, configuration);
+        CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
+        FolderController folderController = new FolderController(controller);
+
+        File file = new File("job_" + job.getUser().geteMail() + "_" + new Date() + ".json");
+        JsonNode jsonResult = Json.toJson(result);
+
+        try {
+            FileWriter writer = new FileWriter(file);
+            writer.write(jsonResult.asText());
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Document doc = controller.createDocument(folderController.getUserWorkspaceFolder(), file, FileType.FILE.getType());
+            JPA.withTransaction(() -> {
+                job.setResultFile(doc.getId());
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+            JPA.withTransaction(() -> job.setResultFile("error! " + Arrays.toString(e.getStackTrace())));
+        }
+        file.delete();
     }
 
     public void setImage(BufferedImage image){

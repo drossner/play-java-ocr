@@ -106,6 +106,8 @@ public enum Analyse {
             worker.setConfiguration(configuration.build());
 
             executor.execute(worker);
+
+            dbJob.setProcessed(true);
         });
 
     }
