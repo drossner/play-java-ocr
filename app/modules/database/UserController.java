@@ -8,6 +8,7 @@ import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
 import org.hibernate.criterion.Projection;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 
@@ -27,6 +28,7 @@ public class UserController extends DatabaseController<User, CountryImpl> {
     }
 
     public void persistUser(User user, List<OcrRole> roles, List<OcrPermission> permissions){
+        Logger.info("persist user: " + user);
         Country country = selectEntity(Country.class, user.getCountry().getCountry());
         user.setCountry(country);
         user.setRoles(rolesController.getRoles(roles));
