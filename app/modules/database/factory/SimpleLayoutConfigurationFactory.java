@@ -1,9 +1,8 @@
 package modules.database.factory;
 
-import modules.database.entities.Country;
-import modules.database.entities.LayoutConfig;
-import modules.database.entities.LayoutFragment;
-import modules.database.entities.User;
+import modules.database.entities.*;
+import postprocessing.PostProcessor;
+import preprocessing.PreProcessor;
 
 import java.util.ArrayList;
 
@@ -15,6 +14,8 @@ public class SimpleLayoutConfigurationFactory {
     private LayoutConfig layoutConfig = new LayoutConfig();
 
     private ArrayList<LayoutFragment> fragments = new ArrayList<>();
+    private ArrayList<PreProcessing> preProcessing = new ArrayList<>();
+    private ArrayList<PostProcessing> postProcessing = new ArrayList<>();
 
     public LayoutConfig build (){
 
@@ -22,7 +23,31 @@ public class SimpleLayoutConfigurationFactory {
             fragment.setLayoutConfig(layoutConfig);
         }
 
+        for (PreProcessing processing : preProcessing) {
+            processing.setLayoutConfig(layoutConfig);
+        }
+
+        for (PostProcessing processing : postProcessing) {
+            processing.setLayoutConfig(layoutConfig);
+        }
+
         return layoutConfig;
+    }
+
+    public SimpleLayoutConfigurationFactory addPostProcessing(PostProcessor postProcessor){
+        PostProcessing post = new PostProcessing();
+        post.setPostProcessor(postProcessor);
+        this.postProcessing.add(post);
+
+        return this;
+    }
+
+    public SimpleLayoutConfigurationFactory addPreProcessing(PreProcessor preProcessor){
+        PreProcessing pre = new PreProcessing();
+        pre.setPreProcessor(preProcessor);
+        this.preProcessing.add(pre);
+
+        return this;
     }
 
     public SimpleLayoutConfigurationFactory addFragment(LayoutFragment fragment){
@@ -47,6 +72,10 @@ public class SimpleLayoutConfigurationFactory {
         layoutConfig.setLanguage(country);
 
         return this;
+    }
+
+    public SimpleLayoutFragmentFactory createLayoutFragmentFactory(){
+        return new SimpleLayoutFragmentFactory();
     }
 
     public class SimpleLayoutFragmentFactory{

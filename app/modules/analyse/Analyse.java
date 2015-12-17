@@ -6,6 +6,7 @@ import control.configuration.LayoutConfiguration;
 import control.configuration.LayoutFragment;
 import control.factories.LayoutConfigurationFactory;
 import modules.database.entities.Job;
+import modules.database.factory.SimpleLayoutConfigurationFactory;
 import modules.upload.ImageHelper;
 import play.db.jpa.JPA;
 import postprocessing.PostProcessingType;
@@ -35,6 +36,7 @@ public enum Analyse {
         JPA.withTransaction(() -> {
             AnalyseWorker worker = new AnalyseWorker();
             LayoutConfigurationFactory configuration = new LayoutConfigurationFactory();
+            SimpleLayoutConfigurationFactory dbConfigurationFactory = new SimpleLayoutConfigurationFactory();
             Job dbJob = new modules.database.JobController().selectEntity(Job.class, "id", Integer.getInteger(job.get("id").textValue()));
 
             JsonNode prePocessor = job.get("preProcessing");
@@ -44,12 +46,15 @@ public enum Analyse {
                 switch(preProc.get("type").textValue().toLowerCase()){
                     case "rotate":
                         configuration.addPreProcessor(PreProcessingType.ROTATE);
+                        dbConfigurationFactory.addPreProcessing(PreProcessingType.ROTATE);
                         break;
                     case "brightness":
                         configuration.addPreProcessor(PreProcessingType.ROTATE);
+                        dbConfigurationFactory.addPreProcessing(PreProcessingType.ROTATE);
                         break;
                     case "contrast":
                         configuration.addPreProcessor(PreProcessingType.INCREASE_CONTRAST);
+                        dbConfigurationFactory.addPreProcessing(PreProcessingType.INCREASE_CONTRAST);
                         break;
                 }
             }
@@ -79,9 +84,22 @@ public enum Analyse {
                 LayoutFragment fragment = new LayoutFragment(xStart, xEnd, yStart, yEnd, type);
 
                 configuration.addLayoutFragment(fragment);
+                dbConfigurationFactory.addFragment(new SimpleLayoutConfigurationFactory().createLayoutFragmentFactory()
+                        .setXEnd(xEnd)
+                        .setXStart(xStart)
+                        .setYEnd(yEnd)
+                        .setYStart(yStart)
+                        .setType(area.get("type").textValue().toLowerCase())
+                        .build());
             }
 
+            dbConfigurationFactory.addPostProcessing(PostProcessingType.TEXT_CHECK);
             configuration.addPostProcessor(PostProcessingType.TEXT_CHECK);
+
+            dbConfigurationFactory.setUser(dbJob.getUser());
+            dbConfigurationFactory.setName(areas.get("name").textValue());
+
+            dbJob.setLayoutConfig(dbConfigurationFactory.build());
 
             worker.setImage(new ImageHelper().convertToImageFromCMIS(dbJob.getImage().getSource()));
             worker.setJob(dbJob);
