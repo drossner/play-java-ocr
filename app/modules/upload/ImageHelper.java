@@ -2,6 +2,7 @@ package modules.upload;
 
 
 import modules.database.entities.Image;
+import org.imgscalr.Scalr;
 import play.Logger;
 
 import javax.imageio.ImageIO;
@@ -47,7 +48,7 @@ public class ImageHelper {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
         try {
-            ImageIO.write(image, "png", baos);
+            ImageIO.write(image, "jpeg", baos);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -60,7 +61,7 @@ public class ImageHelper {
 
         try {
             BufferedImage image = ImageIO.read(file);
-            ImageIO.write(image, "png", baos);
+            ImageIO.write(image, "jpeg", baos);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -83,5 +84,11 @@ public class ImageHelper {
         String[] splittedType = contentType.split("/");
         assert(splittedType.length == 2);
         return splittedType[1].toLowerCase();
+    }
+
+    public BufferedImage scale(BufferedImage image, int width, int heigth){
+        BufferedImage thumbnail =
+                Scalr.resize(image, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH, width, heigth, Scalr.OP_ANTIALIAS);
+        return thumbnail;
     }
 }

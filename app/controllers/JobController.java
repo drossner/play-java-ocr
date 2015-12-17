@@ -114,10 +114,11 @@ public class JobController extends Controller {
             CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
 
             BufferedImage image = controller.readingAImage(job.getImage().getSource());
+            image = new ImageHelper().scale(image, 1024, 0);
 
             Logger.info("image: " + image);
 
-            return ok(new ImageHelper().convertBaos(image).toByteArray()).as("image/png");
+            return ok(new ImageHelper().convertBaos(image).toByteArray()).as("image/jpeg");
         }
         //TODO DANIEL ERROR
         return internalServerError();
