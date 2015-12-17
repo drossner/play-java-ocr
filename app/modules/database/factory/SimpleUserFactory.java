@@ -24,11 +24,11 @@ public class SimpleUserFactory{
     public User persist(){
         UserController controller = new UserController();
 
-        if(controller.selectUserFromMail(user) == null){
+        if(controller.selectUserFromMail(user.geteMail()) == null){
             controller.persistUser(user, roleList, permissionList);
         }
 
-        return controller.selectUserFromMail(user);
+        return controller.selectUserFromMail(user.geteMail());
     }
 
     public SimpleUserFactory setCountry(CountryImpl c){

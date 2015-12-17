@@ -39,7 +39,7 @@ public class UserController extends DatabaseController<User, CountryImpl> {
     }
 
 
-    public User selectUserFromMail(User user){
-        return selectEntity(User.class, "eMail", user.geteMail());
+    public User selectUserFromMail(String email){
+        return selectEntity(User.class, "eMail", email);
     }
 }

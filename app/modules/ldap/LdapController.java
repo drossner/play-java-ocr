@@ -1,5 +1,9 @@
 package modules.ldap;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.Hashtable;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
@@ -18,7 +22,6 @@ import javax.naming.directory.SearchResult;
 
 import modules.database.entities.User;
 import play.Logger;
-import sun.misc.BASE64Encoder;
 
 /**
  * Created by Benedikt Linke on 23.11.15.
@@ -55,7 +58,7 @@ public class LdapController {
             matchAttrs.put(new BasicAttribute("sn", user.getCmsAccount()));
             matchAttrs.put(new BasicAttribute("givenname", user.getCmsAccount()));
             matchAttrs.put(new BasicAttribute("mail", user.geteMail()));
-            matchAttrs.put(new BasicAttribute("userpassword", encryptLdapPassword(user.getCmsPassword())));
+            matchAttrs.put(new BasicAttribute("userpassword", user.getCmsPassword()));
             matchAttrs.put(new BasicAttribute("objectclass", "top"));
             matchAttrs.put(new BasicAttribute("objectclass", "person"));
             matchAttrs.put(new BasicAttribute("objectclass", "organizationalPerson"));
@@ -78,7 +81,7 @@ public class LdapController {
 
             DirContext ctx = new InitialDirContext(env);
             ModificationItem[] mods = new ModificationItem[1];
-            Attribute mod0 = new BasicAttribute("userpassword", encryptLdapPassword(user.getCmsPassword()));
+            Attribute mod0 = new BasicAttribute("userpassword", user.getCmsPassword());
             mods[0] = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, mod0);
 
             ctx.modifyAttributes("cn=" + user.getCmsAccount() + ",ou=groups", mods);
@@ -104,7 +107,7 @@ public class LdapController {
         }
     }
 
-    public boolean searchUser(User user) {
+    public boolean searchUser(String username) {
         try {
 
             DirContext ctx = new InitialDirContext(env);
@@ -113,26 +116,49 @@ public class LdapController {
             SearchControls sc = new SearchControls();
             sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
 
-            String filter = "(&(objectclass=person)(cn="+user.getCmsAccount()+"))";
+            String filter = "(&(objectclass=person)(cn="+username+"))";
 
             NamingEnumeration results = ctx.search(base, filter, sc);
 
 
-            while (results.hasMore()) {
+            /*while (results.hasMore()) {
                 SearchResult sr = (SearchResult) results.next();
                 Attributes attrs = sr.getAttributes();
 
                 Attribute attr = attrs.get("cn");
                 if(attr != null)
                     Logger.info("record found "+attr.get());
-            }
+            }*/
             ctx.close();
-
-            return true;
+            return results.hasMore();
         } catch (Exception e) {
             Logger.info("record not found",e);
             return false;
         }
+    }
+
+
+
+    private String digestMd5(final String password) {
+        String base64;
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            try {
+                digest.update(password.getBytes("UTF-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            String test = new String(digest.digest());
+            Logger.info("Test: " + test);
+            Base64.Encoder encoder = Base64.getEncoder();
+            base64 = encoder.encodeToString(digest.digest());
+
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        Logger.info(base64);
+        return "{MD5}" + base64;
     }
 
     private String encryptLdapPassword(String password) throws Exception {
@@ -141,6 +167,10 @@ public class LdapController {
         Cipher cipher = Cipher.getInstance("Blowfish");
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
         byte[] hasil = cipher.doFinal(password.getBytes());
-        return new BASE64Encoder().encode(hasil);
+        String rc = "{CRYPT}"+ Base64.getEncoder().encodeToString(hasil);
+        rc= "{MD5}0lW/bn6RBGiEWKTO/rAgyg==";
+        Logger.info(rc);
+        return rc;
     }
+
 }

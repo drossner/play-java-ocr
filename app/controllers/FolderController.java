@@ -20,7 +20,7 @@ public class FolderController extends Controller {
     public Result getUserFolders(){
         ArrayList<Folder> folders = new ArrayList<>();
 
-        //CMSController controller = SessionHolder.getInstance().getController("testuser", "");
+
 
 
         Folder folder = new Folder();
@@ -38,14 +38,14 @@ public class FolderController extends Controller {
         folders.add(folder);
         folders.add(folder1);
 
-
-       /* org.apache.chemistry.opencmis.client.api.Folder foldercms = controller.getWorkspaceFolder();
+        CMSController controller = SessionHolder.getInstance().getController("fritzi", "hubertus");
+        org.apache.chemistry.opencmis.client.api.Folder foldercms = controller.getWorkspaceFolder();
 
         Folder folderRC = new Folder();
         folderRC.setId(foldercms.getId());
         folderRC.setParentId(foldercms.getParentId());
         folderRC.setTitle(foldercms.getName());
-
+/*
         ArrayList<org.apache.chemistry.opencmis.client.api.Folder> folderTree = controller.getFolderTree(foldercms);
 
         for (org.apache.chemistry.opencmis.client.api.Folder folder : folderTree){

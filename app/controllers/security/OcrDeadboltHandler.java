@@ -51,13 +51,11 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
                         //load subject from cache of from database if not available
                         Subject subj = cache.getOrElse(userMail, () -> {
                                     UserController controller = new UserController();
-                                    modules.database.entities.User user = new modules.database.entities.User();
-                                    user.seteMail(userMail);
 
                                     /*TypedQuery<Subject> q = JPA.em().createQuery("select u from User u where u.eMail = :email", Subject.class);
                                     q.setParameter("email", userMail);
                                     return q.getSingleResult();*/
-                                    return controller.selectUserFromMail(user);
+                                    return controller.selectUserFromMail(userMail);
                                 }
                         );
                         return subj;
