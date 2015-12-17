@@ -2,107 +2,97 @@
 @(user: User)
 
 @main("Verwalten")("verwalten"){
-<div class="container tablespacing2">
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Verwalten</div>
-        <div class="panel-body">
-            <p>Hier verwirren wir Sie mit Benutzerkonten</p>
+    <div class="container tablespacing2">
+        <div class="panel panel-default">
+                <!-- Default panel contents -->
+            <div class="panel-heading">Verwalten</div>
+            <div class="panel-body">
+                <p>Hier verwirren wir Sie mit Benutzerkonten</p>
+            </div>
+                <!-- Table -->
+            <table class="table">
+                <thead>
+                    <tr class="table-header">
+                        <th>Account-Details</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>E-Mail:</td>
+                        <td id="email">@user.geteMail()</td>
+                    </tr>
+                    <tr>
+                        <td>Rollen:</td>
+                        <td>
+                            @for(p <- user.getRoles) {
+                                @{p.getName.toUpperCase + " "}
+                            }
+                            @if(user.getRoles == null || user.getRoles.isEmpty){
+                                -
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Berechtigungen:</td>
+                        <td>
+                            @for(p <- user.getPermissions) {
+                                @{p.getValue.toUpperCase + " "}
+                            }
+                            @if(user.getPermissions == null || user.getPermissions.isEmpty){
+                                -
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+
+                <thead>
+                    <tr class="table-header">
+                        <th>CMS-Details</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CMS-Nutzername:</td>
+                        <td id="cmsAccount" data-bind="text: user().cmsAccount">@if(user.getCmsAccount == null || user.getCmsAccount == ""){@user.geteMail()}else{@user.getCmsAccount}</td>
+                    </tr>
+                    <tr>
+                        <td>CMS-Passwort ändern:</td>
+                        <td>
+                            <div><input data-bind="value: user().password" type="password" class="form-control" id="pw1" placeholder="Passwort">
+                            </div>
+                    </tr>
+                    <tr>
+                        <td>Passwort wiederholen:</td>
+                        <td>
+                            <div><input data-bind="value: user().passwordConfirm" type="password" class="form-control" id="pw2" placeholder="Passwort">
+
+                            </div>
+                        </td>
+                    </tr>
+
+                </tbody>
+                <thead>
+                    <tr class="table-header">
+                        <th>Sonstiges</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sprache:</td>
+                        <td class="dropdown">
+                            <select id="language" data-bind="options: languages, optionsText: function(item) {
+                                                                return item.language}, value: user().language">@user.getCountry.getCountry.getName</select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <!-- Table -->
-        <table class="table">
-            <thead>
-            <tr class="table-header">
-                <th>Account-Details</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>E-Mail:</td>
-                <td>@user.geteMail()</td>
-            </tr>
-                <tr>
-                    <td>Rollen:</td>
-                    <td>
-                    @for(p <- user.getRoles) {
-                        @{p.getName.toUpperCase + " "}
-                    }
-                        @if(user.getRoles == null || user.getRoles.isEmpty){
-                            -
-                        }
-                    </td>
-                </tr>
-                <tr>
-                    <td>Berechtigungen:</td>
-                    <td>
-                    @for(p <- user.getPermissions) {
-                        @{p.getValue.toUpperCase + " "}
-                    }
-                        @if(user.getPermissions == null || user.getPermissions.isEmpty){
-                            -
-                        }
-                    </td>
-                </tr>
-            </tbody>
-
-            <thead>
-            <tr class="table-header">
-                <th>CMS-Details</th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                 <td>CMS-Nutzername:</td>
-                <td>
-                    <div><input type="text" class="form-control" placeholder="CMS-Nutzername"
-                    value="@user.getCmsAccount" @if(user.getCmsAccount!=null){
-                        disabled}
-                        >
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>CMS-Passwort ändern:</td>
-                <td>
-                    <div><input type="password" class="form-control" id="pw1" placeholder="Passwort">
-                    </div>
-                </td>
-            </tr>
-            <tr>
-                <td>Passwort wiederholen:</td>
-                <td>
-                    <div><input type="password" class="form-control" id="pw2" placeholder="Passwort">
-
-                    </div>
-                </td>
-            </tr>
-
-            </tbody>
-        <thead>
-            <tr class="table-header">
-                <th>Sonstiges</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Sprache:</td>
-                <td class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                    aria-expanded="false">Deutsch<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#">Englisch</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        </tbody>
-        </table>
+        <p id="errormsg" class="warning-lachs"></p>
+        <button type="button" class="btn btn-lila pull-right" data-bind="click: sendUser" href="#">Übernehmen</button>
     </div>
-    <p class="warning-lachs">Passwort stimmt nicht überein!</p>
-    <button type="button" class="btn btn-lila pull-right" href="#">Übernehmen</button>
-</div>
+
+    <script src='@routes.Assets.versioned("js/knockout/user/app.js")' type="text/javascript"></script>
 }
