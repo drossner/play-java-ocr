@@ -3,7 +3,9 @@ package controllers;
 
 import be.objectify.deadbolt.core.models.Subject;
 import com.google.inject.Inject;
+import modules.database.UserController;
 import modules.database.entities.Country;
+import modules.database.entities.CountryImpl;
 import modules.database.entities.Job;
 import modules.database.entities.User;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
@@ -68,16 +70,12 @@ public class Application extends Controller {
         return F.Promise.promise(() ->
                 //auto open/close/commit transaction in this thread, readOnly = true
                 JPA.withTransaction("default", true, () -> {
-                    //load subject from cache of from database if not available
-                    User user = cache.getOrElse(userMail, () -> {
-                                TypedQuery<User> q = JPA.em().createQuery("select u from User u where u.eMail = :email", User.class);
-                                q.setParameter("email", userMail);
-                                return q.getSingleResult();
-                            }
-                    );
-                    return ok(verwalten.render(user));
-                })
-        );
+                            User user = new modules.database.UserController().selectUserFromMail(userMail);
+
+                            user.getCountry().setCountry(CountryImpl.ENGLISCH);
+                            return ok(verwalten.render(user));
+                        }
+                ));
     }
 
     @SubjectPresent
@@ -128,4 +126,14 @@ public class Application extends Controller {
         }
 
     } */
+
+    private class UserTemp {
+        public String language;
+        public String email;
+
+        public UserTemp(String email, String language) {
+            this.email = email;
+            this.language = language;
+        }
+    }
 }

@@ -6,6 +6,7 @@ import modules.database.UserController;
 import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 
@@ -22,9 +23,15 @@ public class SimpleUserFactory{
     private ArrayList<OcrPermission> permissionList = new ArrayList<>();
 
     public User persist(){
+        Logger.info("persist user from simple user factory: " + user);
         UserController controller = new UserController();
 
         if(controller.selectUserFromMail(user) == null){
+            if(user.getCountry() == null){
+                Country country = new Country();
+                country.setCountry(CountryImpl.ENGLISCH);
+                user.setCountry(country);
+            }
             controller.persistUser(user, roleList, permissionList);
         }
 

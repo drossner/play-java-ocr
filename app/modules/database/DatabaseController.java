@@ -125,4 +125,5 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
     public void persistObject(Object persistObject){
         JPA.em().persist(persistObject);
     }
+
 }
