@@ -3,6 +3,7 @@ package modules.ldap;
 import java.util.Hashtable;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import javax.inject.Singleton;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.Attribute;
@@ -22,6 +23,7 @@ import sun.misc.BASE64Encoder;
 /**
  * Created by Benedikt Linke on 23.11.15.
  */
+@Singleton
 public class LdapController {
 
     public static final String INITIAL_CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";

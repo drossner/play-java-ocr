@@ -8,6 +8,7 @@ import modules.authentication.OAuthentication;
 import modules.database.entities.CountryImpl;
 import modules.database.factory.SimpleUserFactory;
 import modules.database.entities.User;
+import modules.ldap.LdapController;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.libs.F.Promise;
@@ -27,10 +28,12 @@ import java.security.InvalidParameterException;
 public class AuthenticationController extends Controller{
     private final OAuthentication gp;
     private final OAuthentication fb;
+    private final LdapController ldapController;
 
     @Inject
-    public AuthenticationController(OAuthentication gp){
+    public AuthenticationController(OAuthentication gp, LdapController ldapController){
         this.gp = gp;
+        this.ldapController = ldapController;
         this.fb = new FacebookAuthentication();
     }
 
@@ -91,12 +94,19 @@ public class AuthenticationController extends Controller{
         //get the email of the user
         final String userEmail = authResponse.getEmail();
         //lookup if user aleady exists
-        CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
+        /*CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
         CriteriaQuery<Long> cq = qb.createQuery(Long.class);
         Root user = cq.from(User.class);
         cq.select(qb.count(user));
         cq.where(qb.equal(user.get("eMail"), userEmail));
-        boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;
+        boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;*/
+        CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
+        CriteriaQuery<User> cq = qb.createQuery(User.class);
+        Root user = cq.from(User.class);
+        cq.select(user);
+        cq.where(qb.equal(user.get("eMail"), userEmail));
+        User loadedUser = JPA.em().createQuery(cq).getSingleResult();
+        boolean exists = loadedUser != null;
         //create new user if he doesnt exist
         if (!exists) {
             JPA.em().persist(new SimpleUserFactory()
@@ -107,12 +117,17 @@ public class AuthenticationController extends Controller{
         }
         //session init
         session().put("session", userEmail);
-        if(target != null){
+
+        //ldap account?
+        if(loadedUser.getCmsAccount() == null || loadedUser.getCmsAccount().equals("")){
+            //redirect to verwalten to set up ldap
+            return redirect(routes.Application.verwalten());
+        }
+        else if(target != null){
             return redirect(target);
         } else {
             return redirect(routes.Application.index());
         }
-
     }
 
     private OAuthentication getOAuthenticationImpl(int method) throws InvalidParameterException{
