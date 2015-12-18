@@ -1,12 +1,14 @@
 @()
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script type='text/javascript' src='http://code.jquery.com/ui/1.11.4/jquery-ui.min.js'></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<!--  <link rel="stylesheet" media="screen"
+   href='@routes.Assets.versioned("/stylesheets/jquery-ui.css")'>-->
+<script type='text/javascript' src='http://code.jquery.com/ui/1.11.4/jquery-ui.min.js'></script>
 
-    <script src='@routes.Assets.versioned("js/configurator/preprocessing/caman.full.js")'></script>
-    <script src='@routes.Assets.versioned("js/configurator/preprocessing/preprocessing.js")'></script>
+<script src='@routes.Assets.versioned("js/configurator/preprocessing/caman.full.js")'></script>
+<script src='@routes.Assets.versioned("js/configurator/preprocessing/preprocessing.js")'></script>
 
 
-    <!-- Modal -->
+<!-- Modal -->
     <div id="modal-sample-1" class="modal fade">
         <div class="modal-dialog modal-lg">
 
@@ -26,13 +28,28 @@
                                             </div>
                                         </div>
                                         <div class="col-xs-2">
-                                            <button id="rotate-left" class="btn btn-lila actionOn">Drehen nach links</button>
-                                            <button id="rotate-right" class="btn btn-lila actionOn">Drehen nach rechts</button>
-                                            <label>Brightness <span class="v" id="v-brightness">0</span></label>
-                                            <div class="slider" id="brightness" data-min="-100" data-max="100" data-val="0"></div>
-                                            <label>Contrast <span class="v" id="v-contrast">0</span></label>
-                                            <div class="slider" id="contrast" data-min="-100" data-max="100" data-val="0"></div>
-                                            <button id="reset" class="btn btn-lila actionOn">Zurücksetzen</button>
+                                            <button id="rotate-left" class="btn btn-lila btn-150px actionOn">Links
+                                                drehen
+                                            </button>
+                                            <button id="rotate-right" class="btn btn-lila btn-150px actionOn">Rechts
+                                                drehen
+                                            </button>
+                                            </br>
+                                            </br>
+                                            </br>
+                                            <label>Helligkeit: <span class="v" id="v-brightness">0</span></label>
+
+                                            <div class="slider btn-150px" id="brightness" data-min="-100" data-max="100"
+                                                 data-val="0"></div>
+                                            </br>
+                                            <label>Kontrast: <span class="v" id="v-contrast">0</span></label>
+
+                                            <div class="slider btn-150px" id="contrast" data-min="-100" data-max="100"
+                                                 data-val="0"></div>
+                                            </br></br>
+
+                                            <button id="reset" class="btn btn-lachs btn-150px actionOn">Zurücksetzen
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -49,10 +66,13 @@
                                     <!--Zuweisung der Boxen-->
                                     <div class="col-xs-2">
                                         <div>
-                                            <button id="metadata" value="Add New" class="btn btn-lila actionOn">Metadaten</button>
-                                            <button class="btn btn-lila">Textfeld</button>
-                                            <button class="btn btn-lila">Bild</button>
-                                            <button id="deleteAreas" class="btn btn-lila">Delete all areas</button>
+                                            <button id="metadata" value="Add New"
+                                                    class="btn btn-lila btn-150px  actionOn">Metadaten
+                                            </button>
+                                            <button class="btn btn-150px btn-lila">Textfeld</button>
+                                            <button class="btn btn-150px btn-lila">Bild</button>
+                                            <button id="deleteAreas" class="btn btn-lila btn-150px">Delete all areas
+                                            </button>
                                         </div>
                                         <p id="coordinaten"></p>
                                         <script>
@@ -90,9 +110,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button>
-                    <button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button>
-                    <button type="button" class="btn btn-success js-btn-step" data-orientation="next"></button>
+                    <button type="button" class="btn btn-lachs js-btn-step pull-left" data-orientation="cancel"
+                            data-dismiss="modal"></button>
+                    <button type="button" class="btn btn-lila js-btn-step" data-orientation="previous"></button>
+                    <button type="button" class="btn btn-lila js-btn-step" data-orientation="next"></button>
                 </div>
             </div>
         </div>

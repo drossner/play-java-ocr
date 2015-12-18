@@ -205,7 +205,13 @@ fieldset[disabled] .btn-lila.active
     width: 200px;
 }
 
+.btn-150px {
 
+    width: 150px;
+    margin-top: 5px;
+    margin-right: 0px;
+    margin-left: 0px;
+}
 
 
 a.dropdown-toggle
@@ -307,4 +313,22 @@ canvas {
     margin-bottom: 15px;
     margin-left: 10%;
     margin-right: 10%;
+}
+
+.ui-state-default,
+.ui-widget-content .ui-state-default,
+.ui-widget-header .ui-state-default {
+    border: 1px solid #8082a6;
+    background: #8082a6 !important;
+    font-weight: normal;
+    color: #454545;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+    border: 1px solid #8082a6 !important;
+    background: #8082a6 !important;
+    font-weight: normal;
+    color: #454545;
 }
