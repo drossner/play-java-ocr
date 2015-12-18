@@ -92,13 +92,13 @@ public class ImageHelperImpl implements ImageHelper{
     public BufferedImage scale(BufferedImage image, int width, int height){
         BufferedImage thumbnail =
                 Scalr.resize(image, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH, width, height, Scalr.OP_ANTIALIAS);
-        return thumbnail;
+        return fixTransparency(thumbnail);
     }
 
     public BufferedImage getThumbnail(BufferedImage image){
         BufferedImage thumbnail =
                 Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT,
                         THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
-        return thumbnail;
+        return fixTransparency(thumbnail);
     }
 }
