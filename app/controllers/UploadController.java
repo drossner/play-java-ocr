@@ -2,19 +2,17 @@ package controllers;
 
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import modules.database.factory.SimpleJobFactory;
 import modules.upload.FileContainer;
 import modules.upload.UploadHandler;
 import play.Logger;
-import play.cache.CacheApi;
 import play.libs.F;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
+import util.ImageHelper;
 
 import javax.inject.Inject;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +25,7 @@ public class UploadController extends Controller {
     private UploadHandler uploadHandler;
 
     @Inject
-    public UploadController(CacheApi cache, UploadHandler uploadHandler){
+    public UploadController(UploadHandler uploadHandler){
         this.uploadHandler = uploadHandler;
     }
 
@@ -85,7 +83,7 @@ public class UploadController extends Controller {
                 Logger.error(e.getMessage(), e);
                 return internalServerError(e.getMessage());
             }
-            return ok(baos.toByteArray()).as("image/jpeg");
+            return ok(baos.toByteArray()).as(ImageHelper.OUTPUT_MIMETYPE);
         });
     }
 

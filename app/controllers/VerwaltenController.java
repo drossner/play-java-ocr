@@ -30,9 +30,7 @@ public class VerwaltenController extends Controller{
         String password = "hubertus";
 
         UserController uc = new UserController();
-        User user = JPA.withTransaction(() -> {
-            return uc.selectUserFromMail(session().get("session"));
-        });
+        User user = JPA.withTransaction(() -> uc.selectUserFromMail(session().get("session")));
         //exit method
         if(user.getCmsAccount() != null) return badRequest("You already set up a cms account!");
 

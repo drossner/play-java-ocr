@@ -3,15 +3,14 @@ package modules.upload;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.routes;
-import org.imgscalr.Scalr;
-import play.Logger;
 import play.Play;
 import play.libs.Akka;
 import play.libs.Json;
 import play.mvc.Http.MultipartFormData.FilePart;
 import scala.concurrent.duration.Duration;
+import util.ImageHelper;
 
-import javax.imageio.ImageIO;
+import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -40,15 +39,16 @@ public class UploadHandler {
 
     private ImageHelper imageHelper;
 
-    public UploadHandler() throws IOException {
+    @Inject
+    public UploadHandler(ImageHelper imageHelper) throws IOException {
         this.uploadIds = new ConcurrentSkipListMap<String, Long>();
         this.fileList = new ConcurrentSkipListMap<>();
-        this.imageHelper = new ImageHelper();
+        this.imageHelper = imageHelper;
 
         //cleanup code
         Akka.system().scheduler().schedule(
-                Duration.create(10, TimeUnit.MINUTES),   // initial delay
-                Duration.create(10, TimeUnit.MINUTES),   // run job every 5 minutes
+                Duration.create(30, TimeUnit.MINUTES),   // initial delay
+                Duration.create(30, TimeUnit.MINUTES),   // run job every 30 minutes
                 () -> {
                     cleanup();
                 }, Akka.system().dispatcher());
@@ -162,14 +162,10 @@ public class UploadHandler {
 
     public ByteArrayOutputStream getThumbnail(final String uploadId, String filename) throws IOException {
         Optional<FileContainer> of = loadFile(uploadId, filename);
-
         if(of.isPresent()){
             BufferedImage image = imageHelper.convertFile(of.get());
-            BufferedImage thumbnail =
-                    Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT, THUMBNAIL_WIDTH, THUMBNAIL_HEIGTH, Scalr.OP_ANTIALIAS);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(thumbnail, "jpeg", baos);
-            return baos;
+            image = imageHelper.getThumbnail(image);
+            return imageHelper.convertBaos(image);
         }
         return null; //handled in controller
     }

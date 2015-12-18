@@ -55,18 +55,24 @@
                 <tbody>
                     <tr>
                         <td>CMS-Nutzername:</td>
-                        <td id="cmsAccount" data-bind="text: user().cmsAccount">@if(user.getCmsAccount == null || user.getCmsAccount == ""){@user.geteMail()}else{@user.getCmsAccount}</td>
+                        <td>
+                        <div><input id="cmsAccount" data-bind="value: user().cmsAccount" type="text" class="form-control"
+                        @if(user.getCmsAccount != null){value="@user.getCmsAccount()" disabled}
+                        placeholder="CMS-Nutzername"></div>
+                        </td>
                     </tr>
                     <tr>
                         <td>CMS-Passwort ändern:</td>
                         <td>
-                            <div><input data-bind="value: user().password" type="password" class="form-control" id="pw1" placeholder="Passwort">
+                            <div><input data-bind="value: user().password" type="password" class="form-control" id="pw1"
+                            placeholder="Passwort" @if(user.getCmsAccount != null){disabled}>
                             </div>
                     </tr>
                     <tr>
                         <td>Passwort wiederholen:</td>
                         <td>
-                            <div><input data-bind="value: user().passwordConfirm" type="password" class="form-control" id="pw2" placeholder="Passwort">
+                            <div><input data-bind="value: user().passwordConfirm" type="password" class="form-control" id="pw2"
+                            placeholder="Passwort" @if(user.getCmsAccount != null){disabled}>
 
                             </div>
                         </td>
@@ -90,7 +96,7 @@
                 </tbody>
             </table>
         </div>
-        <p id="errormsg" class="warning-lachs"></p>
+        <p id="errormsg" class="warning"></p>
         <button type="button" class="btn btn-lila pull-right" data-bind="click: sendUser" href="#">Übernehmen</button>
     </div>
 
