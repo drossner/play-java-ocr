@@ -14,11 +14,9 @@ $(document).ready(function () {
 
 // Log the quantity of selections
 function debugQtyAreas (event, id, areas) {
-    //window.parent.myfunction(areas[id]);
     console.log(areas.length + " areas", arguments);
-    window.parent.getValuesForInput(areas[id], id);
+    window.parent.getValuesForInput(areas[id]);
     window.parent.getValuesOfSelectedArea(areas);
-    window.parent.getValuesOfType(areas[id]);
 }
 
 // Change the Size of the Selected Area
