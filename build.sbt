@@ -79,7 +79,7 @@ libraryDependencies ++= Seq(
 // (install sbt)
 // use sbt publishLocal fot the project above
 // now the following dependency can be resolved
-libraryDependencies += "com.practicum.web.architecture.ocr" % "java-ocr-analyse" % "1.0.0"
+//libraryDependencies += "com.practicum.web.architecture.ocr" % "java-ocr-analyse" % "1.0.0"
 
 libraryDependencies ++= Seq(
   "org.apache.chemistry.opencmis" % "chemistry-opencmis-commons-api" % "0.13.0",

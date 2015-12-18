@@ -821,7 +821,9 @@
 
     $.selectAreas = function(object, options) {
         var $object = $(object);
+        //console.log($object);
         if (! $object.data("mainImageSelectAreas")) {
+            //console.log("init data + " + options);
             var mainImageSelectAreas = new $.imageSelectAreas();
             mainImageSelectAreas.init(object, options);
             $object.data("mainImageSelectAreas", mainImageSelectAreas);
@@ -844,10 +846,14 @@
 
                 // And attach selectAreas when the object is loaded
                 image.onload = function() {
+                    //console.log("im on load");
+                    //console.log(customOptions);
+
                     $.selectAreas(currentObject, customOptions);
                 };
 
                 // Reset the src because cached images don"t fire load sometimes
+                ////console.log("Src: " + currentObject.src);
                 image.src = currentObject.src;
 
             });

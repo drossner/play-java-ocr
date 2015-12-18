@@ -12,7 +12,6 @@ function PreProcessing() {
     self.saveImage = function(){
         //alert("SaveStuff in preprocessing.js wurde aufgerufen");
         self.img = self.caman.toBase64();
-        console.log(self.img);
         return self.img;
     };
 
