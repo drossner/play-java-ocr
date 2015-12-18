@@ -135,7 +135,6 @@ function JobHistoryViewModel(){
         preProcessing = new PreProcessing();
 
         console.log(job);
-        console.log(job.image());
         setImageSource(job.image(), initModal, job);
         //$("#canvas").src= job.image;
 

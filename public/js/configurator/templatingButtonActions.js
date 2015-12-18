@@ -47,8 +47,8 @@ function reset(){
 }
 
 function getAreas(){
-    return document.getElementById('templating').contentWindow.getValues();
-    //return this.areas;
+    //return document.getElementById('templating').contentWindow.getValues();
+    return this.areas;
 }
 
 function createArea(options){
@@ -65,15 +65,18 @@ $('#metadata').click(function(){
 
 // Load preprocessed Image in second step
 $('#next').click(function(){
-    console.log("next method");
-    var image = preProcessing.saveImage();
-    var height = preProcessing.getCanvasHeight();
-    var width = preProcessing.getCanvasWidth();
-    var iframe = document.getElementById('templating');
-    console.log(iframe);
-    iframe.height = height;
-    console.log(iframe);
-    document.getElementById('templating').contentWindow.loadImageForSecondStep(image, height, width);
+    console.log("data-step: " + $(this).attr('data-step'));
+    if($(this).attr('data-step') != "complete") {
+        console.log("next method");
+        var image = preProcessing.saveImage();
+        var height = preProcessing.getCanvasHeight();
+        var width = preProcessing.getCanvasWidth();
+        var iframe = document.getElementById('templating');
+        console.log(iframe);
+        iframe.height = height;
+        console.log(iframe);
+        document.getElementById('templating').contentWindow.loadImageForSecondStep(image, height, width);
+    }
 });
 
 
@@ -93,3 +96,28 @@ $('#modal-sample-1').modalSteps({
         }
     }
 });
+
+
+$('#editHeigth').keypress(validateNumber);
+$('#editWidth').keypress(validateNumber)
+
+function validateNumber(event) {
+    var $id = $(event.target).next("span");
+    //if the letter is not digit then display error and don't type anything
+    if (event.which != 8 && event.which != 0 && (event.which < 48 || event.which > 57)) {
+        //display error message
+        $id.html("Bitte nur Zahlen").show().fadeOut("slow");
+        return false;
+    }
+
+}
+
+// With the element initially shown, we can hide it slowly:
+/*
+$( "#metadata" ).click(function() {
+    $( "#meta" ).hide( "slow", function() {
+        alert( "Animation complete." );
+    });
+});
+*/
+
