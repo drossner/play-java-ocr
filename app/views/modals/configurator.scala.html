@@ -15,7 +15,7 @@
                     <h4 class="js-title-step"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row hide" data-step="1" data-title="This is the first step">
+                    <div class="row hide" data-step="1" data-title="">
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 <div class="container-fluid">
@@ -35,20 +35,34 @@
                                         </div>
 
                                         <div class="col-xs-2">
-                                            <button id="rotate-left" class="btn btn-lila actionOn">Drehen nach links</button>
-                                            <button id="rotate-right" class="btn btn-lila actionOn">Drehen nach rechts</button>
-                                            <label>Brightness <span class="v" id="v-brightness">0</span></label>
-                                            <div class="slider" id="brightness" data-min="-100" data-max="100" data-val="0"></div>
-                                            <label>Contrast <span class="v" id="v-contrast">0</span></label>
-                                            <div class="slider" id="contrast" data-min="-100" data-max="100" data-val="0"></div>
-                                            <button id="reset" class="btn btn-lila actionOn">Zurücksetzen</button>
+                                            <button id="rotate-left" class="btn btn-lila btn-150px actionOn">Links
+                                                drehen
+                                            </button>
+                                            <button id="rotate-right" class="btn btn-lila btn-150px actionOn">Rechts
+                                                drehen
+                                            </button>
+                                            </br>
+                                            </br>
+                                            </br>
+                                            <label>Helligkeit: <span class="v" id="v-brightness">0</span></label>
+
+                                            <div class="slider btn-150px" id="brightness" data-min="-100" data-max="100"
+                                                 data-val="0"></div>
+                                            </br>
+                                            <label>Kontrast: <span class="v" id="v-contrast">0</span></label>
+
+                                            <div class="slider btn-150px" id="contrast" data-min="-100" data-max="100"
+                                                 data-val="0"></div>
+                                            </br></br>
+                                            <button id="reset" class="btn btn-lachs btn-150px actionOn">Zurücksetzen
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row hide" data-step="2" data-title="This is the second step!">
+                    <div class="row hide" data-step="2" data-title="">
                         <div class="col-md-12">
                             <div class="container-fluid">
                                 <div class="row">
@@ -58,27 +72,33 @@
                                     <!--Zuweisung der Boxen-->
                                     <div class="col-xs-2">
                                         <div>
-                                            <button id="metadata" value="Add New" class="btn btn-lila actionOn">Metadaten</button>
-                                            <button class="btn btn-lila">Textfeld</button>
-                                            <button class="btn btn-lila">Bild</button>
-                                            <button id="deleteAreas" class="btn btn-lila">Delete all areas</button>
+                                            <button id="metadata" value="Add New"
+                                                    class="btn btn-lila btn-150px actionOn">Metadaten
+                                            </button>
+                                            <button class="btn btn-150px btn-lila">Textfeld</button>
+                                            <button class="btn btn-150px btn-lila">Bild</button>
+                                            <button id="deleteAreas" class="btn btn btn-150px btn-lila">Delete all
+                                                areas
+                                            </button>
+                                            </br>
                                         </div>
 
 
                                         <form role="form">
-                                            <div class="form-group">
+                                            </br>
+                                            <div class="form-group btn-150px">
                                                 <label for="editHeigth">Höhe:</label>
                                                 <input type="text" class="form-control" id="editHeigth">
                                                 <span id="msgEditHeigth"></span>
                                             </div>
-                                            <div class="form-group">
+                                            <div class="form-group btn-150px">
                                                 <label for="editheigth">Breite:</label>
                                                 <input type="text" class="form-control" id="editWidth">
                                                 <span id="msgEditWidth"></span>
                                             </div>
 
-                                            <div id="meta" class="form-group">
-                                                <label for="editMetaDataType">Metadatentype:</label>
+                                            <div id="meta" class="form-group btn-150px">
+                                                <label for="editMetaDataType">Metadatentyp:</label>
                                                 <input type="text" class="form-control" id="editMetaDataType">
                                             </div>
                                         </form>
@@ -90,9 +110,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button>
-                    <button type="button" class="btn btn-warning js-btn-step" data-orientation="previous"></button>
-                    <button id="next" type="button" class="btn btn-success js-btn-step" data-orientation="next"></button>
+                    <button type="button" class="btn btn-lachs js-btn-step pull-left" data-orientation="cancel"
+                            data-dismiss="modal"></button>
+                    <button type="button" class="btn btn-lila js-btn-step" data-orientation="previous"></button>
+                    <button id="next" type="button" class="btn btn-lila js-btn-step" data-orientation="next"></button>
                 </div>
             </div>
         </div>
