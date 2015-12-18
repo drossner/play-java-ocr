@@ -18,7 +18,7 @@ public class PostProcessing extends DomainObject {
 
     @Enumerated(EnumType.STRING)
     @Column
-    private PostProcessor postProcessor;
+    private String postProcessor;
 
     @OneToOne
     private LayoutConfig layoutConfig;
@@ -45,11 +45,11 @@ public class PostProcessing extends DomainObject {
         this.layoutConfig = layoutConfig;
     }
 
-    public PostProcessor getPostProcessor() {
+    public String getPostProcessor() {
         return postProcessor;
     }
 
-    public void setPostProcessor(PostProcessor postProcessor) {
+    public void setPostProcessor(String postProcessor) {
         this.postProcessor = postProcessor;
     }
 }

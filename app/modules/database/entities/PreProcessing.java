@@ -17,7 +17,7 @@ public class PreProcessing extends DomainObject {
 
     @Enumerated(EnumType.STRING)
     @Column
-    private PreProcessor preProcessor;
+    private String preProcessor;
 
     @OneToOne
     private LayoutConfig layoutConfig;
@@ -36,11 +36,11 @@ public class PreProcessing extends DomainObject {
         return this.id;
     }
 
-    public PreProcessor getPreProcessor() {
+    public String getPreProcessor() {
         return preProcessor;
     }
 
-    public void setPreProcessor(PreProcessor preProcessor) {
+    public void setPreProcessor(String preProcessor) {
         this.preProcessor = preProcessor;
     }
 

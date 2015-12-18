@@ -36,7 +36,7 @@ public class SimpleLayoutConfigurationFactory {
 
     public SimpleLayoutConfigurationFactory addPostProcessing(PostProcessor postProcessor){
         PostProcessing post = new PostProcessing();
-        post.setPostProcessor(postProcessor);
+        post.setPostProcessor(postProcessor.toString());
         this.postProcessing.add(post);
 
         return this;
@@ -44,7 +44,7 @@ public class SimpleLayoutConfigurationFactory {
 
     public SimpleLayoutConfigurationFactory addPreProcessing(PreProcessor preProcessor){
         PreProcessing pre = new PreProcessing();
-        pre.setPreProcessor(preProcessor);
+        pre.setPreProcessor(preProcessor.toString());
         this.preProcessing.add(pre);
 
         return this;
