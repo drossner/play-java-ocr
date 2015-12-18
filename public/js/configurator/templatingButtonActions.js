@@ -93,3 +93,28 @@ $('#modal-sample-1').modalSteps({
         }
     }
 });
+
+
+$('#editHeigth').keypress(validateNumber);
+$('#editWidth').keypress(validateNumber)
+
+function validateNumber(event) {
+    var $id = $(event.target).next("span");
+    //if the letter is not digit then display error and don't type anything
+    if (event.which != 8 && event.which != 0 && (event.which < 48 || event.which > 57)) {
+        //display error message
+        $id.html("Bitte nur Zahlen").show().fadeOut("slow");
+        return false;
+    }
+
+}
+
+// With the element initially shown, we can hide it slowly:
+/*
+$( "#metadata" ).click(function() {
+    $( "#meta" ).hide( "slow", function() {
+        alert( "Animation complete." );
+    });
+});
+*/
+
