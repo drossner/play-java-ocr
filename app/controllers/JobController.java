@@ -4,22 +4,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import modules.database.entities.Job;
-import modules.upload.ImageHelper;
-import org.apache.chemistry.opencmis.client.api.Document;
-import org.apache.chemistry.opencmis.client.util.FileUtils;
-import org.apache.chemistry.opencmis.commons.impl.Base64;
-import org.imgscalr.Scalr;
-import play.api.Play;
+import util.ImageHelper;
 import play.mvc.Controller;
 import play.Logger;
 import play.mvc.Result;
 import play.libs.Json;
 
-import javax.imageio.ImageIO;
+import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 
@@ -27,6 +21,13 @@ import java.util.List;
  * Created by florian on 29.11.15.
  */
 public class JobController extends Controller {
+
+    private ImageHelper imageHelper;
+
+    @Inject
+    public JobController(ImageHelper imageHelper){
+        this.imageHelper = imageHelper;
+    }
 
     public Result getJobHistory(){
         List<Job> jobs = null;
@@ -114,11 +115,9 @@ public class JobController extends Controller {
             CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
 
             BufferedImage image = controller.readingAImage(job.getImage().getSource());
-            image = new ImageHelper().scale(image, 536, 0);
+            image = imageHelper.scale(image, ImageHelper.TEMPLATE_WIDTH, 0);
 
-            Logger.info("image: " + image);
-
-            return ok(new ImageHelper().convertBaos(image).toByteArray()).as("image/jpeg");
+            return ok(imageHelper.convertBaos(image).toByteArray()).as(ImageHelper.OUTPUT_MIMETYPE);
         }
         //TODO DANIEL ERROR
         return internalServerError();
