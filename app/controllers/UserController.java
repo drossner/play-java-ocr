@@ -77,7 +77,8 @@ public class UserController extends Controller {
                     ObjectNode result = null;
 
 
-                    if(user.getCmsAccount() != null) result = generateJsonResponse(false, CMS_CONSTRAINT_WANNABEUSER);
+                    if(user.getCmsAccount() != null &&
+                            !user.getCmsAccount().equals(cmsAccount)) result = generateJsonResponse(false, CMS_CONSTRAINT_WANNABEUSER);
                         //set all or only language -> if sth went wrong, dont set language!!!
                         //enter following if, if nothing changed -> only language
                     else if((user.getCmsAccount() == null || user.getCmsAccount().equals(cmsAccount)) &&
@@ -107,9 +108,9 @@ public class UserController extends Controller {
 
 
                     if(result.get("success").asBoolean()){
-                        return ok(result);
+                        return ok(result).as("application/json");
                     } else {
-                        return badRequest(result);
+                        return badRequest(result).as("application/json");
                     }
 
                 })
@@ -131,8 +132,7 @@ public class UserController extends Controller {
         ObjectNode result = Json.newObject();
         result.put("success", success);
         result.put("message", message);
-        Logger.info("Success: "+success+" Message: "+message);
-        Logger.info("Generate Response: "+result.asText());
+        Logger.info(result.toString());
         return result;
     }
 

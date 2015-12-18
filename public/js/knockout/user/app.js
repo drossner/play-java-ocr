@@ -36,18 +36,23 @@ function UserViewModel(){
 
     self.sendUser = function(){
         console.log(self.user());
-        $('#errormsg').text('');
+        //$('#errormsg').text('');
 
         $.ajax("/json/saveUser", {
             data: ko.toJSON({ user: self.user }),
             type: "post", contentType: "application/json",
             success: function(result) {
-                var data = JSON.parse(result.responseText);
-                $('#errormsg').text(data.message);
+                var element = $('#errormsg');
+                element.removeClass("warning-lachs");
+                element.addClass("warning-lila");
+                element.text(result.message);
             },
             error: function(result) {
+                var element = $('#errormsg');
+                element.removeClass("warning-lila");
+                element.addClass("warning-lachs");
                 var data = JSON.parse(result.responseText);
-                $('#errormsg').text(data.message);
+                element.text(data.message);
             }
         });
     }
