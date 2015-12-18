@@ -55,7 +55,11 @@
                 <tbody>
                     <tr>
                         <td>CMS-Nutzername:</td>
-                        <td id="cmsAccount" data-bind="text: user().cmsAccount">@if(user.getCmsAccount == null || user.getCmsAccount == ""){@user.geteMail()}else{@user.getCmsAccount}</td>
+                        <td>
+                        <div><input id="cmsAccount" data-bind="value: user().cmsAccount" type="text" class="form-control"
+                        @if(user.getCmsAccount != null){value="@user.getCmsAccount()" disabled}
+                        placeholder="CMS-Nutzername"></div>
+                        </td>
                     </tr>
                     <tr>
                         <td>CMS-Passwort ändern:</td>

@@ -7,7 +7,8 @@ function User(){
     self.language = ko.observable($('#language').text());
     console.log(self.language());
 
-    self.cmsAccount = ko.observable($('#cmsAccount').text());
+    self.cmsAccount = ko.observable($('#cmsAccount').val());
+    console.log(self.cmsAccount());
 
     self.password = ko.observable("");
     self.passwordConfirm = ko.observable("");
@@ -40,8 +41,14 @@ function UserViewModel(){
         $.ajax("/json/saveUser", {
             data: ko.toJSON({ user: self.user }),
             type: "post", contentType: "application/json",
-            success: function(result) { alert(result) },
-            error: function(result) { $('#errormsg').text('Passwörter stimmen nicht überein!')}
+            success: function(result) {
+                var data = JSON.parse(result.responseText);
+                $('#errormsg').text(data.message);
+            },
+            error: function(result) {
+                var data = JSON.parse(result.responseText);
+                $('#errormsg').text(data.message);
+            }
         });
     }
 }
