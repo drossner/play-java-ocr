@@ -1,8 +1,11 @@
 package controllers;
 
 
+import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.core.models.Subject;
+import be.objectify.deadbolt.java.actions.Pattern;
 import com.google.inject.Inject;
+import controllers.security.OcrDeadboltHandler;
 import modules.database.UserController;
 import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
@@ -44,6 +47,7 @@ public class Application extends Controller {
         }
     }
 
+    @Pattern(value="cms", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     @SubjectPresent
     public F.Promise<Result> hochladen(int step, String inUploadId) {
         final String userMail = session().get("session");
@@ -65,7 +69,7 @@ public class Application extends Controller {
     }
 
     @SubjectPresent
-    public F.Promise<Result> verwalten() {
+    public F.Promise<Result> verwalten(boolean showWarning) {
         final String userMail = session().get("session");
         return F.Promise.promise(() ->
                 //auto open/close/commit transaction in this thread, readOnly = true
@@ -73,11 +77,12 @@ public class Application extends Controller {
                             User user = new modules.database.UserController().selectUserFromMail(userMail);
 
                             user.getCountry().setCountry(CountryImpl.ENGLISCH);
-                            return ok(verwalten.render(user));
+                            return ok(verwalten.render(user, showWarning));
                         }
                 ));
     }
 
+    @Pattern(value="cms", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     @SubjectPresent
     public Result ablage() {
         return ok(ablage.render());
@@ -88,10 +93,12 @@ public class Application extends Controller {
         return ok(hilfe.render());
     }
 
+    @SubjectPresent
     public Result template() {
         return ok(views.html.modals.templating.render());
     }
 
+    @SubjectPresent
     public Result imgEdit() {
         return ok(views.html.modals.imageEdit.render());
     }

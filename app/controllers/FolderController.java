@@ -1,5 +1,9 @@
 package controllers;
 
+import be.objectify.deadbolt.core.PatternType;
+import be.objectify.deadbolt.java.actions.Pattern;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
+import controllers.security.OcrDeadboltHandler;
 import modules.cms.CMSController;
 import modules.cms.data.Folder;
 import modules.cms.SessionHolder;
@@ -17,6 +21,8 @@ import java.util.ArrayList;
 /**
  * Created by Benedikt Linke on 01.12.15.
  */
+@Pattern(value="cms", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+@SubjectPresent
 public class FolderController extends Controller {
 
     public Result getUserFolders(){
