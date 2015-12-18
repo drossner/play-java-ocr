@@ -306,13 +306,26 @@ canvas {
     margin: auto;
 }
 
-.warning-lachs {
+.warning {
     color: #FFFFFF;
     background-color: #F25260;
     border-color: #F25260;
     margin-bottom: 15px;
     margin-left: 10%;
     margin-right: 10%;
+    text-align: center;
+}
+
+.warning-lachs {
+    color: #FFFFFF;
+    background-color: #F25260;
+    border-color: #F25260;
+}
+
+.warning-lila {
+    color: #FFFFFF;
+    background-color: #8082a6;
+    border-color: #8082a6;
 }
 
 .ui-state-default,
