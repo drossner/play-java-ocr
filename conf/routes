@@ -8,6 +8,7 @@ GET           /hochladen                      controllers.Application.hochladen(
 GET           /verwalten                      controllers.Application.verwalten()
 GET           /ablage                         controllers.Application.ablage()
 GET           /hilfe                          controllers.Application.hilfe()
+GET          /setupLdap                      controllers.VerwaltenController.updateLdapAccount
 
 # Upload
 POST          /upload/:uploadId               controllers.UploadController.upload(uploadId)

@@ -28,12 +28,10 @@ import java.security.InvalidParameterException;
 public class AuthenticationController extends Controller{
     private final OAuthentication gp;
     private final OAuthentication fb;
-    private final LdapController ldapController;
 
     @Inject
     public AuthenticationController(OAuthentication gp, LdapController ldapController){
         this.gp = gp;
-        this.ldapController = ldapController;
         this.fb = new FacebookAuthentication();
     }
 
