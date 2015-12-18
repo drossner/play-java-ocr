@@ -1,15 +1,16 @@
 /**
  * Created by Benedikt Linke on 08.12.15.
  */
-
+/*
 $(document).ready(function () {
+    console.log("document ready");
     $('img#example').selectAreas({
         minSize: [10, 10],
         onChanged: debugQtyAreas,
         allowSelect: false
     });
-});
 
+});*/
 
 // Log the quantity of selections
 function debugQtyAreas (event, id, areas) {
@@ -75,4 +76,18 @@ function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
     //Set width and height for the overlay
     $(".select-areas-overlay").css({"height": canvasHeight, "width": canvasWidth});
     $("div.image-decorator > div").css({"height": canvasHeight, "width": canvasWidth});
+
+    var areas = exampleImage.selectAreas("areas");
+
+    exampleImage.selectAreas("destroy");
+    exampleImage.selectAreas({
+        minSize: [10, 10],
+        onChanged: debugQtyAreas,
+        allowSelect: false
+    });
+
+    $.each(areas, function(index, value){
+        exampleImage.selectAreas("add", value);
+    });
+
 }
