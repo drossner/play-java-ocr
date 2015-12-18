@@ -28,7 +28,7 @@ public class UserController extends Controller {
     private final String PASSWORD_CONSTRAINT_STRENGTH = "Das Passwort ist nicht lang genug";
     private final String CMS_CONSTRAINT_LENGTH = "CMS-Nutzername ist zu kurz";
     private final String CMS_CONSTRAINT_EXIST = "CMS-Nutzername existiert bereits";
-    private final String CMS_CONSTRAINT_WANNABEUSER = "Sie haben bereits einen CMS-Nutzeraccount erstellt";
+    private final String CMS_CONSTRAINT_WANNABEUSER = "Sie haben bereits einen CMS-Nutzeraccount erstellt, dieser ist nicht editierbar";
 
     private final String SUCCESS_MESSAGE = "Änderungen wurden erfolgreich übernommen";
 
@@ -77,8 +77,12 @@ public class UserController extends Controller {
                     ObjectNode result = null;
 
 
-                    if(user.getCmsAccount() != null &&
-                            !user.getCmsAccount().equals(cmsAccount)) result = generateJsonResponse(false, CMS_CONSTRAINT_WANNABEUSER);
+                    if((user.getCmsAccount() != null &&
+                            !user.getCmsAccount().equals(cmsAccount)) ||
+                            (user.getCmsAccount() != null &&
+                            password.length() > 0)){
+                        result = generateJsonResponse(false, CMS_CONSTRAINT_WANNABEUSER);
+                    }
                         //set all or only language -> if sth went wrong, dont set language!!!
                         //enter following if, if nothing changed -> only language
                     else if((user.getCmsAccount() == null || user.getCmsAccount().equals(cmsAccount)) &&

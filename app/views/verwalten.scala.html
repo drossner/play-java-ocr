@@ -64,13 +64,15 @@
                     <tr>
                         <td>CMS-Passwort ändern:</td>
                         <td>
-                            <div><input data-bind="value: user().password" type="password" class="form-control" id="pw1" placeholder="Passwort">
+                            <div><input data-bind="value: user().password" type="password" class="form-control" id="pw1"
+                            placeholder="Passwort" @if(user.getCmsAccount != null){disabled}>
                             </div>
                     </tr>
                     <tr>
                         <td>Passwort wiederholen:</td>
                         <td>
-                            <div><input data-bind="value: user().passwordConfirm" type="password" class="form-control" id="pw2" placeholder="Passwort">
+                            <div><input data-bind="value: user().passwordConfirm" type="password" class="form-control" id="pw2"
+                            placeholder="Passwort" @if(user.getCmsAccount != null){disabled}>
 
                             </div>
                         </td>
