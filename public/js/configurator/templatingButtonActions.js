@@ -2,6 +2,8 @@
  * Created by Sebastian Lauterkorn on 15.12.2015.
  */
 var areas;
+var currId;
+var currArea;
 
 function setImageSource(data, callback, job){
     var image = $('#canvas');
@@ -38,8 +40,31 @@ function setImageSource(data, callback, job){
      });*/
 }
 
+function getValuesOfType(area)
+{
+    $("#editMetaDataType").prop('disabled', true);
+    var type = area.type;
+    console.log("GET TYPE FROME AREA: " + type);
+    if(type == "meta" )
+    {
+        $("#editMetaDataType").prop('disabled', false);
+    }
+
+
+}
+
 function getValuesOfSelectedArea(areas){
     this.areas = areas;
+}
+function getValuesForInput(area, id){
+
+    var xHeight = parseInt(area.height);
+    var yWidth = parseInt(area.width);
+  //  console.log("Höhe " + xHeight);
+  //  console.log("Breite: " + yWidth);
+
+    $('#editHeigth').val(xHeight);
+    $('#editWidth').val(yWidth);
 }
 
 function reset(){
@@ -62,6 +87,12 @@ $('#deleteAreas').click(function(){
 $('#metadata').click(function(){
     document.getElementById('templating').contentWindow.createNewArea('meta');
 });
+$('#img').click(function(){
+    document.getElementById('templating').contentWindow.createNewArea('img');
+});
+$('#text').click(function(){
+    document.getElementById('templating').contentWindow.createNewArea('text');
+});
 
 // Load preprocessed Image in second step
 $('#next').click(function(){
@@ -72,9 +103,7 @@ $('#next').click(function(){
         var height = preProcessing.getCanvasHeight();
         var width = preProcessing.getCanvasWidth();
         var iframe = document.getElementById('templating');
-        console.log(iframe);
         iframe.height = height;
-        console.log(iframe);
         document.getElementById('templating').contentWindow.loadImageForSecondStep(image, height, width);
     }
 });
@@ -98,19 +127,43 @@ $('#modal-sample-1').modalSteps({
 });
 
 
-$('#editHeigth').keypress(validateNumber);
-$('#editWidth').keypress(validateNumber)
+$('#editMetaDataType').change(function() {
+
+    var metatype =  $( this ).val();
+    console.log("Dein Metatyp: " + metatype);
+
+
+});
+
+
+
+// Unused but works
+/*$('#editHeigth').keypress(validateNumber);
+//$('#editWidth').keypress(validateNumber);
+
+
 
 function validateNumber(event) {
     var $id = $(event.target).next("span");
     //if the letter is not digit then display error and don't type anything
     if (event.which != 8 && event.which != 0 && (event.which < 48 || event.which > 57)) {
         //display error message
-        $id.html("Bitte nur Zahlen").show().fadeOut("slow");
+        $id.html("Bitte nur Zahlen eingeben").show().fadeOut("slow");
         return false;
     }
 
-}
+}*/
+
+// Does not work yet maby later
+/*$('#editHeigth').change(function() {
+
+    var height =  $( this ).val();
+    console.log("ich change");
+    currArea =  document.getElementById('templating').contentWindow.setSizeHeight(currId, height);
+    currId = 0;
+
+});*/
+
 
 // With the element initially shown, we can hide it slowly:
 /*

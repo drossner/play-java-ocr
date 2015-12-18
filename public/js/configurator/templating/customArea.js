@@ -16,15 +16,34 @@ $(document).ready(function () {
 function debugQtyAreas (event, id, areas) {
     //window.parent.myfunction(areas[id]);
     console.log(areas.length + " areas", arguments);
-
+    window.parent.getValuesForInput(areas[id], id);
     window.parent.getValuesOfSelectedArea(areas);
+    window.parent.getValuesOfType(areas[id]);
 }
 
-// Display Valuse in parentView
-function getValues () {
-    return $('img#example').selectAreas.areas;
-}
+// Change the Size of the Selected Area
 
+//Does not work maby latter
+/*function setSizeHeight (id, height) {
+
+    var area = $('img#example').selectAreas('areas')[id];
+
+    var areaOptions = {
+        x:10,
+        y: area.y,
+        width: area.width,
+        height: 29,
+        type: area.type
+    }
+
+    var area = $('img#example').selectAreas('remove')[id];
+    createArea(areaOptions);
+
+    return $('img#example').selectAreas('areas')[0]
+
+
+
+};*/
 
 function createNewArea(type){
     var areaOptions = {
@@ -35,7 +54,7 @@ function createNewArea(type){
         type: type
     };
 
-    $('img#example').selectAreas('add', areaOptions);
+    createArea(areaOptions);
 }
 
 function createArea(options){
@@ -89,5 +108,7 @@ function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
     $.each(areas, function(index, value){
         exampleImage.selectAreas("add", value);
     });
+
+
 
 }

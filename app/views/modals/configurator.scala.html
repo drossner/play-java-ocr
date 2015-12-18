@@ -15,7 +15,7 @@
                     <h4 class="js-title-step"></h4>
                 </div>
                 <div class="modal-body">
-                    <div class="row hide" data-step="1" data-title="This is the first step">
+                    <div class="row hide" data-step="1" data-title="so much editin'">
                         <div class="col-md-12">
                             <div class="col-md-12">
                                 <div class="container-fluid">
@@ -48,7 +48,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row hide" data-step="2" data-title="This is the second step!">
+                    <div class="row hide" data-step="2" data-title="so much templatin'">
                         <div class="col-md-12">
                             <div class="container-fluid">
                                 <div class="row">
@@ -59,27 +59,27 @@
                                     <div class="col-xs-2">
                                         <div>
                                             <button id="metadata" value="Add New" class="btn btn-lila actionOn">Metadaten</button>
-                                            <button class="btn btn-lila">Textfeld</button>
-                                            <button class="btn btn-lila">Bild</button>
+                                            <button id="text" class="btn btn-lila">Textfeld</button>
+                                            <button id="img" class="btn btn-lila">Bild</button>
                                             <button id="deleteAreas" class="btn btn-lila">Delete all areas</button>
                                         </div>
 
 
                                         <form role="form">
                                             <div class="form-group">
-                                                <label for="editHeigth">Höhe:</label>
-                                                <input type="text" class="form-control" id="editHeigth">
+                                                <label for="editHeigth" >Höhe:</label>
+                                                <input type="text" class="form-control" id="editHeigth" disabled>
                                                 <span id="msgEditHeigth"></span>
                                             </div>
                                             <div class="form-group">
-                                                <label for="editheigth">Breite:</label>
-                                                <input type="text" class="form-control" id="editWidth">
+                                                <label for="editheigth"  >Breite:</label>
+                                                <input type="text" class="form-control" id="editWidth" disabled>
                                                 <span id="msgEditWidth"></span>
                                             </div>
 
                                             <div id="meta" class="form-group">
                                                 <label for="editMetaDataType">Metadatentype:</label>
-                                                <input type="text" class="form-control" id="editMetaDataType">
+                                                <input type="text" class="form-control" id="editMetaDataType" disabled>
                                             </div>
                                         </form>
 
@@ -88,6 +88,7 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default js-btn-step pull-left" data-orientation="cancel" data-dismiss="modal"></button>
