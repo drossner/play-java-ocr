@@ -47,8 +47,8 @@ function reset(){
 }
 
 function getAreas(){
-    return document.getElementById('templating').contentWindow.getValues();
-    //return this.areas;
+    //return document.getElementById('templating').contentWindow.getValues();
+    return this.areas;
 }
 
 function createArea(options){
@@ -65,15 +65,18 @@ $('#metadata').click(function(){
 
 // Load preprocessed Image in second step
 $('#next').click(function(){
-    console.log("next method");
-    var image = preProcessing.saveImage();
-    var height = preProcessing.getCanvasHeight();
-    var width = preProcessing.getCanvasWidth();
-    var iframe = document.getElementById('templating');
-    console.log(iframe);
-    iframe.height = height;
-    console.log(iframe);
-    document.getElementById('templating').contentWindow.loadImageForSecondStep(image, height, width);
+    console.log("data-step: " + $(this).attr('data-step'));
+    if($(this).attr('data-step') != "complete") {
+        console.log("next method");
+        var image = preProcessing.saveImage();
+        var height = preProcessing.getCanvasHeight();
+        var width = preProcessing.getCanvasWidth();
+        var iframe = document.getElementById('templating');
+        console.log(iframe);
+        iframe.height = height;
+        console.log(iframe);
+        document.getElementById('templating').contentWindow.loadImageForSecondStep(image, height, width);
+    }
 });
 
 
