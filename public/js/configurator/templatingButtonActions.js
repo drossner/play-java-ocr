@@ -40,31 +40,32 @@ function setImageSource(data, callback, job){
      });*/
 }
 
-function getValuesOfType(area)
-{
-    $("#editMetaDataType").prop('disabled', true);
-    var type = area.type;
-    console.log("GET TYPE FROME AREA: " + type);
-    if(type == "meta" )
-    {
-        $("#editMetaDataType").prop('disabled', false);
-    }
 
-
-}
 
 function getValuesOfSelectedArea(areas){
     this.areas = areas;
 }
-function getValuesForInput(area, id){
 
-    var xHeight = parseInt(area.height);
-    var yWidth = parseInt(area.width);
-  //  console.log("Höhe " + xHeight);
-  //  console.log("Breite: " + yWidth);
 
-    $('#editHeigth').val(xHeight);
-    $('#editWidth').val(yWidth);
+function getValuesForInput(area){
+
+    if(area != null)
+    {
+        $("#editMetaDataType").prop('disabled', true);
+
+        var xHeight = parseInt(area.height);
+        var yWidth = parseInt(area.width);
+        var type = area.type;
+
+        $('#editHeigth').val(xHeight);
+        $('#editWidth').val(yWidth);
+
+        if(type == "meta" )
+        {
+            $("#editMetaDataType").prop('disabled', false);
+        }
+    }
+
 }
 
 function reset(){
