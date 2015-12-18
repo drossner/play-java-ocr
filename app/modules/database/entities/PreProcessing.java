@@ -15,7 +15,6 @@ public class PreProcessing extends DomainObject {
     @GeneratedValue
     private int id;
 
-    @Enumerated(EnumType.STRING)
     @Column
     private String preProcessor;
 
