@@ -100,11 +100,6 @@ public class Application extends Controller {
         return ok(views.html.modals.templating.render());
     }
 
-    @SubjectPresent
-    public Result imgEdit() {
-        return ok(views.html.modals.imageEdit.render());
-    }
-
    /* @Transactional
     public Result testDatabase(){
         User temp = new DataCreator().getUser();

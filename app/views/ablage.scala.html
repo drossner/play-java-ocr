@@ -1,151 +1,173 @@
 @main("Ablage")("ablage") {
-  <div class="container">
-      <!-- content begins here -->
-    <br />
-    <br />
+<div class="container">
+    <!-- content begins here -->
+    <br/>
+    <br/>
+
     <div class="panel panel-default">
         <!-- Default panel contents -->
-      <div class="panel-heading">Deine hochgeladenen Dokumente</div>
-      <div class="panel-body">
-        <p>Sehr dummer Beschreibungstext</p>
-      </div>
+        <div class="panel-heading">Deine hochgeladenen Dokumente</div>
+        <div class="panel-body">
+            <p>Sehr dummer Beschreibungstext</p>
+        </div>
         <!-- Table -->
-      <table class="table">
-        <thead>
-          <tr class="table-header">
-            <th></th>
-            <th>Datei</th>
-            <th>Sprache</th>
-            <th>Typ des Dokuments</th>
-            <th>Exportieren</th>
-            <th>Gruppe</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>
-              <label>
-                <input type="checkbox" value="">
-              </label>
-            </td>
-            <td>John</td>
-            <td>Deutsch</td>
-            <td>Rechnung</td>
-            <td class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">als PDF <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#">als .doc</a>
-                </li>
-                <li>
-                  <a href="#">als Affenkopf</a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                  <a href="#">als Schnitzel</a>
-                </li>
-              </ul>
-            </td>
-            <td class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">nur ich <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#">nur er</a>
-                </li>
-                <li>
-                  <a href="#">sie</a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                  <a href="#">NSA</a>
-                </li>
-              </ul>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>
-                <input type="checkbox" value="">
-              </label>
-            </td>
-            <td>Heiner</td>
-            <td>Deutsch</td>
-            <td>Rechnung</td>
-            <td class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">als PDF <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#">als .doc</a>
-                </li>
-                <li>
-                  <a href="#">als Affenkopf</a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                  <a href="#">als Schnitzel</a>
-                </li>
-              </ul>
-            </td>
-            <td class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">nur ich <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#">nur er</a>
-                </li>
-                <li>
-                  <a href="#">sie</a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                  <a href="#">NSA</a>
-                </li>
-              </ul>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>
-                <input type="checkbox" value="">
-              </label>
-            </td>
-            <td>Hornbach</td>
-            <td>Deutsch</td>
-            <td>Rechnung</td>
-            <td class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">als PDF <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#">als .doc</a>
-                </li>
-                <li>
-                  <a href="#">als Affenkopf</a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                  <a href="#">als Schnitzel</a>
-                </li>
-              </ul>
-            </td>
-            <td class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">nur ich <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a href="#">nur er</a>
-                </li>
-                <li>
-                  <a href="#">sie</a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li>
-                  <a href="#">NSA</a>
-                </li>
-              </ul>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <table class="table">
+            <thead>
+            <tr class="table-header">
+                <th></th>
+                <th>Datei</th>
+                <th>Sprache</th>
+                <th>Typ des Dokuments</th>
+                <th>Texte bearbeiten</th>
+                <th>Exportieren</th>
+                <th>Gruppe</th>
+            </tr>
+            </thead>
+            <tbody data-bind="foreach: storedJobs">
+            <tr>
+                <td>
+                    <label>
+                        <input type="checkbox" value="">
+                    </label>
+                </td>
+                <td>John</td>
+                <td>Deutsch</td>
+                <td>Rechnung</td>
+                <td>
+                    <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true"
+                                      data-toggle="modal" data-bind="click: $root.showModal"></span></a>
+                </td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">als PDF <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">als .doc</a>
+                        </li>
+                        <li>
+                            <a href="#">als Affenkopf</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="#">als Schnitzel</a>
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">nur ich <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">nur er</a>
+                        </li>
+                        <li>
+                            <a href="#">sie</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="#">NSA</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="checkbox" value="">
+                    </label>
+                </td>
+                <td>Heiner</td>
+                <td>Deutsch</td>
+                <td>Rechnung</td>
+                <td><a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
+                                      data-toggle="modal" data-bind="click: $root.showModal"></span></a>
+                </td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">als PDF <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">als .doc</a>
+                        </li>
+                        <li>
+                            <a href="#">als Affenkopf</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="#">als Schnitzel</a>
+                        </li>
+                    </ul>
+                </td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">nur ich <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">nur er</a>
+                        </li>
+                        <li>
+                            <a href="#">sie</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="#">NSA</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>
+                        <input type="checkbox" value="">
+                    </label>
+                </td>
+                <td>Hornbach</td>
+                <td>Deutsch</td>
+                <td>Rechnung</td>
+                <td><a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true"
+                                      data-toggle="modal" data-bind="click: $root.showModal"></span></a>
+                </td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">als PDF <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">als .doc</a>
+                        </li>
+                        <li>
+                            <a href="#">als Affenkopf</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="#">als Schnitzel</a>
+                        </li>
+                    </ul>
+                </td>
+                <td class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false">nur ich <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="#">nur er</a>
+                        </li>
+                        <li>
+                            <a href="#">sie</a>
+                        </li>
+                        <li role="separator" class="divider"></li>
+                        <li>
+                            <a href="#">NSA</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <button type="button" class="btn btn-lila pull-right" href="#">Herunterladen</button>
     <button type="button" class="btn btn-lachs pull-right" href="#">Löschen</button>
-  </div>
+
+    @modals.afterWork()
+
+    <script src='@routes.Assets.versioned("js/knockout/storage/app.js")' type="text/javascript"></script>
+</div>
 }
