@@ -21,7 +21,7 @@ import java.util.ArrayList;
 /**
  * Created by Benedikt Linke on 01.12.15.
  */
-@Pattern(value="cms", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+@Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
 @SubjectPresent
 public class FolderController extends Controller {
 

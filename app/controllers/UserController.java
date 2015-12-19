@@ -157,8 +157,8 @@ public class UserController extends Controller {
             user.setCmsAccount(username);
             user.setCmsPassword(password);
             PermissionController pc = new PermissionController();
-            UserPermission up = pc.getPermission(OcrPermission.CMS);
-            user.getPermissions().add(pc.selectEntity(UserPermission.class, up));
+            //UserPermission up = pc.getPermission(OcrPermission.CMS);
+            user.getPermissions().add(pc.selectEntity(UserPermission.class, OcrPermission.CMS));
             ldapController.insert(user);
             result = generateJsonResponse(true, SUCCESS_MESSAGE);
         }

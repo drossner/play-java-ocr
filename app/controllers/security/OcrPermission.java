@@ -6,18 +6,18 @@ import be.objectify.deadbolt.core.models.Permission;
  * Created by Daniel on 25.11.2015.
  */
 public enum OcrPermission implements Permission {
-    NONE("none"),
-    CMS("cms"),
-    FULL("full");
+    NONE("NONE"),
+    CMS("CMS"),
+    FULL("FULL");
 
     OcrPermission(String value) {
         this.value = value;
     }
 
-    private String value;
+    private final String value;
 
     @Override
-    public String getValue() {
+    public final String getValue() {
         return value;
     }
 }

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Created by florian on 01.12.15.
  */
-public class PermissionController extends DatabaseController<User, UserPermission>{
+public class PermissionController extends DatabaseController<UserPermission, Object>{
 
 
     public List<UserPermission> getPermissions(List<OcrPermission> permissions) {

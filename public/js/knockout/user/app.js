@@ -43,9 +43,9 @@ function UserViewModel(){
             type: "post", contentType: "application/json",
             success: function(result) {
                 var element = $('#errormsg');
-                var cmsAccount = $('cmsAccount');
-                var pw1 = $('pw1');
-                var pw2 = $('pw2');
+                var cmsAccount = $('#cmsAccount');
+                var pw1 = $('#pw1');
+                var pw2 = $('#pw2');
                 element.removeClass("warning-lachs");
                 element.addClass("warning-lila");
                 element.text(result.message);
