@@ -48,8 +48,8 @@ public class Application extends Controller {
         }
     }
 
-    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     @SubjectPresent
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> hochladen(int step, String inUploadId) {
         final String userMail = session().get("session");
         return F.Promise.promise(() -> {
@@ -83,8 +83,8 @@ public class Application extends Controller {
                 ));
     }
 
-    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     @SubjectPresent
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result ablage() {
         return ok(ablage.render());
     }
@@ -94,8 +94,8 @@ public class Application extends Controller {
         return ok(hilfe.render());
     }
 
-    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     @SubjectPresent
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result template() {
         return ok(views.html.modals.templating.render());
     }
