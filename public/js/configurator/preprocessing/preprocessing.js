@@ -79,6 +79,7 @@ function PreProcessing() {
         $('.slider').each(function () {
             var op = $(this).attr('id');
             var value = $(this).data('val');
+            console.log("SLIDER ID: " + op + "WERT: " + value);
 
             if (value === 0) {
                 return;
@@ -87,7 +88,7 @@ function PreProcessing() {
             self.caman[op](value);
         });
 
-        self.caman.render();
+       // self.caman.render();
     };
 
      self.resetFilters = function() {

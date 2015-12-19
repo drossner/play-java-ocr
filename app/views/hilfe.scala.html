@@ -1,38 +1,30 @@
 @main("Hilfe")("hilfe") {
-  <script src="@routes.Assets.versioned("js/knockout/knockout.mapping.js/")" type="text/javascript"></script>
 
   <div class="container">
-    <form class="modal multi-step" id="demo-modal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h4 class="modal-title step-1" data-step="1">Step 1</h4>
-            <h4 class="modal-title step-2" data-step="2">Step 2</h4>
-          </div>
-          <div class="modal-body step step-1">
-            This is step 1.
-          </div>
-          <div class="modal-body step step-2">
-            This is step 2.
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary step step-1" data-step="1" onclick="sendEvent()">Continue</button>
-          </div>
-        </div>
+
+      <div class="paragraphhelp">
+          <br>
+          <h4>Welche Dateien können hochgeladen werden?</h4>
+
+          <p>So much ocr unterstützt die Verarbeitung von Dateien mit den folgenden Eigenschaften:</p>
+          <ul>
+              <li>Formate: JPEG, PNG, TIFF, BMP</li>
+              <li>Dateigröße: maximal 25 MB</li>
+          </ul>
+          <br>
+          <h4>Welche Dateiformate können exportiert werden?</h4>
+
+          <p>Die Ausgabe kann im PDF oder DOCX Format erfolgen.</p>
+          <br>
+          <h4>LDAP Account</h4>
+
+          <p>Nach dem ersten Login ist das Anlegen eines Accounts für das CMS erforderlich.
+              Dabei müssen Nutzername und Passwort jeweils mindestens 6 Zeichen lang sein.</p>
+          <br>
+          <h4>HOWTO mit Bildern</h4>
+
+          <p>folgt wenn Screenshots möglich sind</p>
       </div>
-    </form>
-    <button class="btn btn-default" data-toggle="modal" data-target="#demo-modal">Show</button>
-
-    <script src='@routes.Assets.versioned("js/configurator/multi-step-modal.js")' type="text/javascript"></script>
-
-    <script>
-            sendEvent = function() {
-              $('#demo-modal').trigger('next.m.2');
-            }
-    </script>
 
   </div>
-
-
 }

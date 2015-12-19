@@ -57,12 +57,14 @@ function brightness(value){
     console.log("brightness: " + value);
     $('#brightness').slider('value', value);
     preProcessing.applyFilters();
+    preProcessing.caman.render();
 }
 
 function contrast(value){
     console.log("contrast: " + value);
     $('#contrast').slider('value', value);
     preProcessing.applyFilters();
+    preProcessing.caman.render();
 }
 
 function saveData() {

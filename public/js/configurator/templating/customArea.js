@@ -50,6 +50,7 @@ function createNewArea(type){
         width: Math.floor((Math.random() * 100)) + 50,
         height: Math.floor((Math.random() * 100)) + 20,
         type: type
+       // name: "" Does not work because customArea.js does not update it's selected areas
     };
 
     createArea(areaOptions);
@@ -110,3 +111,28 @@ function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
 
 
 }
+/*Does not work because customArea.js does not update it's selected areas
+function setTypename(area, name)
+{
+    console.log(name);
+    var area = $('img#example').selectAreas('areas')[area.id];
+
+    area.name =  name;
+    area.height = 12;
+   // $('img#example').selectAreas('refresh');
+
+
+    //var areaOptions = {
+    //    x:area.x,
+ //    y: area.y,
+ //      width: area.width,
+ //     height: area.height,
+ //     type: area.type,
+ //     name: name
+ // }
+
+    $('img#example').selectAreas('remove',[area.id]);
+    createArea(areaOptions);
+
+
+}*/
