@@ -2,160 +2,179 @@ package modules.export.impl;
 
 import modules.export.Export;
 import modules.export.Fragment;
-import org.docx4j.Docx4J;
-import org.docx4j.convert.out.FOSettings;
-import org.docx4j.convert.out.pdf.PdfConversion;
-import org.docx4j.convert.out.pdf.viaXSLFO.PdfSettings;
-import org.docx4j.fonts.IdentityPlusMapper;
-import org.docx4j.fonts.Mapper;
-import org.docx4j.fonts.PhysicalFont;
-import org.docx4j.fonts.PhysicalFonts;
-import org.docx4j.model.fields.FieldUpdater;
-import org.docx4j.openpackaging.exceptions.Docx4JException;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
+import org.apache.pdfbox.exceptions.COSVisitorException;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
+import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
 
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.List;
+import java.util.ArrayList;
+
 
 /**
- * Created by FRudi on 10.12.2015.
+ * Created by Benedikt Linke on 10.12.2015.
  */
 public class PdfExport implements Export {
 
     String path;
     String fileName;
-    Export export;
+    PDDocument doc = null;
+    PDPage page = null;
+    PDFont font = PDType1Font.TIMES_ITALIC;
+    float fontSize = 12;
+
+    PDRectangle rect = null;
+
+    int pageCounter = 0;
 
     @Override
     public void initialize(String path, String fileName) {
         this.path = path;
         this.fileName = fileName;
 
-        export = new DocxExport();
-        export.initialize(path, fileName);
+
+        doc = new PDDocument();
+        page = new PDPage(PDPage.PAGE_SIZE_A4);
+        rect = page.getMediaBox();
+        doc.addPage(page);
+
+        font = PDType1Font.HELVETICA;
+
+
+
     }
 
     @Override
     public void export(Fragment fragment) {
-        export.export(fragment);
+
+
+        float startX = (float) (rect.getWidth()/100 *fragment.getStartX()); //lo
+        float startY = (float) (rect.getHeight()/100 *fragment.getStartY()); //lo
+
+        float endX = (float) (rect.getWidth()/100 *fragment.getEndX()); //lo
+        float endY = (float) (rect.getHeight()/100 *fragment.getEndY()); //lo
+
+        float width = endX - startX;
+        float height = endY - startY;
+
+        System.out.println("Gesamt-Höhe: " +rect.getHeight());
+        System.out.println("Gesamt-Breite: " + rect.getWidth());
+        System.out.println("");
+        System.out.println("width: " + width);
+        System.out.println("height: " + height);
+        System.out.println("startX: " + startX);
+        System.out.println("startY: " + startY);
+        System.out.println("");
+        System.out.println("endX: " + endX);
+        System.out.println("endY: " + endY);
+
+        if(fragment.getContent() instanceof String) {
+            setText((String)fragment.getContent(), startX, startY);
+        } else {
+            setImage((BufferedImage) fragment.getContent(), startX, rect.getHeight()-startY-width );
+        }
+
     }
 
     @Override
-    public void newPage() {
-        export.newPage();
+    public void newPage(){
+        doc.addPage(new PDPage(PDPage.PAGE_SIZE_A4));
+        pageCounter++;
     }
 
     @Override
     public File finish() {
+        File file = null;
 
-        File file = export.finish();
-        createPDF(file);
+        try {
+            doc.save(path+fileName+".pdf");
+            doc.close();
 
-
-
+            file = new File(path+fileName+".pdf");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (COSVisitorException e) {
+            e.printStackTrace();
+        }
         return file;
     }
 
+    private void setText(String content, float startX, float startY){
 
-    private void createPDF(File file) {
+        PDPage test =  (PDPage) doc.getDocumentCatalog().getAllPages().get(pageCounter);
+        PDPageContentStream contentStream = null;
         try {
-            String inputFilepath = path;
+            contentStream = new PDPageContentStream(doc, test);
+            contentStream.beginText();
+            contentStream.setFont(font, fontSize);
 
-            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(file);
-
-            // Refresh the values of DOCPROPERTY fields
-            FieldUpdater updater = new FieldUpdater(wordMLPackage);
-            updater.update(true);
-
-            // Set up font mapper (optional)
-            Mapper fontMapper = new IdentityPlusMapper();
-            wordMLPackage.setFontMapper(fontMapper);
-
-
-            String regex = null;
-            // Windows:
-            // String
-            // regex=".*(calibri|camb|cour|arial|symb|times|Times|zapf).*";
-            //regex=".*(calibri|camb|cour|arial|times|comic|georgia|impact|LSANS|pala|tahoma|trebuc|verdana|symbol|webdings|wingding).*";
-            // Mac
-            // String
-             regex=".*(Courier New|Arial|Times New Roman|Comic Sans|Georgia|Impact|Lucida Console|Lucida Sans Unicode|Palatino Linotype|Tahoma|Trebuchet|Verdana|Symbol|Webdings|Wingdings|MS Sans Serif|MS Serif).*";
-            PhysicalFonts.setRegex(regex);
-
-            PhysicalFont font = PhysicalFonts.get("Times New Roman");
-
-            // FO exporter setup (required)
-            // .. the FOSettings object
-            FOSettings foSettings = Docx4J.createFOSettings();
-            foSettings.setFoDumpFile(new java.io.File(inputFilepath + ".fo"));
-            foSettings.setWmlPackage(wordMLPackage);
-
-
-            String outputfilepath = inputFilepath + fileName + ".pdf";
-
-            OutputStream os = new java.io.FileOutputStream(outputfilepath);
-
-            // Don't care what type of exporter you use
-            Docx4J.toFO(foSettings, os, Docx4J.FLAG_EXPORT_PREFER_XSL);
-
-            System.out.println("Saved: " + outputfilepath);
-
-            // Clean up, so any ObfuscatedFontPart temp files can be deleted
-            if (wordMLPackage.getMainDocumentPart().getFontTablePart()!=null) {
-                wordMLPackage.getMainDocumentPart().getFontTablePart().deleteEmbeddedFontTempFiles();
+            contentStream.appendRawCommands(fontSize + " TL\n");
+            contentStream.moveTextPositionByAmount(startX, startY);
+            for(String line : getLines(content)) {
+                contentStream.drawString(line);
+                contentStream.appendRawCommands("T*\n");
             }
-            // This would also do it, via finalize() methods
-            updater = null;
-            foSettings = null;
-            wordMLPackage = null;
+            contentStream.endText();
+            contentStream.close();
 
-
-        } catch (Docx4JException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 
-    private void test(File file) {
+    private void setImage(BufferedImage content, float x, float y){
+        PDXObjectImage image = null;
         try {
+            image = new PDJpeg(doc, content);
 
+            PDPageContentStream contentStream = new PDPageContentStream(doc, page);
+            contentStream.drawImage(image,x,y);
+            contentStream.close();
 
-            long start = System.currentTimeMillis();
-
-// 1) Load DOCX into WordprocessingMLPackage
-
-            InputStream is = new FileInputStream(file);
-            WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(is);
-
-
-//if you want use any Physical fonts then use the below code.
-
-            Mapper fontMapper = new IdentityPlusMapper();
-
-            PhysicalFont font = PhysicalFonts.getPhysicalFonts().get("Comic Sans MS");
-
-            fontMapper.getFontMappings().put("Algerian", font);
-
-            wordMLPackage.setFontMapper(fontMapper);
-
-// 2) Prepare Pdf settings
-
-            PdfSettings pdfSettings = new PdfSettings();
-
-// 3) Convert WordprocessingMLPackage to Pdf
-
-            org.docx4j.convert.out.pdf.PdfConversion conversion = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(wordMLPackage);
-
-            OutputStream out = new FileOutputStream(new File(path+ "test.pdf"));
-            conversion.output(out,pdfSettings);
-            System.err.println("Time taken to Generate pdf  "+ (System.currentTimeMillis() - start) + "ms");
-        } catch (Throwable e) {
-
+        } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    private void drawRect(float startX, float startY, float width, float height){
+        PDPageContentStream cos = null;
+        try {
+            cos = new PDPageContentStream(doc, page);
+            cos.setNonStrokingColor(Color.RED);
+            cos.fillRect(startX, startY, width, height);
+            cos.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Break the text in lines
+     * @return
+     */
+    private ArrayList<String> getLines(String content) {
+        ArrayList<String> result = new ArrayList<String>();
+
+        String[] lines = content.split("\n");
+
+        for(int i=0;i<lines.length;i++) {
+            lines[i] = lines[i].trim();
+            result.add(lines[i]);
+        }
+
+        return result;
     }
 }

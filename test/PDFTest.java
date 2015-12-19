@@ -19,7 +19,7 @@ public class PDFTest {
 
     Export export;
     String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
-    String fileName = "outputDocx";
+    String fileName = "outputPDF";
 
     @Before
     public void setupTest(){
@@ -28,61 +28,48 @@ public class PDFTest {
     }
 
     @Test
-    public void createPDFTest(){
+    public void createTextPDFTest(){
 
         Fragment temp = new DataCreator().getTextFragment();
         export.export(temp);
         export.newPage();
-
+        export.export(temp);
+        export.newPage();
         assertNotNull(export.finish());
     }
 
     @Test
-    public void createDocxPicTest() throws IOException {
+    public void createImagePDFTest() throws IOException {
+
         Fragment temp = new DataCreator().getImageFragment();
         export.export(temp);
+
+
         assertNotNull(export.finish());
     }
 
-    @Test
-    public void createNewPagePDFTest() throws IOException {
-        Fragment temp = new DataCreator().getTextFragment();
-        export.export(temp);
-        export.newPage();
-
-        Fragment tempImg = new DataCreator().getImageFragment();
-        export.export(tempImg);
-        assertNotNull(export.finish());
-    }
-
-
-
-    @After
-    public void finishDocxTest(){
-
-    }
 
 
     public class DataCreator{
         public Fragment getTextFragment(){
             Fragment fragment = new Fragment();
 
-            fragment.setContent("HelloWorld");
+            fragment.setContent("HelloWorld \n tester \n tesgadvfda");
             fragment.setStartX(50);
-            fragment.setStartY(50);
+            fragment.setStartY(70);
             fragment.setEndX(70);
-            fragment.setEndY(70);
+            fragment.setEndY(30);
             return fragment;
         }
 
         public Fragment getImageFragment() throws IOException {
             Fragment fragment = new Fragment();
 
-            fragment.setContent(ImageIO.read(new File("/Users/Ben/OCR/play-java-ocr/test/testFiles/Wissenschaftlicher_Artikel.PNG")));
-            fragment.setStartX(10);
+            fragment.setContent(ImageIO.read(new File("/Users/Ben/OCR/play-java-ocr/test/testFiles/Anfahrt.png")));
+            fragment.setStartX(0);
             fragment.setStartY(30);
-            fragment.setEndX(300);
-            fragment.setEndY(60);
+            fragment.setEndX(20);
+            fragment.setEndY(50);
             return fragment;
         }
 
