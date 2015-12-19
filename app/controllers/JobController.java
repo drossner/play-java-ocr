@@ -1,6 +1,10 @@
 package controllers;
 
+import be.objectify.deadbolt.core.PatternType;
+import be.objectify.deadbolt.java.actions.Pattern;
+import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.JsonNode;
+import controllers.security.OcrDeadboltHandler;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import modules.database.entities.Job;
@@ -29,6 +33,8 @@ public class JobController extends Controller {
         this.imageHelper = imageHelper;
     }
 
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    @SubjectPresent
     public Result getJobHistory(){
         List<Job> jobs = null;
         String username = session().get("session");
@@ -62,7 +68,8 @@ public class JobController extends Controller {
             return ok(Json.toJson(jobs));
         }
     }
-
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    @SubjectPresent
     public Result getJobTypes(){
         ArrayList<String> rc = new ArrayList<>();
         String username = session().get("session");
@@ -77,6 +84,7 @@ public class JobController extends Controller {
         return ok(Json.toJson(rc));
     }
 
+    @SubjectPresent
     public Result getLanguages() throws Throwable {
         /*ArrayList<String> rc = new ArrayList<>();
         String username = session().get("session");
@@ -91,6 +99,8 @@ public class JobController extends Controller {
         return ok(Json.toJson(controller.getAllCountryLanguages()));
     }
 
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    @SubjectPresent
     public Result getImageFromJobID(int id) throws IOException {
         Logger.info("id erhalten: " + id);
 
@@ -147,10 +157,14 @@ public class JobController extends Controller {
         //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    @SubjectPresent
     public Result delete(int id){
         return ok();
     }
 
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    @SubjectPresent
     public Result process(){
         Logger.info(request().toString());
 

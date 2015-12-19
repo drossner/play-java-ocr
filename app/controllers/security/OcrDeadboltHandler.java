@@ -9,6 +9,7 @@ import controllers.Application;
 import controllers.routes;
 import errorhandling.ErrorHandler;
 import modules.database.UserController;
+import play.Logger;
 import play.cache.CacheApi;
 import play.db.jpa.JPA;
 import play.libs.F;
@@ -25,6 +26,8 @@ import java.util.Optional;
  */
 public class OcrDeadboltHandler extends AbstractDeadboltHandler {
 
+    public final static String MISSING_CMS_PERMISSION = "MISSING_CMS_PERMISSION";
+
     private CacheApi cache;
 
     @Inject
@@ -35,13 +38,12 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
     public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context) {
         // returning null means that everything is OK.  Return a real result if you want a redirect to a login page or
         // somewhere else
-        return F.Promise.promise(() -> Optional.ofNullable(unauthorized("nicht eingeloggt")/*redirect(routes.Application.index())*/));
+        return F.Promise.promise(() -> Optional.ofNullable(null/*redirect(routes.Application.index())*/));
     }
 
     public F.Promise<Optional<Subject>> getSubject(final Http.Context context) {
         // in a real application, the user name would probably be in the session following a login process
         final String userMail = context.session().get("session");
-        //System.err.println("Cache null? " + (cache == null));
         if (userMail == null) {
             return F.Promise.promise(Optional::empty);
         } else {
@@ -51,10 +53,6 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
                         //load subject from cache of from database if not available
                         Subject subj = cache.getOrElse(userMail, () -> {
                                     UserController controller = new UserController();
-
-                                    /*TypedQuery<Subject> q = JPA.em().createQuery("select u from User u where u.eMail = :email", Subject.class);
-                                    q.setParameter("email", userMail);
-                                    return q.getSingleResult();*/
                                     return controller.selectUserFromMail(userMail);
                                 }
                         );
@@ -75,41 +73,14 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
                                            final String content) {
         // you can return any result from here - forbidden, etc
         //return F.Promise.promise(() -> ok(accessFailed.render()));
-        String target = context.request().uri();
-        context.session().put("target", target);
-        return F.Promise.promise(() -> redirect(routes.Application.index()));
-    }
-
-    private class User implements Subject {
-        private String identifier;
-
-        public User(String identifier) {
-            this.identifier = identifier;
+        Logger.debug("DeadboltHandler content: " + content);
+        if(content.equals(MISSING_CMS_PERMISSION)){
+            return F.Promise.promise(() -> redirect(routes.Application.verwalten(true)));
+        } else {
+            String target = context.request().uri();
+            context.session().put("target", target);
+            return F.Promise.promise(() -> redirect(routes.Application.index()));
         }
 
-        @Override
-        public List<? extends Role> getRoles() {
-            return Arrays.asList(new Role() {
-                @Override
-                public String getName() {
-                    return "user";
-                }
-            });
-        }
-
-        @Override
-        public List<? extends Permission> getPermissions() {
-            return Arrays.asList(new Permission() {
-                @Override
-                public String getValue() {
-                    return "user-perm";
-                }
-            });
-        }
-
-        @Override
-        public String getIdentifier() {
-            return identifier;
-        }
     }
 }

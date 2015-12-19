@@ -69,6 +69,11 @@ a.navbar-text
     max-width: 400px;
 }
 
+.paragraphhelp {
+    width: 60%;
+    margin: auto;
+}
+
 .headlinestyle {
     display: inline;
 }

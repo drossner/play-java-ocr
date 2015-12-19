@@ -1,10 +1,14 @@
 package controllers;
 
+import be.objectify.deadbolt.core.models.Permission;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import controllers.security.OcrPermission;
+import modules.database.PermissionController;
 import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
+import modules.database.entities.UserPermission;
 import modules.ldap.LdapController;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -15,10 +19,12 @@ import play.mvc.Result;
 import play.mvc.Results;
 
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Created by FRudi und Daniel on 17.12.2015.
  */
+@SubjectPresent
 public class UserController extends Controller {
 
     private final int PASSWORD_LENGTH = 5;
@@ -54,7 +60,6 @@ public class UserController extends Controller {
         );
     }
 
-    @SubjectPresent
     public F.Promise<Result> saveUser() {
         final String userMail = session().get("session");
         return F.Promise.promise(() ->
@@ -69,6 +74,7 @@ public class UserController extends Controller {
                     Logger.info(sentUserData.toString());
 
                     //get values from Json
+                    //TODO: empty values -> crash -> NullPointerException
                     String cmsAccount = sentUserData.get("cmsAccount").asText();
                     String password = sentUserData.get("password").asText();
                     String passwordConfirm = sentUserData.get("passwordConfirm").asText();
@@ -150,6 +156,9 @@ public class UserController extends Controller {
         } else {
             user.setCmsAccount(username);
             user.setCmsPassword(password);
+            PermissionController pc = new PermissionController();
+            //UserPermission up = pc.getPermission(OcrPermission.CMS);
+            user.getPermissions().add(pc.selectEntity(UserPermission.class, OcrPermission.CMS));
             ldapController.insert(user);
             result = generateJsonResponse(true, SUCCESS_MESSAGE);
         }

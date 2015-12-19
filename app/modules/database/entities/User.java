@@ -94,12 +94,12 @@ public class User extends DomainObject implements Subject {
     }
 
     @Override
-    public List<? extends Role> getRoles() {
+    public List<SecurityRole> getRoles() {
         return roles;
     }
 
     @Override
-    public List<? extends Permission> getPermissions() {
+    public List<UserPermission> getPermissions() {
         return permission;
     }
 

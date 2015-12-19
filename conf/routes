@@ -5,10 +5,9 @@
 # Home page
 GET           /                               controllers.Application.index()
 GET           /hochladen                      controllers.Application.hochladen(step: Int ?= 1, uploadId: String ?= null)
-GET           /verwalten                      controllers.Application.verwalten()
+GET           /verwalten                      controllers.Application.verwalten(showWarning: Boolean ?= false)
 GET           /ablage                         controllers.Application.ablage()
 GET           /hilfe                          controllers.Application.hilfe()
-GET          /setupLdap                      controllers.VerwaltenController.updateLdapAccount
 
 # Upload
 POST          /upload/:uploadId               controllers.UploadController.upload(uploadId)

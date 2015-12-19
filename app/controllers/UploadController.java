@@ -1,7 +1,10 @@
 package controllers;
 
+import be.objectify.deadbolt.core.PatternType;
+import be.objectify.deadbolt.java.actions.Pattern;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import controllers.security.OcrDeadboltHandler;
 import modules.upload.FileContainer;
 import modules.upload.UploadHandler;
 import play.Logger;
@@ -20,6 +23,8 @@ import java.util.Optional;
 /**
  * Created by Daniel on 27.11.2015.
  */
+@Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+@SubjectPresent
 public class UploadController extends Controller {
 
     private UploadHandler uploadHandler;
@@ -29,7 +34,6 @@ public class UploadController extends Controller {
         this.uploadHandler = uploadHandler;
     }
 
-    @SubjectPresent
     public F.Promise<Result> upload(String uploadId){
         Logger.debug("File upload started from " + session().get("session"));
         return F.Promise.promise(() -> {
@@ -51,7 +55,6 @@ public class UploadController extends Controller {
 
     }
 
-    @SubjectPresent
     public F.Promise<Result> delete(String uploadId, String file){
         return F.Promise.promise(() -> {
             ObjectNode result = uploadHandler.deleteFileFromCache(uploadId, file);
@@ -60,7 +63,6 @@ public class UploadController extends Controller {
         });
     }
 
-    @SubjectPresent
     public F.Promise<Result> getFile(String uploadId, String file){
         return F.Promise.promise(() -> {
             Optional<FileContainer> of = uploadHandler.loadFile(uploadId, file);
@@ -73,7 +75,6 @@ public class UploadController extends Controller {
         });
     }
 
-    @SubjectPresent
     public F.Promise<Result> getThumbnail(String uploadId, String file){
         return F.Promise.promise(() -> {
             ByteArrayOutputStream baos = null;
@@ -86,6 +87,4 @@ public class UploadController extends Controller {
             return ok(baos.toByteArray()).as(ImageHelper.OUTPUT_MIMETYPE);
         });
     }
-
-
 }
