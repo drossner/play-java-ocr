@@ -127,7 +127,7 @@ public class AuthenticationController extends Controller{
         //ldap account?
         if(loadedUser.getCmsAccount() == null || loadedUser.getCmsAccount().equals("")){
             //redirect to verwalten to set up ldap
-            return redirect(routes.Application.verwalten());
+            return redirect(routes.Application.verwalten(true));
         }
         else if(target != null){
             return redirect(target);

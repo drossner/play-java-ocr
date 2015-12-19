@@ -123,11 +123,58 @@ $('#modal-sample-1').modalSteps({
         '1': function(){
         },
         '2': function(){
+
+            console.log("Vor der Abfrage im Callback");
+            var temp = $('#templateName').val();
+            var string;
+            if(!temp)
+            {
+                console.log("temp = null: " + temp);
+                $('#next').attr("disabled", true);
+            }
+            else
+            {
+                console.log("temp != null: " + temp);
+                $('#next').attr("disabled", false);
+            }
+
         }
     }
 });
 
+/*$('#templateName').change(function() {
 
+    var name =  $( this ).val();
+    console.log("Dein Metatyp: " + name);
+    if(name != null)
+    {
+        $('#next').attr("disabled", false);
+    }
+    else
+    {
+        $('#next').attr("disabled", false);
+    }
+
+
+});*/
+
+
+// If Input is empty. User can't complete the Modal
+$('#templateName').change(function(){
+
+    var temp = $(this).val();
+    if(!temp)
+    {
+        console.log("ONE Change Function == null: " + temp);
+        //Setting the complete button not klickable
+        $('#next').attr("disabled", true);
+
+    }
+
+})
+;
+
+//Get metaDataType for some stuff !--TODO
 $('#editMetaDataType').change(function() {
 
     var metatype =  $( this ).val();
@@ -136,6 +183,18 @@ $('#editMetaDataType').change(function() {
 
 });
 
+//If user types one char the complete button is klickable
+$('#templateName').keypress(function(){
+    var name =  $( this ).val();
+   // console.log("String Length: " + name.length);
+
+    if(name.length >= 0)
+    {
+        $('#next').attr("disabled", false);
+    }
+
+
+});
 
 
 // Unused but works

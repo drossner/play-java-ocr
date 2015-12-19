@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Created by florian on 01.12.15.
  */
-public class PermissionController extends DatabaseController<User, UserPermission>{
+public class PermissionController extends DatabaseController<UserPermission, Object>{
 
 
     public List<UserPermission> getPermissions(List<OcrPermission> permissions) {
@@ -22,7 +22,10 @@ public class PermissionController extends DatabaseController<User, UserPermissio
         UserPermission rc = new UserPermission();
         if(permission.getValue().equals(OcrPermission.NONE.getValue())){
             rc.setValue(OcrPermission.NONE);
-        }else if(permission.getValue().equals(OcrPermission.FULL.getValue())){
+        }else if(permission.getValue().equals(OcrPermission.CMS.getValue())) {
+            rc.setValue(OcrPermission.CMS);
+        }
+        else if(permission.getValue().equals(OcrPermission.FULL.getValue())){
             rc.setValue(OcrPermission.FULL);
         }
 

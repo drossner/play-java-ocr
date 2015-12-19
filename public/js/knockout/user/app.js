@@ -43,9 +43,19 @@ function UserViewModel(){
             type: "post", contentType: "application/json",
             success: function(result) {
                 var element = $('#errormsg');
+                var cmsAccount = $('#cmsAccount');
+                var pw1 = $('#pw1');
+                var pw2 = $('#pw2');
                 element.removeClass("warning-lachs");
                 element.addClass("warning-lila");
                 element.text(result.message);
+
+                //fix values in UI
+                cmsAccount.prop( "disabled", true );
+                pw1.prop( "disabled", true );
+                pw1.val(null);
+                pw2.prop( "disabled", true );
+                pw2.val(null);
             },
             error: function(result) {
                 var element = $('#errormsg');
