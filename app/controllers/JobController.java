@@ -5,6 +5,7 @@ import modules.analyse.Analyse;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import modules.database.entities.Job;
+import play.libs.F;
 import util.ImageHelper;
 import play.mvc.Controller;
 import play.Logger;
@@ -159,9 +160,7 @@ public class JobController extends Controller {
             Logger.info(jobs.toString());
 
             for (JsonNode node : jobs.withArray("jobs")) {
-                JsonNode job = node.get("job");
-
-                Analyse.INSTANCE.calculate(job);
+                Analyse.INSTANCE.calculate(node);
             }
 
             return ok(ablage.render());

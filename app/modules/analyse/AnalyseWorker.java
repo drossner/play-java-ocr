@@ -1,7 +1,9 @@
 package modules.analyse;
 
 import analyse.AnalyseType;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import control.MainController;
 import control.configuration.LayoutConfiguration;
 import control.result.Result;
@@ -11,6 +13,7 @@ import modules.cms.SessionHolder;
 import modules.cms.data.FileType;
 import modules.database.entities.Job;
 import org.apache.chemistry.opencmis.client.api.Document;
+import play.Logger;
 import play.db.jpa.JPA;
 import play.libs.Json;
 import preprocessing.PreProcessor;
@@ -42,19 +45,19 @@ public class AnalyseWorker implements Runnable {
 
     @Override
     public void run() {
+        ObjectMapper mapper = new ObjectMapper();
+
+        Logger.info("start analyse");
         Result result = controller.analyse(image, configuration);
+        Logger.info("analyse complete");
 
         CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
         FolderController folderController = new FolderController(controller);
 
-        File file = new File("job_" + job.getUser().geteMail() + "_" + new Date() + ".json");
-        JsonNode jsonResult = Json.toJson(result);
+        File file = new File("./job_" + job.getUser().geteMail() + "_" + new Date() + ".json");
 
         try {
-            FileWriter writer = new FileWriter(file);
-            writer.write(jsonResult.asText());
-            writer.flush();
-            writer.close();
+            mapper.writeValue(file, result);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,7 +72,8 @@ public class AnalyseWorker implements Runnable {
 
             JPA.withTransaction(() -> job.setResultFile("error! " + Arrays.toString(e.getStackTrace())));
         }
-        file.delete();
+        //file.delete();
+        Logger.info("worker run complete!");
     }
 
     public void setImage(BufferedImage image){

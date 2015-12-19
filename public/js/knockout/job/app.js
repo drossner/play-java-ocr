@@ -72,28 +72,30 @@ function saveData() {
     currentJob.areas.removeAll();
 
     if(preProcessing.getRotation() != 0){
-        currentJob.preProcessing.push(new PreProcessor(rotate, preProcessing.getRotation()));
+        currentJob.preProcessing.push(new PreProcessor(rotate, "rotate", preProcessing.getRotation()));
         console.log("saving: rotate: " + preProcessing.getRotation());
     }
 
     var sliderBrightnessValue = $('#brightness').slider('value');
     if(sliderBrightnessValue != 0){
-        currentJob.preProcessing.push(new PreProcessor(brightness, sliderBrightnessValue));
+        currentJob.preProcessing.push(new PreProcessor(brightness, "brightness", sliderBrightnessValue));
         console.log("saving: brightness: " + sliderBrightnessValue);
     }
 
     var sliderContrastValue =  $('#contrast').slider('value');
     if(sliderContrastValue != 0){
-        currentJob.preProcessing.push(new PreProcessor(contrast, sliderContrastValue));
+        currentJob.preProcessing.push(new PreProcessor(contrast, "contrast", sliderContrastValue));
         console.log("saving: contrast: " + sliderContrastValue);
     }
 
     var areas = getAreas();
+    var canvasWidth = $('#templating').width();
+    var canvasHeight = $('#templating').height();
     console.log(areas);
     for(var i = 0; areas != undefined && i < areas.length; i++){
         var area = areas[i];
         console.log(area.type);
-        currentJob.areas.push(new SelectArea(area.x, area.x + area.width, area.y, area.y + area.height, area.type));
+        currentJob.areas.push(new SelectArea(area.x/canvasWidth, (area.x + area.width)/canvasWidth, area.y/canvasHeight, (area.y + area.height)/canvasHeight, area.type, canvasHeight, canvasWidth));
     }
 }
 
@@ -110,10 +112,10 @@ function initModal(job) {
         console.log(area);
 
         var options = {
-            x: area.xStart,
-            width: area.xEnd - area.xStart,
-            y: area.yStart,
-            height: area.yEnd - area.yStart,
+            x: area.xStart * area.canvasWidth,
+            width: (area.xEnd - area.xStart) * area.canvasWidth,
+            y: area.yStart * area.canvasHeight,
+            height: (area.yEnd - area.yStart) * area.canvasHeight,
             type: area.type
         };
 

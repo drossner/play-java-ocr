@@ -1,5 +1,6 @@
 package modules.database.factory;
 
+import modules.database.LayoutConfigurationController;
 import modules.database.entities.*;
 import postprocessing.PostProcessor;
 import preprocessing.PreProcessor;
@@ -18,17 +19,23 @@ public class SimpleLayoutConfigurationFactory {
     private ArrayList<PostProcessing> postProcessing = new ArrayList<>();
 
     public LayoutConfig build (){
+        LayoutConfigurationController controller = new LayoutConfigurationController();
+
+        controller.persistObject(layoutConfig);
 
         for (LayoutFragment fragment : fragments) {
             fragment.setLayoutConfig(layoutConfig);
+            controller.persistObject(fragment);
         }
 
         for (PreProcessing processing : preProcessing) {
             processing.setLayoutConfig(layoutConfig);
+            controller.persistObject(processing);
         }
 
         for (PostProcessing processing : postProcessing) {
             processing.setLayoutConfig(layoutConfig);
+            controller.persistObject(processing);
         }
 
         return layoutConfig;

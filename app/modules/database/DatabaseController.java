@@ -22,6 +22,7 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
 
     @Transactional
     public <T> T selectEntity(Class<T> type, String whereColumn, Object where){
+        Logger.info("selecting: " + type + " column: " + whereColumn + " value: " + where);
         CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
 
         CriteriaQuery<T> rc = builder.createQuery(type);
@@ -123,7 +124,7 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
     }
 
     @Transactional
-    public void persistObject(Object persistObject){
+    public void persistObject(DomainObject persistObject){
         JPA.em().persist(persistObject);
     }
 

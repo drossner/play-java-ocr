@@ -17,7 +17,7 @@ function debugQtyAreas (event, id, areas) {
     //window.parent.myfunction(areas[id]);
     console.log(areas.length + " areas", arguments);
 
-    window.parent.getValuesOfSelectedArea(areas);
+    window.parent.getValuesOfSelectedArea(areas, this.canvasHeight, this.canvasWidth);
 }
 
 // Display Valuse in parentView
@@ -68,6 +68,9 @@ function output(text) {
 }
 
 function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
+    this.canvasHeight = canvasHeight;
+    this.canvasWidth = canvasWidth;
+
     var exampleImage = $('img#example');
     exampleImage.attr('heigth', canvasHeight);
     exampleImage.attr('width', canvasWidth);
