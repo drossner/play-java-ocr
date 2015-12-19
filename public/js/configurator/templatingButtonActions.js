@@ -56,11 +56,22 @@ function getValuesForInput(area) {
 
         var xHeight = parseInt(area.height);
         var yWidth = parseInt(area.width);
-        //   var type = area.type;
+        var type = area.type;
         //   var areaName = area.name;
 
         $('#editHeigth').val(xHeight);
         $('#editWidth').val(yWidth);
+
+
+        if(type == 'img')
+        {
+            $('#type').val("Bild");
+        }
+        else
+        {
+            $('#type').val("Textblock");
+        }
+
         // console.log("AREA NAME: " + areaName);
         /* if((type == "meta"))
          {
@@ -91,6 +102,7 @@ function createArea(options) {
 
 $('#deleteAreas').click(function () {
     reset();
+    $('#type').val("");
 })
 
 
