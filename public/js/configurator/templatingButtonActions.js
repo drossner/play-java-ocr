@@ -8,9 +8,29 @@ function setImageSource(data, callback, job) {
     var image = $('#canvas');
     image.remove();
 
+    //Disable all ui-elements except the cancel button
+    $(':button').prop("disabled", true);
+    $('#cancel').prop("disabled", false);
+    $('.slider').each(function () {
+        $( this ).slider( "option", "disabled", true );
+
+
+    });
+
     $("#image-area").html('<img id="canvas" src="" style="width:100%;" />');
 
     $('#canvas').attr("src", data);
+
+
+    //Detects when the img is loaded and enables all ui buttons except the previous Button
+    $('#canvas').on('load', function(){
+        $(':button').prop("disabled", false);
+        $('#prev').prop("disabled", true);
+
+        $('.slider').each(function () {
+            $( this ).slider( "option", "disabled", false);
+        });
+    });
 
     preProcessing.setCaman(Caman('#canvas', function () {
         this.render();
