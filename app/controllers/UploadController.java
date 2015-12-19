@@ -23,8 +23,8 @@ import java.util.Optional;
 /**
  * Created by Daniel on 27.11.2015.
  */
-@Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
 @SubjectPresent
+@Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
 public class UploadController extends Controller {
 
     private UploadHandler uploadHandler;
