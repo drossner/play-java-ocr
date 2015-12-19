@@ -51,11 +51,12 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
                     //auto open/close/commit transaction in this thread, readOnly = true
                     JPA.withTransaction("default", true, () -> {
                         //load subject from cache of from database if not available
-                        Subject subj = cache.getOrElse(userMail, () -> {
+                        /*Subject subj = cache.getOrElse(userMail, () -> {
                                     UserController controller = new UserController();
                                     return controller.selectUserFromMail(userMail);
                                 }
-                        );
+                        );*/
+                        Subject subj = new UserController().selectUserFromMail(userMail);
                         return subj;
                     })
             ));
