@@ -36,12 +36,13 @@ function UserViewModel(){
 
     self.sendUser = function(){
         console.log(self.user());
-        //$('#errormsg').text('');
+        $('#cmsp').css("display", "none");
 
         $.ajax("/json/saveUser", {
             data: ko.toJSON({ user: self.user }),
             type: "post", contentType: "application/json",
             success: function(result) {
+                console.log(result);
                 var element = $('#errormsg');
                 var cmsAccount = $('#cmsAccount');
                 var pw1 = $('#pw1');
@@ -50,12 +51,22 @@ function UserViewModel(){
                 element.addClass("warning-lila");
                 element.text(result.message);
 
+                if(result.nuxeolink != null){
+                    //populate link
+                    $('#cmslink').prop("href", result.nuxeolink);
+                    $('#cmsp').css("display", "block");
+                }
+
+
                 //fix values in UI
                 cmsAccount.prop( "disabled", true );
                 pw1.prop( "disabled", true );
-                pw1.val(null);
+                self.user().password("");
+                self.user().password.valueHasMutated();
                 pw2.prop( "disabled", true );
-                pw2.val(null);
+                //pw2.val(null);
+                self.user().passwordConfirm("");
+                self.user().passwordConfirm.valueHasMutated();
             },
             error: function(result) {
                 var element = $('#errormsg');

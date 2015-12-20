@@ -5,6 +5,8 @@ import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.security.OcrPermission;
+import modules.cms.CMSController;
+import modules.cms.SessionHolder;
 import modules.database.PermissionController;
 import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
@@ -26,6 +28,8 @@ import java.util.List;
  */
 @SubjectPresent
 public class UserController extends Controller {
+
+    private final String NUXEOLINK = "http://v22015042759824376.yourvserver.net:8080/";
 
     private final int PASSWORD_LENGTH = 5;
     private final int CMSACCOUNT_LENGTH = 5;
@@ -139,12 +143,19 @@ public class UserController extends Controller {
     }
 
     private ObjectNode generateJsonResponse(boolean success, String message){
+        return generateJsonResponse(success, message, false);
+    }
+
+    private ObjectNode generateJsonResponse(boolean success, String message, boolean nuxeolink){
         ObjectNode result = Json.newObject();
         result.put("success", success);
         result.put("message", message);
+        String link = nuxeolink? NUXEOLINK : null;
+        result.put("nuxeolink", link);
         Logger.info(result.toString());
         return result;
     }
+
 
     private ObjectNode setupLdapAccount(String username, String password, User user) throws Throwable {
         ObjectNode result = null;
@@ -160,7 +171,8 @@ public class UserController extends Controller {
             //UserPermission up = pc.getPermission(OcrPermission.CMS);
             user.getPermissions().add(pc.selectEntity(UserPermission.class, OcrPermission.CMS));
             ldapController.insert(user);
-            result = generateJsonResponse(true, SUCCESS_MESSAGE);
+            CMSController cmsc = SessionHolder.getInstance().getController(username, password);
+            result = generateJsonResponse(true, SUCCESS_MESSAGE, true);
         }
 
         return result;
