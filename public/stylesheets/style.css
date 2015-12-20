@@ -95,9 +95,9 @@ IMG.header
     color: #FFFFFF;
     background-color: #F25260;
     border-color: #F25260;
-    margin-right: 5px;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin-left: 3px;
+    margin-right: 3px;
+
 }
 
 .btn-lachs:hover,
@@ -133,10 +133,8 @@ fieldset[disabled] .btn-lachs.active
     color: #FFFFFF;
     background-color: #8082a6;
     border-color: #8082a6;
-    margin-right: 5px;
-    margin-left: 10px;
-    margin-top: 1px;
-    margin-bottom: 1px;
+    margin-right: 3px;
+    margin-left: 3px;
 
 }
 
@@ -363,6 +361,12 @@ canvas {
 }
 
 textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
+    border-color: #8082a6;
+    box-shadow: 0 1px 1px #8082a6 inset, 0 0 8px #8082a6;
+    outline: 0 none;
+}
+
+.form-control:focus {
     border-color: #8082a6;
     box-shadow: 0 1px 1px #8082a6 inset, 0 0 8px #8082a6;
     outline: 0 none;
