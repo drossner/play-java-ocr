@@ -10,7 +10,7 @@ import java.io.File;
  */
 public class OdtExport implements Export {
     @Override
-    public void initialize(String path, String fileName) {
+    public void initialize(String path, String fileName, boolean landscape) {
 
     }
 
