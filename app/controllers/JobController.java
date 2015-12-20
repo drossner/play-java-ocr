@@ -4,10 +4,17 @@ import be.objectify.deadbolt.core.PatternType;
 import be.objectify.deadbolt.java.actions.Pattern;
 import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import controllers.security.OcrDeadboltHandler;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
+import modules.database.*;
+import modules.database.UserController;
 import modules.database.entities.Job;
+import modules.database.entities.User;
+import play.db.jpa.JPA;
+import play.libs.F;
 import util.ImageHelper;
 import play.mvc.Controller;
 import play.Logger;
@@ -169,5 +176,41 @@ public class JobController extends Controller {
         Logger.info(jobs.toString());
 
         return ok();
+    }
+
+    /* _____________________________________
+        Ablage
+       _____________________________________ */
+
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    public F.Promise<Result> getProcessedJobs(){
+        String username = session().get("session");
+
+        return F.Promise.promise(() -> {
+            ObjectMapper mapper = new ObjectMapper();
+            User user = JPA.withTransaction(() -> new UserController().selectUserFromMail(username));
+
+            List<Job> jobs = JPA.withTransaction(() -> {
+                ArrayList<String> whereColumn = new ArrayList<>();
+                whereColumn.add("user");
+                whereColumn.add("processed");
+
+                ArrayList<Object> whereValue = new ArrayList<>();
+                whereValue.add(user);
+                whereValue.add(true);
+
+                return new modules.database.JobController().selectEntityList(Job.class, whereColumn, whereValue);
+            });
+
+            CMSController cmsController = SessionHolder.getInstance().getController("ocr", "ocr");
+
+            ArrayList<control.result.Result> rc = new ArrayList<>();
+
+            for(Job job: jobs){
+                rc.add(mapper.readValue(cmsController.readingJSON(job.getResultFile()), control.result.Result.class));
+            }
+
+            return ok(Json.toJson(rc));
+        });
     }
 }

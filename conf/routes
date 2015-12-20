@@ -29,6 +29,8 @@ GET         /json/deleteJob/:id     controllers.JobController.delete(id: Int)
 POST         /json/processJobs       controllers.JobController.process
 GET          /json/getUser           controllers.UserController.getUser
 
+GET          /json/getProcessedJobs  controllers.JobController.getProcessedJobs
+
 GET          /json/checkFiles/:uploadId controllers.UploadController.checkFiles(uploadId)
 
 POST         /json/saveUser          controllers.UserController.saveUser
