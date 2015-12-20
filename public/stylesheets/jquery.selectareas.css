@@ -21,8 +21,8 @@
 .select-areas-resize-handler {
 	background-color: #F25260;
 	/*border: 1px #fff solid;*/
-	height: 8px;
-	width: 8px;
+	height: 15px;
+	width: 15px;
 	overflow: hidden;
 
 }
