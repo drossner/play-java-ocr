@@ -29,10 +29,12 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
     public final static String MISSING_CMS_PERMISSION = "MISSING_CMS_PERMISSION";
 
     private CacheApi cache;
+    private UserController uc;
 
     @Inject
     public OcrDeadboltHandler(CacheApi cache) {
         this.cache = cache;
+        this.uc = new UserController();
     }
 
     public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context) {
@@ -56,7 +58,7 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
                                     return controller.selectUserFromMail(userMail);
                                 }
                         );*/
-                        Subject subj = new UserController().selectUserFromMail(userMail);
+                        Subject subj = uc.selectUserFromMail(userMail);
                         return subj;
                     })
             ));
@@ -72,15 +74,24 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
     @Override
     public F.Promise<Result> onAuthFailure(final Http.Context context,
                                            final String content) {
-        // you can return any result from here - forbidden, etc
-        //return F.Promise.promise(() -> ok(accessFailed.render()));
-        Logger.debug("DeadboltHandler content: " + content);
-        if(content.equals(MISSING_CMS_PERMISSION)){
-            return F.Promise.promise(() -> redirect(routes.Application.verwalten(true)));
-        } else {
+        Logger.debug("DeadboltHandler content onAuth Failure: " + content);
+        //try to check if this user is logged in
+        String usermail = context.session().get("session");
+        //if he is not, redirect him to regular login page
+        if(usermail==null || usermail.equals("")){
             String target = context.request().uri();
             context.session().put("target", target);
             return F.Promise.promise(() -> redirect(routes.Application.index()));
+        }
+        //following cases have a present subject but missing permissions
+        //redirect them to the page, on which they can get them
+        else if(content.equals(MISSING_CMS_PERMISSION)){
+            return F.Promise.promise(() -> redirect(routes.Application.verwalten(true)));
+        } else {
+            //this case should never happen if everything is okay
+            Logger.error("Deadbolt recognized unknown content: "+content);
+            Logger.error("User "+usermail+" got an internalServerError!");
+            return F.Promise.promise(() -> internalServerError());
         }
 
     }

@@ -33,7 +33,6 @@ public class JobController extends Controller {
         this.imageHelper = imageHelper;
     }
 
-    @SubjectPresent
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobHistory(){
         List<Job> jobs = null;
@@ -68,7 +67,7 @@ public class JobController extends Controller {
             return ok(Json.toJson(jobs));
         }
     }
-    @SubjectPresent
+
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobTypes(){
         ArrayList<String> rc = new ArrayList<>();
@@ -99,7 +98,6 @@ public class JobController extends Controller {
         return ok(Json.toJson(controller.getAllCountryLanguages()));
     }
 
-    @SubjectPresent
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getImageFromJobID(int id) throws IOException {
         Logger.info("id erhalten: " + id);
@@ -157,13 +155,11 @@ public class JobController extends Controller {
         //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
-    @SubjectPresent
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result delete(int id){
         return ok();
     }
 
-    @SubjectPresent
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result process(){
         Logger.info(request().toString());
