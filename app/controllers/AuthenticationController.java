@@ -123,7 +123,7 @@ public class AuthenticationController extends Controller{
         return Promise.promise(() -> JPA.withTransaction(() -> {
             String target = session().get("target");
             session().clear();
-            final String userEmail = "test@test.de";
+            final String userEmail = "test@testdffgdv.de";
 
             if(new SimpleUserFactory()
                     .setEmail(userEmail)

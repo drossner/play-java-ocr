@@ -6,6 +6,7 @@ import be.objectify.deadbolt.java.actions.SubjectPresent;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.security.OcrDeadboltHandler;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
@@ -29,7 +30,7 @@ import java.util.List;
 
 
 /**
- * Created by florian on 29.11.15.
+ * Created by florian and daniel on 29.11.15.
  */
 public class JobController extends Controller {
 
@@ -187,9 +188,19 @@ public class JobController extends Controller {
         String username = session().get("session");
 
         return F.Promise.promise(() -> {
+            //init root node
+            ObjectNode result = Json.newObject();
+            //add export filetypes TODO: dynamic loading
+            result.putArray("filetypes").add("docx").add("pdf").add("txt");
+            //init nodes array
+            ArrayNode arrayNode = result.putArray("nodes");
+
+            //init JSON mapper for working with result texts from cmis
             ObjectMapper mapper = new ObjectMapper();
+            //load current user from database
             User user = JPA.withTransaction(() -> new UserController().selectUserFromMail(username));
 
+            //load finished job data from database (for current user)
             List<Job> jobs = JPA.withTransaction(() -> {
                 ArrayList<String> whereColumn = new ArrayList<>();
                 whereColumn.add("user");
@@ -202,15 +213,32 @@ public class JobController extends Controller {
                 return new modules.database.JobController().selectEntityList(Job.class, whereColumn, whereValue);
             });
 
-            CMSController cmsController = SessionHolder.getInstance().getController("ocr", "ocr");
+            //init cms controller to load result json form cmis
+            CMSController cmsController = SessionHolder.getInstance().
+                    getController(user.getCmsAccount(), user.getCmsPassword());
 
+            //result of analyse part
             ArrayList<control.result.Result> rc = new ArrayList<>();
 
+            //iterate over all availabe jobs and build result json for the client
             for(Job job: jobs){
-                rc.add(mapper.readValue(cmsController.readingJSON(job.getResultFile()), control.result.Result.class));
+                control.result.Result tempResult = mapper.readValue(cmsController.readingJSON(job.getResultFile()), control.result.Result.class);
+                String name = job.getName();
+                String language = job.getLayoutConfig().getLanguage().getCountry().getName();
+                String type = job.getLayoutConfig().getName();
+                //TODO: add texts
+                addObjectToArray(arrayNode, name, language, type);
             }
 
-            return ok(Json.toJson(rc));
+            return ok(result);
         });
+    }
+
+    private void addObjectToArray(ArrayNode array, String name,
+                                  String language, String type){
+        array.addObject()
+                .put("name", name)
+                .put("language", language)
+                .put("type", type);
     }
 }
