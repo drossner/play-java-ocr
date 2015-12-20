@@ -7,7 +7,7 @@ import java.io.File;
  */
 public interface Export {
 
-    void initialize(String path, String fileName);
+    void initialize(String path, String fileName, boolean landscape);
 
     void export(Fragment fragment);
 
