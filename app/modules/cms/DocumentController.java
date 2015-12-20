@@ -96,5 +96,12 @@ public class DocumentController {
         return bufferedImage;
     }
 
+    public InputStream readingJSON(String object){
+        Document document = (Document) cmsController.getSession().getObject(object);
+        String filename = document.getName();
+        InputStream stream = document.getContentStream().getStream();
+        return stream;
+    }
+
 
 }
