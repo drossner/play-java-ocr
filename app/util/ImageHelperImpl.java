@@ -1,6 +1,10 @@
 package util;
 
 import modules.upload.FileContainer;
+
+import modules.cms.CMSController;
+import modules.cms.SessionHolder;
+import modules.database.entities.Image;
 import org.imgscalr.Scalr;
 import play.Logger;
 
@@ -100,5 +104,11 @@ public class ImageHelperImpl implements ImageHelper{
                 Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT,
                         THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
         return fixTransparency(thumbnail);
+    }
+
+    public BufferedImage convertToImageFromCMIS(String source) {
+        CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
+
+        return controller.readingAImage(source);
     }
 }

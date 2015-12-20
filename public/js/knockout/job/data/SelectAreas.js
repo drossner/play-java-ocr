@@ -1,7 +1,7 @@
 /**
  * Created by FRudi on 12.12.2015.
  */
-function SelectArea (xStart, xEnd, yStart, yEnd, type){
+function SelectArea (xStart, xEnd, yStart, yEnd, type, canvasHeight, canvasWidth){
     var self = this;
 
     self.xStart = xStart;
@@ -9,6 +9,9 @@ function SelectArea (xStart, xEnd, yStart, yEnd, type){
 
     self.xEnd = xEnd;
     self.yEnd = yEnd;
+
+    self.canvasHeight = canvasHeight;
+    self.canvasWidth = canvasWidth
 
     self.type = type;
 }

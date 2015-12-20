@@ -20,6 +20,7 @@ import play.mvc.Controller;
 import play.Logger;
 import play.mvc.Result;
 import play.libs.Json;
+import views.html.ablage;
 
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
@@ -168,14 +169,17 @@ public class JobController extends Controller {
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
-    public Result process(){
-        Logger.info(request().toString());
+    public F.Promise<Result> process(){
+        return F.Promise.promise(() -> {
+            JsonNode jobs = request().body().asJson();
+            Logger.info(jobs.toString());
 
-        JsonNode jobs = request().body().asJson();
+            for (JsonNode node : jobs.withArray("jobs")) {
+                Analyse.INSTANCE.calculate(node);
+            }
 
-        Logger.info(jobs.toString());
-
-        return ok();
+            return ok();
+        });
     }
 
     /* _____________________________________
