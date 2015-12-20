@@ -4,25 +4,18 @@
 function User(){
     var self = this;
 
-    self.language = ko.observable($('#language').text());
-    console.log(self.language());
+    self.language = ko.observable();
 
     self.cmsAccount = ko.observable($('#cmsAccount').val());
-    console.log(self.cmsAccount());
 
     self.password = ko.observable("");
     self.passwordConfirm = ko.observable("");
 }
 
-
-function Language(id, initialLanguage){
-    var self = this;
-    self.id = id;
-    self.language = ko.observable(initialLanguage);
-}
-
 function UserViewModel(){
     var self = this;
+
+    var initialLanguage = $('#language').text();
 
     self.user = ko.observable(new User());
 
@@ -30,7 +23,12 @@ function UserViewModel(){
 
     $.getJSON("/json/jobLanguage", function(result){
         for(var i = 0; i < result.length; i++){
-            self.languages.push(new Language(i + 1, result[i].name));
+            var temp =  result[i].name;
+            self.languages.push(temp);
+
+            if(initialLanguage == result[i].name){
+                self.user().language(self.languages()[i]);
+            }
         }
     });
 

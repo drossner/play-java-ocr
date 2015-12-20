@@ -7,7 +7,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import controllers.security.OcrPermission;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
+import modules.database.CountryController;
 import modules.database.PermissionController;
+import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
 import modules.database.entities.UserPermission;
@@ -39,6 +41,7 @@ public class UserController extends Controller {
     private final String CMS_CONSTRAINT_LENGTH = "CMS-Nutzername ist zu kurz";
     private final String CMS_CONSTRAINT_EXIST = "CMS-Nutzername existiert bereits";
     private final String CMS_CONSTRAINT_WANNABEUSER = "Sie haben bereits einen CMS-Nutzeraccount erstellt, dieser ist nicht editierbar";
+    private final String LANGUAGE_NOT_IN_DATABASE = "Sprache ist leider nicht vorhanden";
 
     private final String SUCCESS_MESSAGE = "Änderungen wurden erfolgreich übernommen";
 
@@ -82,31 +85,30 @@ public class UserController extends Controller {
                     String cmsAccount = sentUserData.get("cmsAccount").asText();
                     String password = sentUserData.get("password").asText();
                     String passwordConfirm = sentUserData.get("passwordConfirm").asText();
-                    String language = sentUserData.get("language").get("language").asText();
+                    String language = sentUserData.get("language").asText();
 
                     ObjectNode result = null;
-
+                    Country countryImpl = getCountry(language);
 
                     if((user.getCmsAccount() != null &&
                             !user.getCmsAccount().equals(cmsAccount)) ||
                             (user.getCmsAccount() != null &&
                             password.length() > 0)){
                         result = generateJsonResponse(false, CMS_CONSTRAINT_WANNABEUSER);
-                    }
+                    }else if(language == null || (countryImpl = getCountry(language)) == null) result = generateJsonResponse(false, LANGUAGE_NOT_IN_DATABASE);
                         //set all or only language -> if sth went wrong, dont set language!!!
                         //enter following if, if nothing changed -> only language
                     else if((user.getCmsAccount() == null || user.getCmsAccount().equals(cmsAccount)) &&
                             (password == null || password.length() == 0) &&
                             (passwordConfirm == null || passwordConfirm.length() == 0)){
-                        //TODO: setup language
-                        //TODO: maybe check language?
+                        user.setCountry(countryImpl);
+
                         return ok(generateJsonResponse(true, SUCCESS_MESSAGE));
                     }
                     else if(!password.equals(passwordConfirm)) result = generateJsonResponse(false, PASSWORD_CONSTRAINT_CHECK);
                     else if(password.length() <= PASSWORD_LENGTH){
                         result = generateJsonResponse(false, PASSWORD_CONSTRAINT_STRENGTH);
                     }
-                    else if(false) result = null;//TODO: language check
                     else{
                         //set the cmsAccount of the current user using the json data from client
                         result = setupLdapAccount(cmsAccount, password, user);
@@ -114,8 +116,7 @@ public class UserController extends Controller {
 
                     //set language if, and only if ldapAccpunt setup was successful
                     if(result.get("success").asBoolean()){
-                        //TODO: setup language
-                        //user.getCountry().setCountry(getCountryImpl(language));
+                        user.setCountry(countryImpl);
                     }
                     //print actual database user
                     Logger.info(user.toString());
@@ -131,15 +132,8 @@ public class UserController extends Controller {
         );
     }
 
-    public CountryImpl getCountryImpl(String value){
-        switch (value.toLowerCase()){
-            case "deutsch":
-                return CountryImpl.GERMAN;
-            case "englisch":
-                return CountryImpl.ENGLISCH;
-            default:
-                return CountryImpl.GERMAN;
-        }
+    public Country getCountry(String value){
+        return new CountryController().selectEntity(Country.class, CountryImpl.getEnumInstance(value));
     }
 
     private ObjectNode generateJsonResponse(boolean success, String message){

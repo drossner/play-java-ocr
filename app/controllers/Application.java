@@ -77,7 +77,6 @@ public class Application extends Controller {
                 JPA.withTransaction("default", true, () -> {
                             User user = new modules.database.UserController().selectUserFromMail(userMail);
 
-                            user.getCountry().setCountry(CountryImpl.ENGLISCH);
                             return ok(verwalten.render(user, showWarning));
                         }
                 ));
