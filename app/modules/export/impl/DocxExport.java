@@ -1,9 +1,15 @@
 package modules.export.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import modules.cms.CMSController;
+import modules.cms.SessionHolder;
 import modules.export.Export;
 import modules.export.Fragment;
+import org.docx4j.Docx4jProperties;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.jaxb.Context;
+import org.docx4j.model.structure.PageDimensions;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
@@ -12,12 +18,20 @@ import org.docx4j.openpackaging.parts.WordprocessingML.BinaryPartAbstractImage;
 import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.vml.*;
 import org.docx4j.wml.*;
+import org.docx4j.wml.ObjectFactory;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by Bendikt Linke on 12.12.2015.
@@ -32,7 +46,7 @@ public class DocxExport implements Export {
 
 
     @Override
-    public void initialize(String path, String fileName) {
+    public void initialize(String path, String fileName, boolean landscape) {
         this.path = path;
         this.fileName = fileName;
 
@@ -44,17 +58,21 @@ public class DocxExport implements Export {
         } catch (Docx4JException e) {
             e.printStackTrace();
         }
+
+        setOrientation(landscape);
+        setPageMargins(0,0,0,0);
+
     }
 
     @Override
     public void export(Fragment fragment) {
-        double startX = fragment.getStartX() * 10;
-        double startY = fragment.getStartY() * 10;
-        double width = (fragment.getEndX() - fragment.getStartX()) * 10;
-        double height = (fragment.getEndY() - fragment.getStartY()) * 10;
+        double startX = fragment.getStartX() * 1000;
+        double startY = fragment.getStartY() * 1000;
+        double width = (fragment.getEndX() - fragment.getStartX()) * 1000;
+        double height = (fragment.getEndY() - fragment.getStartY()) * 1000;
 
 
-        String style = "position:absolute;" +
+        String style ="position:absolute;" +
                 "mso-wrap-style:square;" +
                 "mso-width-percent:"+ width + ";" +
                 "mso-height-percent:"+ height + ";" +
@@ -62,7 +80,7 @@ public class DocxExport implements Export {
                 "mso-top-percent:"+ startY + ";";
 
         P p = new P();
-        mainDocumentPart.getContent().add(p);
+        mainDocumentPart.addObject(p);
 
 
         if(fragment.getContent() instanceof String) {
@@ -153,6 +171,7 @@ public class DocxExport implements Export {
         shape.setStroked(STTrueFalse.FALSE);
         shape.setFilled(STTrueFalse.FALSE);
 
+
         // Create object for textbox (wrapped in JAXBElement)
         CTTextbox textbox = vmlObjectFactory.createCTTextbox();
         JAXBElement<org.docx4j.vml.CTTextbox> textboxWrapped = vmlObjectFactory.createTextbox(textbox);
@@ -162,6 +181,7 @@ public class DocxExport implements Export {
         // Create object for txbxContent
         CTTxbxContent txbxcontent = wmlObjectFactory.createCTTxbxContent();
         textbox.setTxbxContent(txbxcontent);
+
 
         txbxcontent.getContent().add(textboxContent);
 
@@ -178,12 +198,19 @@ public class DocxExport implements Export {
         P p = Context.getWmlObjectFactory().createP();
 
         R r = Context.getWmlObjectFactory().createR();
-        p.getContent().add( r);
-        // Create object for t (wrapped in JAXBElement)
-        Text text = Context.getWmlObjectFactory().createText();
-        JAXBElement<org.docx4j.wml.Text> textWrapped = Context.getWmlObjectFactory().createRT(text);
-        r.getContent().add( textWrapped);
-        text.setValue( textContent);
+        p.getContent().add(r);
+
+        String[] lines = textContent.split("\n");
+        for(String line : lines) {
+            // Create object for t (wrapped in JAXBElement)
+            Text text = Context.getWmlObjectFactory().createText();
+            JAXBElement<org.docx4j.wml.Text> textWrapped = Context.getWmlObjectFactory().createRT(text);
+            r.getContent().add( textWrapped);
+            text.setValue(line.trim());
+
+            Br br = Context.getWmlObjectFactory().createBr(); // this Br element is used break the current and go for next line
+            r.getContent().add(br);
+        }
 
         return p;
     }
@@ -242,5 +269,33 @@ public class DocxExport implements Export {
             e.printStackTrace();
         }
 
+    }
+
+
+    private void setPageMargins(int bottom, int top, int left, int right) {
+        try {
+            Body body = mainDocumentPart.getContents().getBody();
+            PageDimensions page = new PageDimensions();
+            SectPr.PgMar pgMar = page.getPgMar();
+            pgMar.setBottom(BigInteger.valueOf(bottom));
+            pgMar.setTop(BigInteger.valueOf(top));
+            pgMar.setLeft(BigInteger.valueOf(left));
+            pgMar.setRight(BigInteger.valueOf(right));
+            ObjectFactory factory = Context.getWmlObjectFactory();
+
+            SectPr sectPr = factory.createSectPr();
+            body.setSectPr(sectPr);
+            sectPr.setPgMar(pgMar);
+
+        } catch (Docx4JException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    //TODO: doesn't work
+    private void setOrientation(boolean landscape){
+        Properties properties = Docx4jProperties.getProperties();
+        properties.setProperty("docx4j.PageOrientationLandscape", Boolean.toString(landscape));
     }
 }
