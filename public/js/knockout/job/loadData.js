@@ -19,7 +19,7 @@ function loadData(jobViewModel){
     $.getJSON("/json/jobHistory", function(result){
         for(var i = 0; i < result.length; i++){
             console.log(result[i]);
-            var job = Job(i + 1, result[i], jobViewModel.languages()[0], jobViewModel.jobtypes()[0]);
+            var job = new Job(i + 1, result[i], jobViewModel.languages()[0], jobViewModel.jobtypes()[0]);
 
             jobViewModel.jobs.push(job);
         }
