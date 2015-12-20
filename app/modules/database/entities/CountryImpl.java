@@ -14,6 +14,17 @@ public enum CountryImpl {
         this.isoCode = isoCode;
     }
 
+    public static CountryImpl getEnumInstance(String value){
+        value = value.toUpperCase();
+        if(value.equals("GERMAN") || value.equals("DEUTSCH")){
+            return CountryImpl.GERMAN;
+        }else if(value.equals("ENGLISH") || value.equals("ENGLISCH")){
+            return CountryImpl.ENGLISCH;
+        }
+
+        return null;
+    }
+
     private String name;
 
     private String isoCode;

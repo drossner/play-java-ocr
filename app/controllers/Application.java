@@ -48,7 +48,6 @@ public class Application extends Controller {
         }
     }
 
-    @SubjectPresent
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> hochladen(int step, String inUploadId) {
         final String userMail = session().get("session");
@@ -77,13 +76,11 @@ public class Application extends Controller {
                 JPA.withTransaction("default", true, () -> {
                             User user = new modules.database.UserController().selectUserFromMail(userMail);
 
-                            user.getCountry().setCountry(CountryImpl.ENGLISCH);
                             return ok(verwalten.render(user, showWarning));
                         }
                 ));
     }
 
-    @SubjectPresent
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result ablage() {
         return ok(ablage.render());
@@ -94,7 +91,6 @@ public class Application extends Controller {
         return ok(hilfe.render());
     }
 
-    @SubjectPresent
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result template() {
         return ok(views.html.modals.templating.render());

@@ -111,14 +111,18 @@
                     <tr>
                         <td>Sprache:</td>
                         <td class="dropdown">
-                            <select id="language" data-bind="options: languages, optionsText: function(item) {
-                                                                return item.language}, value: user().language">@user.getCountry.getCountry.getName</select>
+                            <select id="language" data-bind="value: user().language, options: languages">@user.getCountry.getCountry.getName</select>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <p id="errormsg" class="warning"></p>
+        <p id="cmsp" style="display:none">
+            Bitte melden Sie sich am CMS System an damit ihr Workspace erstellt wird:
+                <a id="cmslink" href="#" target="_blank">Login</a>
+        </p>
+
         <button type="button" class="btn btn-lila pull-right" data-bind="click: sendUser" href="#">Übernehmen</button>
     </div>
 
