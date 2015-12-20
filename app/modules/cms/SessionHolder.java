@@ -1,6 +1,7 @@
 package modules.cms;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.chemistry.opencmis.client.api.Repository;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -9,6 +10,8 @@ import org.apache.chemistry.opencmis.client.runtime.SessionFactoryImpl;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 import org.apache.chemistry.opencmis.commons.enums.BindingType;
 import play.Logger;
+import play.libs.Akka;
+import scala.concurrent.duration.Duration;
 
 
 /**
@@ -24,7 +27,11 @@ public class SessionHolder {
     private static SessionHolder instance = null;
 
     private SessionHolder() {
-        new Thread(new ActivityChecker()).start();
+        //cleanup code
+        Akka.system().scheduler().schedule(
+                Duration.create(30, TimeUnit.MINUTES),   // initial delay
+                Duration.create(30, TimeUnit.MINUTES),   // run job every 30 minutes
+                (Runnable) this::checkSessions, Akka.system().dispatcher());
     }
 
     public static SessionHolder getInstance() {

@@ -186,10 +186,9 @@ function ListViewModel() {
 
 
     function saveInFolder() {
-        console.log("bin im save in folder methode");
-        console.log(self.folderId());
-        $("#launchBT").text(self.folderId());
+        currentJob.folderId(self.folderId());
 
+        console.log(currentJob.folderId());
     }
 
     /**

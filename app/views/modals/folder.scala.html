@@ -1,7 +1,7 @@
 @()
 
 <div id="bind-container">
-<script src="@routes.Assets.versioned("js/knockout/folder/bindings.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("js/knockout/folder/bindings.js")" type="text/javascript"></script>
 
         <!-- Modal -->
     <div class="modal fade" id="folderModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -10,20 +10,14 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        < h4
-        class
-        = "modal-title"
-        id = "myModalLabel" > Speicherpunkt < / h4 >
+                    <h4 class="modal-title" id = "myModalLabel"> Speicherpunkt </h4>
                 </div>
 
                 <div class="modal-body">
                     <div class="panel panel-default">
                             <!-- Default panel contents -->
                         <div class="panel-heading">
-                Ordner, wer
-        braucht
-        schon
-        Ordner...
+                            Ordner, wer braucht schon Ordner...
                         </div>
                         <div class="panel-body">
                             <div data-bind="foreach: path()"><a href="#" data-bind="html: title() + '/&nbsp;', click: openItem"></a></div>
@@ -55,29 +49,17 @@
                         </table>
                     </div>
 
-            </div>
+                </div>
 
-            <div class="modal-footer">
-                < button
-        type = "button"
-        class
-        = "btn btn-lachs"
-        data - dismiss = "modal" > Abbrechen < / button >
-                < button
-        type = "button"
-        class
-        = "btn btn-lila"
-        data - bind = "click: $root.saveInFolder"
-        data - dismiss = "modal" > In
-        diesem
-        Ordner
-        speichern < / button >
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-lachs" data-dismiss="modal"> Abbrechen </button>
+                    <button type="button" class="btn btn-lila" data-bind = "click: $root.saveInFolder" data-dismiss = "modal">In diesem Ordner speichern</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="@routes.Assets.versioned("js/knockout/folder/listViewModel.js")" type="text/javascript"></script>
-<script src="@routes.Assets.versioned("js/knockout/folder/itemViewModel.js")" type="text/javascript"></script>
-<script src="@routes.Assets.versioned("js/knockout/folder/loadData.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("js/knockout/folder/listViewModel.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("js/knockout/folder/itemViewModel.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("js/knockout/folder/loadData.js")" type="text/javascript"></script>
 </div>

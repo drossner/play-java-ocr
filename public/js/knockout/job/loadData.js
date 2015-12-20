@@ -3,18 +3,31 @@
  */
 function loadData(jobViewModel){
     $.getJSON("/json/jobType", function(result){
-        jobViewModel.jobTypes = result;
+        console.log(result);
+        for(var i = 0; i < result.length; i++){
+            console.log("adding: " + result[i]);
+            jobViewModel.jobtypes.push(result[i]);
+        }
     });
 
     $.getJSON("/json/jobLanguage", function(result){
         for(var i = 0; i < result.length; i++){
-            jobViewModel.languages.push(new Language(i + 1, result[i].name));
+            jobViewModel.languages.push(result[i].name);
         }
     });
 
     $.getJSON("/json/jobHistory", function(result){
         for(var i = 0; i < result.length; i++){
-            jobViewModel.jobs.push(new Job(i + 1, result[i]));
+            console.log(result[i]);
+            var job = new Job(i + 1, result[i]);
+
+            job.language(jobViewModel.languages()[0]);
+            console.log(job.language());
+
+            job.jobType(jobViewModel.jobtypes()[0]);
+            console.log(job.jobType());
+
+            jobViewModel.jobs.push(job);
         }
     });
 }

@@ -1,5 +1,6 @@
 package modules.export.impl;
 
+import control.result.ResultFragment;
 import modules.export.Export;
 import modules.export.Fragment;
 
@@ -15,7 +16,7 @@ public class OdtExport implements Export {
     }
 
     @Override
-    public void export(Fragment fragment) {
+    public void export(ResultFragment fragment) {
 
     }
 

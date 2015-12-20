@@ -4,25 +4,24 @@ import analyse.AnalyseType;
 import com.fasterxml.jackson.databind.JsonNode;
 import control.configuration.LayoutFragment;
 import control.factories.LayoutConfigurationFactory;
-import errorhandling.ErrorHandler;
+import control.result.Result;
+import control.result.ResultFragment;
 import errorhandling.OcrException;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import modules.database.entities.Job;
-import modules.database.entities.PreProcessing;
 import modules.database.factory.SimpleLayoutConfigurationFactory;
+import modules.export.Export;
+import modules.export.impl.DocxExport;
+import modules.export.impl.PdfExport;
 import play.Logger;
-import play.api.UsefulException;
 import play.db.jpa.JPA;
 import postprocessing.PostProcessingType;
 import preprocessing.PreProcessingType;
 import preprocessing.PreProcessor;
-import util.ImageHelper;
 
-import javax.inject.Inject;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.ArrayList;
 
 /**
  * Created by FRudi on 17.12.2015.
@@ -32,15 +31,56 @@ public enum Analyse {
 
     private final int THREAD_POOL_COUNT = 4;
 
+    //private ExecutionContext context;
+    //private ExecutorService executor;
+
     private CMSController controller;
-    private ExecutorService executor;
 
     Analyse() {
-        executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
+        //executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
         controller = SessionHolder.getInstance().getController("ocr", "ocr");
+        //context = Akka.system().dispatcher().prepare();
     }
 
-    public void calculate(JsonNode job) {
+    public void analyse(JsonNode jobs){
+
+        Export export = new PdfExport();
+
+        if(jobs.get("combined").asBoolean()){
+            ArrayList<Result> results = new ArrayList<>();
+            for (JsonNode node : jobs.withArray("jobs")) {
+                results.add(calculate(node));
+            }
+
+            export.initialize(jobs.get("jobs").get(1).get("job").get("folderId").asText(), jobs.get(1).get("job").get("name").asText(), false);
+
+            for(Result result: results){
+                result.getResultFragments().forEach(export::export);
+                export.newPage();
+            }
+
+            export.finish();
+        }else{
+            for(JsonNode node : jobs.withArray("jobs")){
+                String name = node.get("job").get("name").asText().split("\\.")[0];
+                String folderId = node.get("folderId").asText();
+
+                Logger.info("name: " + name);
+                Logger.info("folderid: " + folderId);
+
+                export.initialize(folderId, name, false);
+
+                calculate(node).getResultFragments().forEach(export::export);
+
+                export.finish();
+
+                Logger.info("node complete processed");
+            }
+
+        }
+    }
+
+    private Result calculate(JsonNode job) {
         Logger.info("analyse job: " + job);
         AnalyseWorker worker = new AnalyseWorker();
         LayoutConfigurationFactory configuration = new LayoutConfigurationFactory();
@@ -52,9 +92,7 @@ public enum Analyse {
             String idString = job.get("job").get("id").asText();
             int jobID = Integer.parseInt(idString);
             dbJob = JPA.withTransaction(() -> new modules.database.JobController().selectEntity(Job.class, "id", jobID));
-            image = JPA.withTransaction(() -> {
-                return controller.readingAImage(dbJob.getImage().getSource());
-            });
+            image = JPA.withTransaction(() -> controller.readingAImage(dbJob.getImage().getSource()));
         } catch (Throwable throwable) {
             throw new OcrException("Analyse", throwable);
         }
@@ -91,7 +129,7 @@ public enum Analyse {
                 case "metadata":
                     type = AnalyseType.META_DATA_FRAGMENT;
                     break;
-                case "image":
+                case "img":
                     type = AnalyseType.IMAGE_FRAGMENT;
                     break;
                 case "text":
@@ -137,8 +175,16 @@ public enum Analyse {
         worker.setJob(dbJob);
         worker.setConfiguration(configuration.build());
 
-        executor.execute(worker);
+
+        /*
+        F.Promise<Integer> integerPromise = F.Promise.promise(worker::run
+                , context);
+                */
+
+        Result rc = worker.run();
 
         JPA.withTransaction(() -> dbJob.setProcessed(true));
+
+        return rc;
     }
 }

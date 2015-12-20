@@ -49,27 +49,10 @@ public class JobController extends Controller {
         String username = session().get("session");
 
         try {
-            jobs = new modules.database.JobController().getUnProcessedJobs();
+            jobs = new modules.database.JobController().getUnProcessedJobs(username);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-
-        /*
-        Job job = new Job();
-        job.setName("test.png");
-        job.setId(18);
-        jobs.add(job);
-
-        job = new Job();
-        job.setName("test2.png");
-        job.setId(22);
-        jobs.add(job);
-
-        job = new Job();
-        job.setName("test3.png");
-        job.setId(38);
-        jobs.add(job);
-        */
 
         if(jobs == null){
             return ok(Json.toJson(new ArrayList<Job>()));
@@ -95,14 +78,6 @@ public class JobController extends Controller {
 
     @SubjectPresent
     public Result getLanguages() throws Throwable {
-        /*ArrayList<String> rc = new ArrayList<>();
-        String username = session().get("session");
-
-        rc.add("Detusch");
-        rc.add("Anglisch");
-        rc.add("Schwiezerdütsch");
-        rc.add("Fränggisch"); */
-
         modules.database.JobController controller = new modules.database.JobController();
 
         return ok(Json.toJson(controller.getAllCountryLanguages()));
@@ -139,35 +114,23 @@ public class JobController extends Controller {
         }
         //TODO DANIEL ERROR
         return internalServerError();
-        /*
-        FileInputStream fileInputStream = null;
-        byte[] bFile = new byte[(int) file.length()];
-        try
-        {
-            //convert file into array of bytes
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bFile);
-            fileInputStream.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        input = new ByteArrayInputStream(bFile);
-
-        return ok(input).as("image/png");
-        *//*
-        File file = new File(job.getImage().getSource());
-
-        Logger.info("returning: " + file);
-        return ok(Json.toJson(file));*/
-        //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
-    public Result delete(int id){
-        return ok();
+    public F.Promise<Result> delete(int id){
+        String userEmail = session().get("session");
+        return F.Promise.promise(() -> JPA.withTransaction(() -> {
+            modules.database.JobController controller = new modules.database.JobController();
+            Job job = controller.selectEntity(Job.class, "id", id);
+
+            if(!job.getUser().geteMail().equals(userEmail)){
+                return badRequest();
+            }
+
+            controller.deleteObject(job);
+
+            return ok();
+        }));
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
@@ -176,9 +139,7 @@ public class JobController extends Controller {
             JsonNode jobs = request().body().asJson();
             Logger.info(jobs.toString());
 
-            for (JsonNode node : jobs.withArray("jobs")) {
-                Analyse.INSTANCE.calculate(node);
-            }
+            Analyse.INSTANCE.analyse(jobs);
 
             return ok();
         });
