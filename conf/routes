@@ -31,6 +31,8 @@ GET          /json/getUser           controllers.UserController.getUser
 
 GET          /json/getProcessedJobs  controllers.JobController.getProcessedJobs
 
+GET          /json/checkFiles/:uploadId controllers.UploadController.checkFiles(uploadId)
+
 POST         /json/saveUser          controllers.UserController.saveUser
 
 # oAuth

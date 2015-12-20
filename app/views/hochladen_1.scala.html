@@ -82,7 +82,7 @@
     }
     <!--</form>-->
     <!--Weiter Button-->
-    <a href="@routes.Application.hochladen(2, uploadId)" class="btn btn-lachs">Weiter</a>
+    <button type="button" onclick="checkFiles()" class="btn btn-lachs">Weiter</button>
 </div>
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
@@ -98,8 +98,8 @@
         </td>
         <td>
             <p class="size">Processing...</p>
-            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-            <div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" >
+            <div class="progress-bar progress-bar-success" style="width:0%;background-image: none; background-color: #8082a6"></div></div>
         </td>
         <td>
             {% if (!i && !o.options.autoUpload) { %}
@@ -143,7 +143,7 @@
 <!-- The template to display files available for download -->
 <script id="template-download" type="text/x-tmpl">
 {% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="whitebg template-download fade text-center">
+    <tr class="whitebg template-download fade text-center showNext">
         <td>
             <span class="preview">
                 {% if (file.thumbnailUrl) { %}
@@ -196,6 +196,36 @@
     });
 
 </script>
+
+    <script>
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": false,
+                "positionClass": "toast-top-center",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "150",
+                "hideDuration": "500",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            };
+
+        var checkFiles = function(){
+            $.getJSON('/json/checkFiles/@uploadId', function(result){
+                if(result.success){
+                    window.location.href = "@routes.Application.hochladen(2, uploadId)";
+                } else {
+                    toastr.warning('Bitte laden Sie mindestens eine Datei in die Anwendung');
+                }
+            });
+        }
+    </script>
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

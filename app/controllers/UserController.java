@@ -24,6 +24,8 @@ import play.mvc.Results;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by FRudi und Daniel on 17.12.2015.
@@ -40,11 +42,13 @@ public class UserController extends Controller {
     private final String PASSWORD_CONSTRAINT_STRENGTH = "Das Passwort ist nicht lang genug";
     private final String CMS_CONSTRAINT_LENGTH = "CMS-Nutzername ist zu kurz";
     private final String CMS_CONSTRAINT_EXIST = "CMS-Nutzername existiert bereits";
+    private final String CMS_CONSTRAINT_REGEX = "Bitte benutzen Sie für den CMS-Nutzernamen ausschließlich Kleinbuchstaben";
     private final String CMS_CONSTRAINT_WANNABEUSER = "Sie haben bereits einen CMS-Nutzeraccount erstellt, dieser ist nicht editierbar";
     private final String LANGUAGE_NOT_IN_DATABASE = "Sprache ist leider nicht vorhanden";
 
     private final String SUCCESS_MESSAGE = "Änderungen wurden erfolgreich übernommen";
 
+    private final Pattern CMS_REGEX = Pattern.compile("[a-z]*");
 
     private final LdapController ldapController;
 
@@ -86,6 +90,7 @@ public class UserController extends Controller {
                     String password = sentUserData.get("password").asText();
                     String passwordConfirm = sentUserData.get("passwordConfirm").asText();
                     String language = sentUserData.get("language").asText();
+                    Matcher matcher = CMS_REGEX.matcher(cmsAccount);
 
                     ObjectNode result = null;
                     Country countryImpl = getCountry(language);
@@ -105,6 +110,7 @@ public class UserController extends Controller {
 
                         return ok(generateJsonResponse(true, SUCCESS_MESSAGE));
                     }
+                    else if(!matcher.matches()) result = generateJsonResponse(false, CMS_CONSTRAINT_REGEX);
                     else if(!password.equals(passwordConfirm)) result = generateJsonResponse(false, PASSWORD_CONSTRAINT_CHECK);
                     else if(password.length() <= PASSWORD_LENGTH){
                         result = generateJsonResponse(false, PASSWORD_CONSTRAINT_STRENGTH);

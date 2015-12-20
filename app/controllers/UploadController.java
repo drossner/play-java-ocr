@@ -9,6 +9,7 @@ import modules.upload.FileContainer;
 import modules.upload.UploadHandler;
 import play.Logger;
 import play.libs.F;
+import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Http;
 import play.mvc.Result;
@@ -31,6 +32,17 @@ public class UploadController extends Controller {
     @Inject
     public UploadController(UploadHandler uploadHandler){
         this.uploadHandler = uploadHandler;
+    }
+
+    public Result checkFiles(String uploadId) {
+        List<FileContainer> filelist = uploadHandler.loadFiles(uploadId);
+        ObjectNode result = Json.newObject();
+        if(filelist != null && filelist.size() > 0){
+            result.put("success", true);
+        } else {
+            result.put("success", false);
+        }
+        return ok(result);
     }
 
     public F.Promise<Result> upload(String uploadId){
