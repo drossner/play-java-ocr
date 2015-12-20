@@ -8,9 +8,11 @@ import play.db.jpa.Transactional;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +21,10 @@ import java.util.List;
  */
 public abstract class DatabaseController<T extends DomainObject, T2> {
 
+
     @Transactional
-    public <T> T selectEntity(Class<T> type, String whereColumn, String where){
+    public <T> T selectEntity(Class<T> type, String whereColumn, Object where){
+        Logger.info("selecting: " + type + " column: " + whereColumn + " value: " + where);
         CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
 
         CriteriaQuery<T> rc = builder.createQuery(type);
@@ -41,6 +45,30 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
         }
 
         return query.getSingleResult();
+    }
+
+    public <T> List<T> selectEntityList(Class<T> type, List<String> whereColumn, List<Object> where){
+        CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
+
+        CriteriaQuery<T> rc = builder.createQuery(type);
+        Root<T> rootQuery = rc.from(type);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        for (int i = 0; i < whereColumn.size(); i++) {
+            predicates.add(builder.equal(rootQuery.get(whereColumn.get(i)), where.get(i)));
+        }
+        rc.where(predicates.toArray(new Predicate[predicates.size()]));
+
+        TypedQuery<T> query = JPA.em().createQuery(rc);
+
+        List<T> list = query.getResultList();
+
+        if(list.size() == 0){
+            return null;
+        }
+
+        return list;
     }
 
     public <T> List<T> selectEntityList(Class<T> type, String whereColumn, Object where){
@@ -122,7 +150,7 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
     }
 
     @Transactional
-    public void persistObject(Object persistObject){
+    public void persistObject(DomainObject persistObject){
         JPA.em().persist(persistObject);
     }
 
