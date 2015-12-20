@@ -30,7 +30,7 @@ public class AuthenticationController extends Controller{
     private final OAuthentication fb;
 
     @Inject
-    public AuthenticationController(OAuthentication gp, LdapController ldapController){
+    public AuthenticationController(OAuthentication gp){
         this.gp = gp;
         this.fb = new FacebookAuthentication();
     }
@@ -91,30 +91,6 @@ public class AuthenticationController extends Controller{
         session().clear();
         //get the email of the user
         final String userEmail = authResponse.getEmail();
-        //lookup if user aleady exists
-        /*CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery<Long> cq = qb.createQuery(Long.class);
-        Root user = cq.from(User.class);
-        cq.select(qb.count(user));
-        cq.where(qb.equal(user.get("eMail"), userEmail));
-        boolean exists = JPA.em().createQuery(cq).getSingleResult() == 1;*/
-        /*
-        CriteriaBuilder qb = JPA.em().getCriteriaBuilder();
-        CriteriaQuery<User> cq = qb.createQuery(User.class);
-        Root user = cq.from(User.class);
-        cq.select(user);
-        cq.where(qb.equal(user.get("eMail"), userEmail));
-        User loadedUser = JPA.em().createQuery(cq).getSingleResult();
-        boolean exists = loadedUser != null;
-        //create new user if he doesnt exist
-        if (!exists) {
-            JPA.em().persist(new SimpleUserFactory()
-                    .setEmail(userEmail)
-                    .setPassword("")
-                    .addRole(OcrRole.USER)
-                    .persist());
-        }
-        */
         User loadedUser = new SimpleUserFactory()
                 .setEmail(userEmail)
                 .setPassword("")
