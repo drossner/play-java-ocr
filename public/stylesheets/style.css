@@ -309,6 +309,10 @@ canvas {
     margin: auto;
 }
 
+.marginright10 {
+    margin-right: 10px;
+}
+
 .warning {
     color: #FFFFFF;
     background-color: #F25260;
