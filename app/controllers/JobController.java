@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import controllers.security.OcrDeadboltHandler;
+import modules.analyse.Analyse;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import modules.database.*;
