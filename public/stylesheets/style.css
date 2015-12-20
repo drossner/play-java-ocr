@@ -216,6 +216,14 @@ fieldset[disabled] .btn-lila.active
     margin-left: 0px;
 }
 
+.btn-100px {
+
+    width: 110px;
+    margin-top: 5px;
+    margin-right: 5px;
+    margin-left: 5px;
+    text-align: center;
+}
 
 a.dropdown-toggle
 {
@@ -290,6 +298,11 @@ canvas {
     display: block;
 }
 
+.btn-primary[disabled] {
+    background-color: #8082A6;
+    border-color: #8082A6;
+}
+
 .whitebg {
     background-color: #ffffff !important;
 
@@ -307,6 +320,10 @@ canvas {
     width: 40%;
     min-width: 400px;
     margin: auto;
+}
+
+.marginright10 {
+    margin-right: 10px;
 }
 
 .warning {
@@ -360,6 +377,10 @@ canvas {
 !important;
 }
 
+.text-danger {
+    color: #F25260;
+}
+
 textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     border-color: #8082a6;
     box-shadow: 0 1px 1px #8082a6 inset, 0 0 8px #8082a6;
@@ -371,3 +392,4 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     box-shadow: 0 1px 1px #8082a6 inset, 0 0 8px #8082a6;
     outline: 0 none;
 }
+

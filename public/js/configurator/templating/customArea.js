@@ -86,6 +86,9 @@ function output(text) {
 }
 
 function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
+    this.canvasHeight = canvasHeight;
+    this.canvasWidth = canvasWidth;
+
     var exampleImage = $('img#example');
     exampleImage.attr('heigth', canvasHeight);
     exampleImage.attr('width', canvasWidth);

@@ -4,9 +4,7 @@ import modules.export.Export;
 import modules.export.Fragment;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDMetadata;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.font.PDFont;
@@ -38,35 +36,32 @@ public class PdfExport implements Export {
     int pageCounter = 0;
 
     @Override
-    public void initialize(String path, String fileName) {
+    public void initialize(String path, String fileName, boolean landscape) {
         this.path = path;
         this.fileName = fileName;
 
-
         doc = new PDDocument();
         page = new PDPage(PDPage.PAGE_SIZE_A4);
+
         rect = page.getMediaBox();
         doc.addPage(page);
 
         font = PDType1Font.HELVETICA;
 
-
-
     }
 
     @Override
     public void export(Fragment fragment) {
+        float startX = (float) (rect.getWidth()/100 *fragment.getStartX()*100); //lo
+        float startY = (float) (rect.getHeight()/100 *fragment.getStartY()*100); //lo
 
-
-        float startX = (float) (rect.getWidth()/100 *fragment.getStartX()); //lo
-        float startY = (float) (rect.getHeight()/100 *fragment.getStartY()); //lo
-
-        float endX = (float) (rect.getWidth()/100 *fragment.getEndX()); //lo
-        float endY = (float) (rect.getHeight()/100 *fragment.getEndY()); //lo
+        float endX = (float) (rect.getWidth()/100 *fragment.getEndX()*100); //lo
+        float endY = (float) (rect.getHeight()/100 *fragment.getEndY()*100); //lo
 
         float width = endX - startX;
         float height = endY - startY;
 
+        /*
         System.out.println("Gesamt-Höhe: " +rect.getHeight());
         System.out.println("Gesamt-Breite: " + rect.getWidth());
         System.out.println("");
@@ -77,13 +72,15 @@ public class PdfExport implements Export {
         System.out.println("");
         System.out.println("endX: " + endX);
         System.out.println("endY: " + endY);
+        System.out.println("");
+        System.out.println("");
+        */
 
         if(fragment.getContent() instanceof String) {
-            setText((String)fragment.getContent(), startX, startY);
+            setText((String)fragment.getContent(), startX, rect.getHeight()-startY);
         } else {
-            setImage((BufferedImage) fragment.getContent(), startX, rect.getHeight()-startY-width );
+            setImage((BufferedImage) fragment.getContent(), startX, rect.getHeight()-startY-width);
         }
-
     }
 
     @Override
@@ -114,7 +111,7 @@ public class PdfExport implements Export {
         PDPage test =  (PDPage) doc.getDocumentCatalog().getAllPages().get(pageCounter);
         PDPageContentStream contentStream = null;
         try {
-            contentStream = new PDPageContentStream(doc, test);
+            contentStream = new PDPageContentStream(doc, test, true, true);
             contentStream.beginText();
             contentStream.setFont(font, fontSize);
 
@@ -176,5 +173,12 @@ public class PdfExport implements Export {
         }
 
         return result;
+    }
+
+    //TODO: doesn't work
+    private void setOrientation(boolean landscape){
+        if (landscape){
+            page.setRotation(90);
+        }
     }
 }
