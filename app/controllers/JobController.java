@@ -163,7 +163,7 @@ public class JobController extends Controller {
                 Analyse.INSTANCE.calculate(node);
             }
 
-            return ok(ablage.render());
+            return ok();
         });
     }
 }
