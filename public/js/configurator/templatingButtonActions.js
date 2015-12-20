@@ -123,6 +123,8 @@ function createArea(options) {
 $('#deleteAreas').click(function () {
     reset();
     $('#type').val("");
+    $('#editHeigth').val("");
+    $('#editWidth').val("");
 })
 
 
