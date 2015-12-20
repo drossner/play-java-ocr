@@ -8,9 +8,9 @@
                 <h4 class="modal-title" id="myModalLabel">so much after workin'</h4>
             </div>
 
-            <div class="modal-body">
+            <div class="modal-body" data-bind="foreach: fragments">
                 <div class="panel panel-default">
-                    <textarea class="form-control" rows="5" style="resize:none"></textarea>
+                    <textarea class="form-control" rows="5" style="resize:none" data-bind="text: result"></textarea>
                 </div>
             </div>
 

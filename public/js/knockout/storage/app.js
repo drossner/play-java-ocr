@@ -2,13 +2,15 @@
  * Daniel
  */
 //row class
-function StoredJob(name, language, type, initFiletype){
+function StoredJob(name, language, type, initFiletype, initialFragments){
     var self = this;
     self.selected = ko.observable(false);
-    self.filename = ko.observable(name); //self.name doesnt work
+    self.filename = ko.observable(name); //selnelf.language = ko.observable(language);
     self.language = ko.observable(language);
     self.type = ko.observable(type);
     self.fileType = ko.observable(initFiletype);
+
+    self.fragments = ko.observableArray(initialFragments);
 
     self.setTheFileType = function(type){
         self.fileType(type);
@@ -26,7 +28,7 @@ function StoredJobViewModel(){
 
     //loadData(self);
 
-    self.showModal = function(job){
+    self.showModal = function(){
         $("#afterWork").modal('show');
     }
 
@@ -42,7 +44,8 @@ function StoredJobViewModel(){
             self.storedJobs.push(StoredJob(jobs[i].name,
                                             jobs[i].language,
                                             jobs[i].type,
-                                            self.filetypes()[0]));
+                                            self.filetypes()[0]),
+                                            jobs[i].fragments);
         }
     });
 }

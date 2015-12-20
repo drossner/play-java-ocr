@@ -2,21 +2,21 @@
  * Created by florian on 29.11.15.
  */
 // Row Class
-function Job(id, initialJob){
+function Job(id, initialJob, language, jobType){
     var self = this;
 
     self.id = id;
 
-    self.language = ko.observable();
-    self.jobType = ko.observable();
+    self.language = ko.observable(language);
+    self.jobType = ko.observable(jobType);
     self.job = ko.observable(initialJob);
 
-    self.setTheLanguage = function( lang){
-        job.language(lang);
+    self.setTheLanguage = function(lang){
+        self.language(lang);
     };
 
     self.setTheJobType = function(type){
-        job.jobType(type);
+        self.jobType(type);
     };
 
     self.folderId = ko.observable("");

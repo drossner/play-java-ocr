@@ -41,7 +41,7 @@
                             aria-expanded="false" data-bind="text: language"><span class="caret"></span></a>
                             <ul class="dropdown-menu" data-bind="foreach: $root.languages">
                                 <li>
-                                    <a data-bind="text: $data"></a>
+                                    <a data-bind="text: $data, click: setTheLanguage($data)"></a>
                                     <!-- , click: setTheLanguage($data) -->
                                 </li>
                             </ul>
@@ -50,7 +50,7 @@
                             aria-expanded="false" data-bind="text: jobType"><span class="caret"></span></a>
                             <ul class="dropdown-menu" data-bind="foreach: $root.jobtypes">
                                 <li>
-                                    <a data-bind="text: $data"></a>
+                                    <a data-bind="text: $data, click: setTheJobType($data)"></a>
                                     <!-- , click: setTheJobType($data) -->
                                 </li>
                             </ul>

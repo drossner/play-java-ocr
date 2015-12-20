@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import control.result.ResultFragment;
+import control.result.Type;
 import controllers.security.OcrDeadboltHandler;
 import modules.analyse.Analyse;
 import modules.cms.CMSController;
@@ -192,8 +194,13 @@ public class JobController extends Controller {
                 String name = job.getName();
                 String language = "Deutsch";//job.getLayoutConfig().getLanguage().getCountry().getName();
                 String type = "Rechnung"; //job.getLayoutConfig().getName();
-                //TODO: add texts
-                addObjectToArray(arrayNode, name, language, type);
+                ArrayList<String> resultFragments = new ArrayList<String>();
+                for (ResultFragment fragment: tempResult.getResultFragments()){
+                    if(fragment.getType() == Type.TEXT){
+                        resultFragments.add(mapper.writeValueAsString(fragment));
+                    }
+                }
+                addObjectToArray(arrayNode, name, language, type, resultFragments);
             }
 
             return ok(result);
@@ -201,10 +208,11 @@ public class JobController extends Controller {
     }
 
     private void addObjectToArray(ArrayNode array, String name,
-                                  String language, String type){
+                                  String language, String type, ArrayList<String> resultFragments){
         array.addObject()
                 .put("name", name)
                 .put("language", language)
-                .put("type", type);
+                .put("type", type)
+                .put("fragments", Json.toJson(resultFragments));
     }
 }
