@@ -83,9 +83,12 @@ libraryDependencies ++= Seq(
 // now the following dependency can be resolved
 //libraryDependencies += "com.practicum.web.architecture.ocr" % "java-ocr-analyse" % "1.0.0"
 
+resolvers += "Nuxeo Rep" at "https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases"
+
 libraryDependencies ++= Seq(
   "org.apache.chemistry.opencmis" % "chemistry-opencmis-commons-api" % "0.13.0",
-  "org.apache.chemistry.opencmis" % "chemistry-opencmis-client-impl" % "0.13.0"
+  "org.apache.chemistry.opencmis" % "chemistry-opencmis-client-impl" % "0.13.0",
+  "org.nuxeo.ecm.automation" % "nuxeo-automation-client" % "7.10"
 )
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
