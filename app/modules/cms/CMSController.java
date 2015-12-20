@@ -2,11 +2,11 @@ package modules.cms;
 
 import org.apache.chemistry.opencmis.client.api.*;
 import org.apache.chemistry.opencmis.client.api.Session;
-import org.hibernate.mapping.List;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 
@@ -93,5 +93,9 @@ public class CMSController {
 
     public BufferedImage readingAImage (String objectId){
         return documentController.readingImage(objectId);
+    }
+
+    public InputStream readingJSON(String object){
+        return documentController.readingJSON(object);
     }
 }

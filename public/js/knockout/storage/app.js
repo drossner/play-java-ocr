@@ -9,7 +9,9 @@ function StoredJob(){
 function StoredJobViewModel(){
     var self = this;
 
-    self.storedJobs = ko.observableArray;
+    self.storedJobs = ko.observableArray();
+
+    loadData(self);
 
     self.showModal = function(job){
         $("#afterWork").modal('show');
