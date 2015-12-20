@@ -220,7 +220,7 @@ public class JobController extends Controller {
 
             //init cms controller to load result json form cmis
             CMSController cmsController = SessionHolder.getInstance().
-                    getController(user.getCmsAccount(), user.getCmsPassword());
+                    getController("ocr", "ocr");
 
             //result of analyse part
             ArrayList<control.result.Result> rc = new ArrayList<>();
@@ -229,8 +229,8 @@ public class JobController extends Controller {
             for(Job job: jobs){
                 control.result.Result tempResult = mapper.readValue(cmsController.readingJSON(job.getResultFile()), control.result.Result.class);
                 String name = job.getName();
-                String language = job.getLayoutConfig().getLanguage().getCountry().getName();
-                String type = job.getLayoutConfig().getName();
+                String language = "Deutsch";//job.getLayoutConfig().getLanguage().getCountry().getName();
+                String type = "Rechnung"; //job.getLayoutConfig().getName();
                 //TODO: add texts
                 addObjectToArray(arrayNode, name, language, type);
             }

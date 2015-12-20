@@ -1,14 +1,18 @@
 /**
- * Created by Sebastian Lauterkorn on 19.12.2015.
- * && awesome flo && awesome daniel
+ * Daniel
  */
 //row class
 function StoredJob(name, language, type, initFiletype){
     var self = this;
-    self.name = ko.observable(name);
+    self.selected = ko.observable(false);
+    self.filename = ko.observable(name); //self.name doesnt work
     self.language = ko.observable(language);
     self.type = ko.observable(type);
     self.fileType = ko.observable(initFiletype);
+
+    self.setTheFileType = function(type){
+        self.fileType(type);
+    }
 }
 
 //
@@ -38,7 +42,7 @@ function StoredJobViewModel(){
             self.storedJobs.push(StoredJob(jobs[i].name,
                                             jobs[i].language,
                                             jobs[i].type,
-                                            jobs[i].filetypes[0]));
+                                            self.filetypes()[0]));
         }
     });
 }

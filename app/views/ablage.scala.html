@@ -27,10 +27,10 @@
             <tr>
                 <td>
                     <label>
-                        <input type="checkbox" value="">
+                        <input type="checkbox" data-bind="checked: selected">
                     </label>
                 </td>
-                <td data-bind="text: name"></td>
+                <td data-bind="text: filename"></td>
                 <td data-bind="text: language"></td>
                 <td data-bind="text: type"></td>
                 <td>
@@ -38,36 +38,17 @@
                                       data-toggle="modal" data-bind="click: $root.showModal"></span></a>
                 </td>
                 <td class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">als PDF <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                       aria-expanded="false" data-bind="text: fileType"><span class="caret"></span></a>
+                    <ul class="dropdown-menu" data-bind="foreach: $root.filetypes">
                         <li>
-                            <a href="#">als .doc</a>
+                            <a data-bind="text: $data, click: setTheFileType($data)"></a>
                         </li>
-                        <li>
-                            <a href="#">als Affenkopf</a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                        <li>
-                            <a href="#">als Schnitzel</a>
-                        </li>
+
                     </ul>
                 </td>
                 <td>
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                       aria-expanded="false">nur ich <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="#">nur er</a>
-                        </li>
-                        <li>
-                            <a href="#">sie</a>
-                        </li>
-                        <li role="separator" class="divider"></li>
-                        <li>
-                            <a href="#">NSA</a>
-                        </li>
-                    </ul>
+                    Benes Gruppen Shit
                 </td>
             </tr>
             </tbody>
