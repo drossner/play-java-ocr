@@ -8,17 +8,15 @@
                 <h4 class="modal-title" id="myModalLabel">so much after workin'</h4>
             </div>
 
-            <div class="modal-body" data-bind="foreach: fragments">
+            <div class="modal-body">
                 <div class="panel panel-default">
-                    <textarea class="form-control" rows="5" style="resize:none" data-bind="text: result"></textarea>
+                    <textarea class="form-control" rows="5" style="resize:none"></textarea>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-lachs" data-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-lila" data-bind="click: $root.saveInFolder" data-dismiss="modal">
-                    Speichern
-                </button>
+                <button type="button" class="btn btn-lila" data-dismiss="modal">Speichern</button>
             </div>
         </div>
     </div>
