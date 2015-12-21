@@ -27,7 +27,7 @@ GET         /json/getImageFromJobID controllers.JobController.getImageFromJobID(
 GET         /json/getUserFolders    controllers.FolderController.getUserFolders
 GET         /json/getSharedFolders    controllers.FolderController.getSharedFolders
 DELETE      /json/deleteJob     controllers.JobController.delete(id: Int)
-GET         /json/getDownloadlink controllers.JobController.getDownloadlink(id: Int)
+GET         /json/getDownloadlink controllers.JobController.getDownloadlink(id: Int, ext: String)
 
 POST         /json/processJobs       controllers.JobController.process
 GET          /json/getUser           controllers.UserController.getUser

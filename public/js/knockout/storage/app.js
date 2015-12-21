@@ -105,7 +105,7 @@ function StoredJobViewModel(){
         console.log("get donwloadlinks");
         ko.utils.arrayForEach(self.storedJobs(), function(job) {
             if(job.selected()){
-                $.getJSON( "/json/getDownloadlink?id="+job.id,
+                $.getJSON( "/json/getDownloadlink?id="+job.id+"&ext="+job.fileType(),
                     function( json ) {
                         window.location = json.url;
                 });

@@ -20,6 +20,8 @@ import modules.database.entities.Job;
 import modules.database.entities.LayoutConfig;
 import modules.database.entities.LayoutFragment;
 import modules.database.entities.User;
+import modules.export.Export;
+import modules.export.ExporterFactory;
 import modules.export.impl.DocxExport;
 import org.apache.chemistry.opencmis.client.api.Document;
 import play.db.jpa.JPA;
@@ -190,7 +192,10 @@ public class JobController extends Controller {
             //init root node
             ObjectNode result = Json.newObject();
             //add export filetypes TODO: dynamic loading
-            result.putArray("filetypes").add("docx").add("pdf").add("txt");
+            ArrayNode tempArrNode = result.putArray("filetypes");
+            for(String type : ExporterFactory.getImpls()){
+                tempArrNode.add(type);
+            }
             //init nodes array
             ArrayNode arrayNode = result.putArray("nodes");
 
@@ -306,16 +311,17 @@ public class JobController extends Controller {
         });
     }
 
-    public  F.Promise<Result> getDownloadlink(int id) {
+    public  F.Promise<Result> getDownloadlink(int id, String ext) {
         Logger.debug("Downloadlink requested");
         ObjectNode result = Json.newObject();
-
 
         return F.Promise.promise(() -> {
             modules.database.JobController jobController = new modules.database.JobController();
             Job job = JPA.withTransaction(() -> jobController.selectEntity(Job.class, "id", id));
             AnalyseExport ae = new AnalyseExport();
-            File toDownload = ae.getExportFile(new DocxExport(), job.getResultFile(), job.getName());
+            Export exporter = ExporterFactory.getExporter(ext);
+            if(exporter == null) return badRequest();
+            File toDownload = ae.getExportFile(exporter, job.getResultFile(), job.getName());
             String filekey = addFileToMap(toDownload);
             result.put("url", routes.JobController.downloadFile(filekey).url());
             return ok(result);
