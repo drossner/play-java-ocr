@@ -4,7 +4,6 @@
 // Row Class
 function Job(id, initialJob, language, jobType){
     var self = this;
-
     self.id = id;
 
     self.language = ko.observable(language);
@@ -19,7 +18,7 @@ function Job(id, initialJob, language, jobType){
     self.areas = ko.observableArray([]);
     self.templateName = ko.observable("");
 
-    var path = "/json/getImageFromJobID/" + self.job().id;
+    var path = "/json/getImageFromJobID?id=" + self.job().id;
     self.image(path);
 
     self.dragging = ko.observable(false);
@@ -197,7 +196,7 @@ function JobHistoryViewModel(){
     self.delete = function(job){
         console.log("delete: " + job);
 
-        var path = "/json/deleteJob/" + job.job().id;
+        var path = "/json/deleteJob?id=" + job.job().id;
         $.get(path, function(result){
             self.jobs.remove(job);
         });
