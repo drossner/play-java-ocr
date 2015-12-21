@@ -10,12 +10,17 @@ function setImageSource(data, callback, job) {
 
     //Disable all ui-elements except the cancel button
     $(':button').prop("disabled", true);
+
+
+
     $('#cancel').prop("disabled", false);
     $('.slider').each(function () {
         $( this ).slider( "option", "disabled", true );
 
 
     });
+
+
 
     $("#image-area").html('<img id="canvas" src="" style="width:100%;" />');
 
@@ -165,6 +170,12 @@ $(':button').click(function () {
 
 // Callback Function for multistepmodal
 $('#modal-sample-1').modalSteps({
+
+    btnCancelHtml: 'Abbrechen',
+    btnPreviousHtml: 'Zurück',
+    btnNextHtml: 'Weiter',
+    btnLastStepHtml: 'Fertig',
+
     callbacks: {
         '1': function () {
         },
@@ -201,6 +212,8 @@ $('#modal-sample-1').modalSteps({
         }
     }
 });
+
+
 /* Does not work because customArea.js does not update it's selected areas
  //Get metaDataType for some stuff !--
  $('#editMetaDataType').change(function() {
