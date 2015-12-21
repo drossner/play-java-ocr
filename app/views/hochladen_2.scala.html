@@ -36,25 +36,8 @@
                                             dragOver: $parent.reorder,
                                             data: { items: $root.jobs, item: job }
                                         }"></td>
-                        <td class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                            aria-expanded="false" data-bind="text: language"><span class="caret"></span></a>
-                            <ul class="dropdown-menu" data-bind="foreach: $root.languages">
-                                <li>
-                                    <a data-bind="text: $data"></a>
-                                    <!-- , click: setTheLanguage($data) -->
-                                </li>
-                            </ul>
-                        </td>
-                        <td><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                            aria-expanded="false" data-bind="text: jobType"><span class="caret"></span></a>
-                            <ul class="dropdown-menu" data-bind="foreach: $root.jobtypes">
-                                <li>
-                                    <a data-bind="text: $data"></a>
-                                    <!-- , click: setTheJobType($data) -->
-                                </li>
-                            </ul>
-                        </td>
+                        <td><select data-bind="options: $root.languages, value: language"></select></td>
+                        <td><select data-bind="options: $parent.jobtypes, value: jobType"></select></td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
                             data-toggle="modal" data-bind="click: $root.showModal"></span></a>

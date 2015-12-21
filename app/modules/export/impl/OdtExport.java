@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 
 
 /**
@@ -102,7 +103,7 @@ public class OdtExport implements Export {
     private void setText(String content, double startX, double startY, double width, double height){
         // add paragraph
 
-        Paragraph paragraph = document.getParagraphByIndex(0, false);
+        Paragraph paragraph = document.addParagraph("");
 
         Textbox box = paragraph.addTextbox(new FrameRectangle(startX,startY,width,height, StyleTypeDefinitions.SupportedLinearMeasure.CM));
         box.setTextContent(content);
@@ -113,7 +114,7 @@ public class OdtExport implements Export {
 
         // add image
         try {
-            File file = new File(path+"result.png");
+            File file = new File(path + new Date().getTime() +"result.png");
             ImageIO.write(content, "png", file);
 
             Paragraph para = document.addParagraph("");
@@ -121,7 +122,7 @@ public class OdtExport implements Export {
             FrameRectangle rectangle = new FrameRectangle(startX,startY,width,height, StyleTypeDefinitions.SupportedLinearMeasure.CM);
             image.setRectangle(rectangle);
 
-            file.delete();
+            Logger.info("file delete: " + file.delete());
 
         } catch (URISyntaxException e) {
             e.printStackTrace();
@@ -133,9 +134,9 @@ public class OdtExport implements Export {
     private void configureMasterPage(boolean landscape){
         //create a customized page style with specified width, height, margins and other properties.
         try {
-            master.setPageWidth(297);
+            master.setPageWidth(210);
 
-            master.setPageHeight(210);
+            master.setPageHeight(297);
 
             if (landscape) {
                 master.setPrintOrientation(StyleTypeDefinitions.PrintOrientation.LANDSCAPE);

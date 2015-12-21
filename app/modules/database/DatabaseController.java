@@ -1,6 +1,7 @@
 package modules.database;
 
 import modules.database.entities.DomainObject;
+import modules.database.entities.LayoutConfig;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
@@ -13,6 +14,7 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**

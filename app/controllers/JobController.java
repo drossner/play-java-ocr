@@ -16,6 +16,7 @@ import modules.cms.SessionHolder;
 import modules.database.*;
 import modules.database.UserController;
 import modules.database.entities.Job;
+import modules.database.entities.LayoutConfig;
 import modules.database.entities.User;
 import play.db.jpa.JPA;
 import play.libs.F;
@@ -65,15 +66,28 @@ public class JobController extends Controller {
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobTypes(){
-        ArrayList<String> rc = new ArrayList<>();
+        ArrayList<LayoutConfig> rc = new ArrayList<>();
         String username = session().get("session");
 
-        //TODO select from database
+        User user;
+        try {
+            user = JPA.withTransaction(() -> new UserController().selectUserFromMail(username));
+        } catch (Throwable throwable) {
+            user = null;
+            throwable.printStackTrace();
+        }
 
-        rc.add("Rechnung");
-        rc.add("Dies");
-        rc.add("und");
-        rc.add("das");
+        final User finalUser = user;
+        JPA.withTransaction(() -> {
+            modules.database.LayoutConfigurationController controller = new modules.database.LayoutConfigurationController();
+
+            rc.addAll(controller.selectEntityList(LayoutConfig.class, finalUser));
+            rc.addAll(controller.selectEntityListColumnNull("user"));
+
+            for(LayoutConfig config : rc){
+
+            }
+        });
 
         return ok(Json.toJson(rc));
     }

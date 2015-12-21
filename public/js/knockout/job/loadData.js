@@ -4,9 +4,10 @@
 function loadData(jobViewModel){
     $.getJSON("/json/jobType", function(result){
         console.log(result);
+        jobViewModel.jobtypes.push("");
         for(var i = 0; i < result.length; i++){
             console.log("adding: " + result[i]);
-            jobViewModel.jobtypes.push(result[i]);
+            jobViewModel.jobtypes.push(result[i].name);
         }
     });
 
