@@ -73,7 +73,7 @@ resolvers ++= Seq(
 libraryDependencies ++= Seq(
   "org.webjars" %% "webjars-play" % "2.4.0",
   "org.webjars" % "bootstrap" % "3.3.5",
-  "org.webjars" % "knockout" % "3.0.0"
+  "org.webjars" % "knockout" % "3.4.0"
 )
 
 // not public
@@ -82,7 +82,6 @@ libraryDependencies ++= Seq(
 // use sbt publishLocal fot the project above
 // now the following dependency can be resolved
 libraryDependencies += "com.practicum.web.architecture.ocr" % "java-ocr-analyse" % "1.0.0"
-
 
 resolvers += "Nuxeo Rep" at "https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases"
 

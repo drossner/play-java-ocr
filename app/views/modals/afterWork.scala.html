@@ -10,13 +10,17 @@
 
             <div class="modal-body">
                 <div class="panel panel-default">
-                    <textarea class="form-control" rows="5" style="resize:none"></textarea>
+                         <span data-bind="foreach: currentJob().testf">
+                        <textarea class="form-control" rows="5" style="resize:none"
+                        data-bind="textInput: fragment"></textarea>
+                        </span>
                 </div>
             </div>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-lachs" data-dismiss="modal">Abbrechen</button>
-                <button type="button" class="btn btn-lila" data-dismiss="modal">Speichern</button>
+                <button type="button" class="btn btn-lila" data-dismiss="modal"
+                data-bind="click: currentJob().saveFragments">Speichern</button>
             </div>
         </div>
     </div>

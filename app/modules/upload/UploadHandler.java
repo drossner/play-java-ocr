@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 public class UploadHandler {
 
     private final long MAXIMAL_CACHE_TIME = 1000*60*60; //1 Stunde
-    private final int THUMBNAIL_WIDTH = 80;
-    private final int THUMBNAIL_HEIGTH = 80;
     private final String TEMP_DIR_NAME = "/uploadTemp/";
     private final File TEMP_DIR;
 
@@ -90,9 +88,6 @@ public class UploadHandler {
         long timestamp = uploadIds.getOrDefault(uploadId, -1l);
         if(timestamp < 0) return false;
         if(!isTimestampValid(timestamp)){
-            //removed cause of efficency, better do async or in the scheduled job
-            /*deleteUploadedFiles(uploadId);
-            uploadIds.remove(uploadId);*/
             return false;
         } else {
             return true;

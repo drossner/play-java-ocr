@@ -8,6 +8,8 @@ import modules.cms.CMSController;
 import modules.cms.data.Folder;
 import modules.cms.SessionHolder;
 import modules.database.entities.User;
+import play.Logger;
+import play.api.libs.concurrent.Execution;
 import play.db.jpa.JPA;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -29,29 +31,34 @@ public class FolderController extends Controller {
 
         ArrayList<Folder> folders = new ArrayList<>();
 
-        org.apache.chemistry.opencmis.client.api.Folder foldercms = cmsController.getWorkspaceFolder();
+        try {
+            org.apache.chemistry.opencmis.client.api.Folder foldercms = cmsController.getWorkspaceFolder();
 
-        Folder folderRC = new Folder();
-        folderRC.setId(foldercms.getId());
-        folderRC.setParentId(foldercms.getParentId());
-        folderRC.setTitle(foldercms.getName());
+            Folder folderRC = new Folder();
+            folderRC.setId(foldercms.getId());
+            folderRC.setParentId(foldercms.getParentId());
+            folderRC.setTitle(foldercms.getName());
 
-        ArrayList<org.apache.chemistry.opencmis.client.api.Folder> folderTree = cmsController.getFolderTree(foldercms);
+            ArrayList<org.apache.chemistry.opencmis.client.api.Folder> folderTree = cmsController.getFolderTree(foldercms);
 
-        for (org.apache.chemistry.opencmis.client.api.Folder folder : folderTree){
+            for (org.apache.chemistry.opencmis.client.api.Folder folder : folderTree){
 
-            Folder tempFolder = new Folder();
+                Folder tempFolder = new Folder();
 
-            if (folder.getParentId().equals(folderRC.getId())){
-                tempFolder.setParentId("");
-            }else{
-                tempFolder.setParentId(folder.getParentId());
+                if (folder.getParentId().equals(folderRC.getId())){
+                    tempFolder.setParentId("");
+                }else{
+                    tempFolder.setParentId(folder.getParentId());
+                }
+                tempFolder.setId(folder.getId());
+                tempFolder.setTitle(folder.getName());
+                tempFolder.setDescription(folder.getDescription());
+                folders.add(tempFolder);
             }
-            tempFolder.setId(folder.getId());
-            tempFolder.setTitle(folder.getName());
-            tempFolder.setDescription(folder.getDescription());
-            folders.add(tempFolder);
+        }catch (Exception e){
+            Logger.warn("Userworkspace dosn't exist");
         }
+
         return ok(Json.toJson(folders));
     }
 

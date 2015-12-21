@@ -96,10 +96,10 @@ public class PdfExport implements Export {
         File file = null;
 
         try {
-            doc.save(path+fileName+".pdf");
+            doc.save(fileName+".pdf");
             doc.close();
 
-            file = new File(path+fileName+".pdf");
+            file = new File(fileName+".pdf");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (COSVisitorException e) {

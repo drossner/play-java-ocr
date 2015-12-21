@@ -11,13 +11,15 @@ import control.result.ResultFragment;
 import control.result.Type;
 import controllers.security.OcrDeadboltHandler;
 import modules.analyse.Analyse;
-import modules.cms.CMSController;
-import modules.cms.SessionHolder;
+import modules.cms.*;
+import modules.cms.data.FileType;
 import modules.database.*;
 import modules.database.UserController;
 import modules.database.entities.Job;
 import modules.database.entities.LayoutConfig;
+import modules.database.entities.LayoutFragment;
 import modules.database.entities.User;
+import org.apache.chemistry.opencmis.client.api.Document;
 import play.db.jpa.JPA;
 import play.libs.F;
 import util.ImageHelper;
@@ -31,6 +33,8 @@ import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -66,7 +70,7 @@ public class JobController extends Controller {
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobTypes(){
-        ArrayList<LayoutConfig> rc = new ArrayList<>();
+        ArrayList<LayoutArea> rc = new ArrayList<>();
         String username = session().get("session");
 
         User user;
@@ -79,13 +83,20 @@ public class JobController extends Controller {
 
         final User finalUser = user;
         JPA.withTransaction(() -> {
+            ArrayList<LayoutConfig> configs = new ArrayList<LayoutConfig>();
             modules.database.LayoutConfigurationController controller = new modules.database.LayoutConfigurationController();
+            LayoutFragmentController fragmentController = new LayoutFragmentController();
 
-            rc.addAll(controller.selectEntityList(LayoutConfig.class, finalUser));
-            rc.addAll(controller.selectEntityListColumnNull("user"));
+            configs.addAll(controller.selectEntityList(LayoutConfig.class, finalUser));
+            configs.addAll(controller.selectEntityListColumnNull("user"));
 
-            for(LayoutConfig config : rc){
+            for(LayoutConfig config : configs){
+                LayoutArea temp = new LayoutArea();
 
+                temp.config = config;
+                temp.fragments = fragmentController.selectEntityList(LayoutFragment.class, "layoutConfig", config.getId());
+
+                rc.add(temp);
             }
         });
 
@@ -151,11 +162,12 @@ public class JobController extends Controller {
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> process(){
+        String username = session().get("session");
         return F.Promise.promise(() -> {
             JsonNode jobs = request().body().asJson();
             Logger.info(jobs.toString());
 
-            Analyse.INSTANCE.analyse(jobs);
+            Analyse.INSTANCE.analyse(jobs, username);
 
             return ok();
         });
@@ -205,7 +217,9 @@ public class JobController extends Controller {
             //iterate over all availabe jobs and build result json for the client
             for(Job job: jobs){
                 control.result.Result tempResult = mapper.readValue(cmsController.readingJSON(job.getResultFile()), control.result.Result.class);
+                int id = job.getId();
                 String name = job.getName();
+                //TODO: load dynamic
                 String language = "Deutsch";//job.getLayoutConfig().getLanguage().getCountry().getName();
                 String type = "Rechnung"; //job.getLayoutConfig().getName();
                 ArrayList<String> resultFragments = new ArrayList<String>();
@@ -214,19 +228,100 @@ public class JobController extends Controller {
                         resultFragments.add(mapper.writeValueAsString(fragment));
                     }
                 }
-                addObjectToArray(arrayNode, name, language, type, resultFragments);
+                addObjectToArray(arrayNode, id, name, language, type, resultFragments);
             }
 
             return ok(result);
         });
     }
 
-    private void addObjectToArray(ArrayNode array, String name,
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    public F.Promise<Result> saveFragments() {
+        Logger.debug("FragmentSave requested");
+        JsonNode jsondata = request().body().asJson();
+        Logger.debug(jsondata.toString());
+        return F.Promise.promise(() -> {
+            //extract data from json
+            int jobid = jsondata.get("id").asInt();
+            List<String> fragments = new ArrayList<>();
+            for (final JsonNode data : jsondata.get("fragments")) {
+                fragments.add(data.get("fragment").textValue());
+            }
+            //load current user from database
+            User user = JPA.withTransaction(() -> new UserController().selectUserFromMail(session().get("session")));
+            //load finished job data from database (for current user)
+            List<Job> jobs = JPA.withTransaction(() -> {
+                ArrayList<String> whereColumn = new ArrayList<>();
+                whereColumn.add("id");
+                whereColumn.add("user");
+
+                ArrayList<Object> whereValue = new ArrayList<>();
+                whereValue.add(jobid);
+                whereValue.add(user);
+
+                return new modules.database.JobController().selectEntityList(Job.class, whereColumn, whereValue);
+            });
+            Iterator<Job> jobsIt = jobs.iterator();
+            if(!jobsIt.hasNext()) return badRequest();
+
+            //init cms controller to load result json form cmis
+            CMSController cmsController = SessionHolder.getInstance().
+                    getController("ocr", "ocr");
+            modules.cms.FolderController folderController = new modules.cms.FolderController(cmsController);
+            //init JSON mapper for working with result texts from cmis
+            ObjectMapper mapper = new ObjectMapper();
+            Job job = jobsIt.next();
+            control.result.Result tempResult = mapper.readValue(cmsController.readingJSON(job.getResultFile()), control.result.Result.class);
+            cmsController.deleteDocument(job.getResultFile());
+
+            File file = File.createTempFile("result"+job.getUser().geteMail(), ".json");
+            //new fragments from client
+            Iterator<String> fIt = fragments.iterator();
+            for (ResultFragment fragment: tempResult.getResultFragments()){
+                if(fragment.getType() == Type.TEXT){
+                    fragment.setResult(fIt.next());
+                }
+            }
+            mapper.writeValue(file, tempResult);
+            Document doc = cmsController.createDocument(folderController.getUserWorkspaceFolder(), file, FileType.FILE.getType());
+            JPA.withTransaction(() -> {
+                Job tempJob = new modules.database.JobController().selectEntity(Job.class, "id", jobid);
+                tempJob.setResultFile(doc.getId());
+            });
+            return ok();
+        });
+    }
+
+    @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
+    public F.Promise<Result> deleteJobs(){
+        JsonNode json = request().body().asJson();
+        return F.Promise.promise(() -> {
+
+            return ok();
+        });
+    }
+
+    private void addObjectToArray(ArrayNode array, int id, String name,
                                   String language, String type, ArrayList<String> resultFragments){
-        array.addObject()
+        ArrayNode temp = array.addObject()
+                .put("id", id)
                 .put("name", name)
                 .put("language", language)
                 .put("type", type)
-                .put("fragments", Json.toJson(resultFragments));
+                .putArray("fragments");
+
+        Iterator<String> it = resultFragments.iterator();
+        while(it.hasNext()){
+            String val = Json.parse(it.next()).get("result").asText();
+            temp.add(val);
+        }
+
+                //.put("fragments", Json.toJson(resultFragments));
+    }
+
+    public class LayoutArea{
+        public LayoutConfig config;
+
+        public List<LayoutFragment> fragments;
     }
 }

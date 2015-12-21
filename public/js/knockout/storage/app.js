@@ -1,6 +1,11 @@
 /**
  * Daniel
  */
+function Fragment(init){
+    var self = this;
+    self.fragment = ko.observable(init);
+}
+
 //row class
 function StoredJob(id, name, language, type, initFiletype, initialFragments){
     var self = this;
@@ -12,9 +17,27 @@ function StoredJob(id, name, language, type, initFiletype, initialFragments){
     self.fileType = ko.observable(initFiletype);
 
     self.fragments = ko.observableArray(initialFragments);
+    self.testf = ko.observableArray();
+    for(var i = 0; i < initialFragments.length; i++){
+        self.testf.push(new Fragment(initialFragments[i]));
+    }
 
     self.setTheFileType = function(type){
         self.fileType(type);
+    }
+
+    self.saveFragments = function(){
+        var x = ko.toJSON({ id: self.id, fragments: self.testf() });
+        console.log(x);
+        $.ajax({
+            type: "POST",
+            url: "/json/saveFragments",
+            data: x,
+            success: function(result){
+
+            },
+            contentType: "application/json"
+        });
     }
 }
 
@@ -27,10 +50,13 @@ function StoredJobViewModel(){
 
     self.filetypes = ko.observableArray([]);
 
-    //loadData(self);
+    self.currentJob = ko.observable(new StoredJob(-1, "dummy", "dummy", "dummy", "dummy", ["dummy1", "dummy2"]));
 
     self.showModal = function(data){
+        self.currentJob(data);
+        //self.currentJob.valueHasMutated();
         console.log(data);
+        console.log(self.currentJob());
         $("#afterWork").modal('show');
     };
 
@@ -43,18 +69,51 @@ function StoredJobViewModel(){
         }
         var jobs = result.nodes;
         for(var i = 0; i < jobs.length; i++){
-            self.storedJobs.push(StoredJob(i,
+            self.storedJobs.push(new StoredJob(jobs[i].id,
                                             jobs[i].name,
                                             jobs[i].language,
                                             jobs[i].type,
-                                            self.filetypes()[0]));
+                                            self.filetypes()[0],
+                                            jobs[i].fragments))
         }
     });
 
-    self.showFolderModal = function(data){
-        console.log(data);
+    self.showFolderModal = function(job){
         $("#folderModal").modal('show');
     };
+
+    self.setCurrentJob = function(job){
+        self.currentJob(job);
+    }
+
+    self.deleteMarked = function(){
+        ko.utils.arrayForEach(self.storedJobs(), function(job) {
+            if(job.selected()){
+                $.ajax({
+                    url: '/json/deleteJob?id='+job.id,
+                    type: 'DELETE',
+                    success: function(result) {
+                        self.storedJobs.remove(job);
+                    }
+                });
+            }
+
+        });
+    }
+
+    self.downloadMarked = function(){
+        ko.utils.arrayForEach(self.storedJobs(), function(job) {
+            if(job.selected()){
+                $.ajax({
+                    url: '/json/deleteJob?id='+job.id,
+                    type: 'DELETE',
+                    success: function(result) {
+                        self.storedJobs.remove(job);
+                    }
+                });
+            }
+        });
+    }
 }
 
 ko.applyBindings(new StoredJobViewModel());
