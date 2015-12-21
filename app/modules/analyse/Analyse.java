@@ -58,18 +58,21 @@ public enum Analyse {
     }
 
     public void analyse(JsonNode jobs, String username) throws Throwable {
-        Export export = new DocxExport();
+        AnalyseExport exporter = new AnalyseExport();
         ObjectMapper mapper = new ObjectMapper();
         Result result = null;
+        String name = null;
+        String folderId = null;
+        String idString = null;
+
         User user = JPA.withTransaction(() -> new UserController().selectUserFromMail(username));
 
         if(jobs.get("combined").asBoolean()){
             Result temp = null;
             ArrayList<ResultFragment> fragments = new ArrayList<>();
-            String name = null;
-            String folderId = null;
 
             for (JsonNode node : jobs.withArray("jobs")) {
+                idString = node.get("job").get("id").asText();
                 if(name == null){
                     name = node.get("job").get("name").asText().split("\\.")[0];
                 }
@@ -84,83 +87,58 @@ public enum Analyse {
                 fragments.add(pageBreak);
             }
 
-            export.initialize(folderId, name, false);
-
-            String imageID;
-            for(ResultFragment fragment: fragments){
-                if(fragment.getType() == Type.IMAGE){
-                    imageID = (String) fragment.getResult();
-
-                    fragment.setResult(controller.readingAImage((String) fragment.getResult()));
-                    export.export(fragment);
-
-                    fragment.setResult(imageID);
-                }else if(fragment.getType() != Type.PAGEBREAK){
-                    export.export(fragment);
-                }else{
-                    export.newPage();
-                }
-            }
-
-            final String finalFolderId = folderId;
-            SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
-                    .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
-
             temp.setResultFragments(fragments);
             result = temp;
         }else{
             for(JsonNode node : jobs.withArray("jobs")){
-                String name = node.get("job").get("name").asText().split("\\.")[0];
-                String folderId = node.get("folderId").asText();
+                idString = node.get("job").get("id").asText();
+                name = node.get("job").get("name").asText().split("\\.")[0];
+                folderId = node.get("folderId").asText();
 
                 Logger.info("name: " + name);
                 Logger.info("folderid: " + folderId);
 
-                export.initialize(folderId, name, false);
-
                 result = calculate(node);
-
-                result.getResultFragments().stream().filter(fragment -> fragment.getType() == Type.IMAGE).forEach(fragment -> {
-                    fragment.setResult(controller.readingAImage((String) fragment.getResult()));
-                });
-
-                result.getResultFragments().forEach(export::export);
-
-                SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
-                            .createDocument(folderId, export.finish(), FileType.FILE.getType());
             }
         }
 
-
         File file = new File("./job_" + user.geteMail() + "_" + new Date() + ".json");
-
         try {
             mapper.writeValue(file, result);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        String idString = jobs.get("jobs").get("job").get("id").asText();
+        Job job;
         int jobID = Integer.parseInt(idString);
         try {
             Document doc = controller.createDocument(folderController.getUserWorkspaceFolder(), file, FileType.FILE.getType());
 
-            JPA.withTransaction(() -> {
-                Job job = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
-                job.setResultFile(doc.getId());
+            job = JPA.withTransaction(() -> {
+                Job dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
 
-                job.setProcessed(true);
+                Logger.info("saving document id: " + doc.getId());
+                dbJob.setResultFile(doc.getId());
+
+                dbJob.setProcessed(true);
+                return dbJob;
             });
         } catch (FileNotFoundException e) {
             e.printStackTrace();
 
-            JPA.withTransaction(() -> {
-                Job job = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
-                job.setResultFile("error! " + Arrays.toString(e.getStackTrace()));
+            job = JPA.withTransaction(() -> {
+                Job dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
+                dbJob.setResultFile("error! " + Arrays.toString(e.getStackTrace()));
 
-                job.setProcessed(false);
+                dbJob.setProcessed(false);
+                return dbJob;
             });
         }
+
+        File exportedFile = exporter.getExportFile(new DocxExport(), job.getResultFile(), name);
+
+        SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
+                .createDocument(folderId, exportedFile, FileType.FILE.getType());
 
         Logger.info("node complete processed");
     }

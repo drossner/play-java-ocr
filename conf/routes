@@ -19,7 +19,7 @@ GET        /template                 controllers.Application.template()
 GET         /download/:fileid          controllers.JobController.downloadFile(fileid)
 
 # json Endpoint
-GET         /json/jobHistory        controllers.JobController.getJobHistory
+GET         /json/jobHistory        controllers.JobController.getJobHistory(id: String)
 GET         /json/jobType           controllers.JobController.getJobTypes
 GET         /json/jobLanguage       controllers.JobController.getLanguages
 GET         /json/getImageFromJobID controllers.JobController.getImageFromJobID(id: Int)

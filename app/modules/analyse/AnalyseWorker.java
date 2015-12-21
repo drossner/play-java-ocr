@@ -49,8 +49,6 @@ public class AnalyseWorker{
     }
 
     public Result run() {
-        ObjectMapper mapper = new ObjectMapper();
-
         Logger.info("start analyse");
         Result result = controller.analyse(image, configuration);
         Logger.info("analyse complete");
@@ -76,8 +74,6 @@ public class AnalyseWorker{
                 }
             }
         });
-
-        //file.delete();
         Logger.info("worker run complete!");
 
         return result;

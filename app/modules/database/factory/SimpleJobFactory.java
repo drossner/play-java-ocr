@@ -74,9 +74,10 @@ public class SimpleJobFactory {
         return this;
     }
 
-    public List<Job> createJobsJsonBulk(List<FileContainer> files, String session) throws IOException {
+    public List<Job> createJobsJsonBulk(List<FileContainer> files, String inUploadId, String session) throws IOException {
         ArrayList<Job> rc = new ArrayList<>();
         CMSController cms = SessionHolder.getInstance().getController("ocr", "ocr");
+        JobController jobController = new JobController();
         FolderController folderController = new FolderController(cms);
 
         for(int i = 0; files != null && i < files.size(); i++){
@@ -96,8 +97,10 @@ public class SimpleJobFactory {
             Logger.info("FileName: " + name);
             job.setName(name);
             job.setStartTime(new DateTime());
+            Logger.info("setting upload id: " + inUploadId);
+            job.setUploadId(inUploadId);
 
-            new JobController().persistJob(job, image, session);
+            jobController.persistJob(job, image, session);
             rc.add(job);
         }
         return rc;

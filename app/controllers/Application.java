@@ -60,11 +60,15 @@ public class Application extends Controller {
                 //use inUploadId
 
                 if(inUploadId != null && uploadHandler.isUploadIdValid(inUploadId)){
-                    new SimpleJobFactory().createJobsJsonBulk(uploadHandler.loadFiles(inUploadId), userMail);
+                    List<Job> jobs = new modules.database.JobController().getJobsByUploadId(inUploadId);
+
+                    if(jobs == null || jobs.size() == 0){
+                        new SimpleJobFactory().createJobsJsonBulk(uploadHandler.loadFiles(inUploadId), inUploadId, userMail);
+                    }
                     uploadHandler.invalidateUploadId(inUploadId);
                 }
 
-                return ok(hochladen_2.render());
+                return ok(hochladen_2.render(inUploadId));
             } else {
                 return badRequest();
             }

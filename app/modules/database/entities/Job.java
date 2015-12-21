@@ -34,6 +34,9 @@ public class Job extends DomainObject{
     private String notification;
 
     @Column
+    private String uploadId;
+
+    @Column
     private boolean processed;
 
     @OneToOne
@@ -131,5 +134,13 @@ public class Job extends DomainObject{
 
     public void setResultFile(String resultFile) {
         this.resultFile = resultFile;
+    }
+
+    public String getUploadId() {
+        return uploadId;
+    }
+
+    public void setUploadId(String uploadId) {
+        this.uploadId = uploadId;
     }
 }

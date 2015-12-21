@@ -53,12 +53,12 @@ public class JobController extends Controller {
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
-    public Result getJobHistory(){
+    public Result getJobHistory(String uploadID){
         List<Job> jobs = null;
         String username = session().get("session");
 
         try {
-            jobs = new modules.database.JobController().getUnProcessedJobs(username);
+            jobs = new modules.database.JobController().getUnProcessedJobs(uploadID, username);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
@@ -85,11 +85,14 @@ public class JobController extends Controller {
 
         final User finalUser = user;
         JPA.withTransaction(() -> {
-            ArrayList<LayoutConfig> configs = new ArrayList<LayoutConfig>();
+            ArrayList<LayoutConfig> configs = new ArrayList<>();
             modules.database.LayoutConfigurationController controller = new modules.database.LayoutConfigurationController();
             LayoutFragmentController fragmentController = new LayoutFragmentController();
 
-            configs.addAll(controller.selectEntityList(LayoutConfig.class, finalUser));
+            List<LayoutConfig> tempLayoutConfigs = controller.selectEntityList(LayoutConfig.class, finalUser);
+            if(tempLayoutConfigs != null && tempLayoutConfigs.size() < 0){
+                configs.addAll(tempLayoutConfigs);
+            }
             configs.addAll(controller.selectEntityListColumnNull("user"));
 
             for(LayoutConfig config : configs){
