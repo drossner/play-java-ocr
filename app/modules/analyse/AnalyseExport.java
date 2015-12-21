@@ -25,7 +25,7 @@ public class AnalyseExport {
 
         export.initialize("",name, false);
 
-        Result result = null;
+        Result result;
         try {
             result = mapper.readValue(cmsController.readingJSON(docid), Result.class);
         } catch (IOException e) {
@@ -35,7 +35,15 @@ public class AnalyseExport {
 
 
         for(ResultFragment fragment: result.getResultFragments()){
-            if(fragment.getType() != Type.PAGEBREAK){
+            String imageID;
+            if(fragment.getType() == Type.IMAGE){
+                imageID = (String) fragment.getResult();
+
+                fragment.setResult(cmsController.readingAImage((String) fragment.getResult()));
+                export.export(fragment);
+
+                fragment.setResult(imageID);
+            }else if(fragment.getType() != Type.PAGEBREAK){
                 export.export(fragment);
             }else{
                 export.newPage();
