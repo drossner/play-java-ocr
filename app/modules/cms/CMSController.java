@@ -76,6 +76,13 @@ public class CMSController {
     }
 
     // Document
+    public Document createDocument(String folderId, File file, String fileType) throws FileNotFoundException {
+        folderId = folderId.trim();
+        if(folderId == null || folderId.trim().equals("")){
+            return documentController.createDocument(folderController.getUserWorkspaceFolder(), file, fileType);
+        }
+        return documentController.createDocument(folderController.getFolderByObjectId(folderId), file, fileType);
+    }
 
     public Document createDocument(Folder target, File file, String fileType) throws FileNotFoundException {
         return documentController.createDocument(target, file, fileType);

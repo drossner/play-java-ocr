@@ -81,7 +81,7 @@ public class PdfExport implements Export {
         if(fragment.getType() == Type.TEXT) {
             setText((String) fragment.getResult(), startX, rect.getHeight()-startY);
         } else {
-            setImage((BufferedImage) fragment.getResult(), startX, rect.getHeight()-startY-width);
+            setImage((BufferedImage) fragment.getResult(), startX, rect.getHeight()-startY-width, width, height);
         }
     }
 
@@ -96,10 +96,10 @@ public class PdfExport implements Export {
         File file = null;
 
         try {
-            doc.save(path+fileName+".pdf");
+            doc.save(fileName+".pdf");
             doc.close();
 
-            file = new File(path+fileName+".pdf");
+            file = new File(fileName+".pdf");
         } catch (IOException e) {
             e.printStackTrace();
         } catch (COSVisitorException e) {
@@ -132,13 +132,14 @@ public class PdfExport implements Export {
     }
 
 
-    private void setImage(BufferedImage content, float x, float y){
+    private void setImage(BufferedImage content, float x, float y, float width, float height){
         PDXObjectImage image = null;
         try {
             image = new PDJpeg(doc, content);
 
-            PDPageContentStream contentStream = new PDPageContentStream(doc, page);
-            contentStream.drawImage(image,x,y);
+            PDPageContentStream contentStream = new PDPageContentStream(doc, page, true, true);
+            //contentStream.drawImage(image,x,y);
+            contentStream.drawXObject(image,x,y, width, height);
             contentStream.close();
 
         } catch (IOException e) {

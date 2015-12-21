@@ -6,10 +6,14 @@ import control.configuration.LayoutFragment;
 import control.factories.LayoutConfigurationFactory;
 import control.result.Result;
 import control.result.ResultFragment;
+import control.result.Type;
 import errorhandling.OcrException;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
+import modules.cms.data.FileType;
+import modules.database.UserController;
 import modules.database.entities.Job;
+import modules.database.entities.User;
 import modules.database.factory.SimpleLayoutConfigurationFactory;
 import modules.export.Export;
 import modules.export.impl.DocxExport;
@@ -22,6 +26,7 @@ import preprocessing.PreProcessingType;
 import preprocessing.PreProcessor;
 
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -43,24 +48,41 @@ public enum Analyse {
         //context = Akka.system().dispatcher().prepare();
     }
 
-    public void analyse(JsonNode jobs){
-
-        Export export = new OdtExport();
+    public void analyse(JsonNode jobs, String username){
+        Export export = new DocxExport();
 
         if(jobs.get("combined").asBoolean()){
             ArrayList<Result> results = new ArrayList<>();
+            String name = null;
+            String folderId = null;
+
             for (JsonNode node : jobs.withArray("jobs")) {
+                if(name == null){
+                    name = node.get("job").get("name").asText().split("\\.")[0];
+                }
+                if(folderId == null){
+                    folderId = node.get("folderId").asText();
+                }
                 results.add(calculate(node));
             }
 
-            export.initialize(jobs.get("jobs").get(1).get("job").get("folderId").asText(), jobs.get(1).get("job").get("name").asText(), false);
+            export.initialize(folderId, name, false);
 
             for(Result result: results){
+                result.getResultFragments().stream().filter(fragment -> fragment.getType() == Type.IMAGE).forEach(fragment -> {
+                    fragment.setResult(controller.readingAImage((String) fragment.getResult()));
+                });
+
                 result.getResultFragments().forEach(export::export);
                 export.newPage();
             }
 
-            export.finish();
+            final String finalFolderId = folderId;
+            JPA.withTransaction(() ->{
+                User user = new UserController().selectUserFromMail(username);
+                SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
+                        .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
+            });
         }else{
             for(JsonNode node : jobs.withArray("jobs")){
                 String name = node.get("job").get("name").asText().split("\\.")[0];
@@ -71,21 +93,43 @@ public enum Analyse {
 
                 export.initialize(folderId, name, false);
 
-                calculate(node).getResultFragments().forEach(export::export);
+                Result result = calculate(node);
 
-                export.finish();
+                result.getResultFragments().stream().filter(fragment -> fragment.getType() == Type.IMAGE).forEach(fragment -> {
+                    fragment.setResult(controller.readingAImage((String) fragment.getResult()));
+                });
 
-                Logger.info("node complete processed");
+                result.getResultFragments().forEach(export::export);
+
+                final String finalFolderId = folderId;
+                JPA.withTransaction(() ->{
+                    User user = new UserController().selectUserFromMail(username);
+                    SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
+                            .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
+                });
             }
-
         }
+
+        Logger.info("node complete processed");
     }
 
     private Result calculate(JsonNode job) {
         Logger.info("analyse job: " + job);
         AnalyseWorker worker = new AnalyseWorker();
         LayoutConfigurationFactory configuration = new LayoutConfigurationFactory();
-        SimpleLayoutConfigurationFactory dbConfigurationFactory = new SimpleLayoutConfigurationFactory();
+
+        JsonNode preProcessor = job.get("preProcessing");
+        JsonNode areas = job.get("areas");
+
+        String name = null;
+        if(job.get("templateName") != null){
+            name = job.get("templateName").textValue();
+        }
+        SimpleLayoutConfigurationFactory dbConfigurationFactory = null;
+        if(name != null && !name.equals("")) {
+            dbConfigurationFactory = new SimpleLayoutConfigurationFactory();
+        }
+
         Job dbJob;
 
         BufferedImage image;
@@ -98,34 +142,32 @@ public enum Analyse {
             throw new OcrException("Analyse", throwable);
         }
 
-        JsonNode preProcessor = job.get("preProcessing");
-        JsonNode areas = job.get("areas");
-
         for (JsonNode preProc : preProcessor) {
+            PreProcessor pre = null;
             switch (preProc.get("type").textValue().toLowerCase()) {
                 case "rotate":
-                    PreProcessor pre = PreProcessingType.ROTATE;
+                    pre = PreProcessingType.ROTATE;
                     pre.setValue(preProc.get("processValue").doubleValue());
                     configuration.addPreProcessor(pre);
-                    dbConfigurationFactory.addPreProcessing(pre);
                     break;
                 case "brightness":
                     pre = PreProcessingType.INCREASE_BRIGHTNESS;
                     pre.setValue(preProc.get("processValue").doubleValue());
                     configuration.addPreProcessor(pre);
-                    dbConfigurationFactory.addPreProcessing(pre);
                     break;
                 case "contrast":
                     pre = PreProcessingType.INCREASE_CONTRAST;
                     pre.setValue(preProc.get("processValue").doubleValue());
                     configuration.addPreProcessor(pre);
-                    dbConfigurationFactory.addPreProcessing(pre);
                     break;
+            }
+            if(dbConfigurationFactory != null){
+                dbConfigurationFactory.addPreProcessing(pre);
             }
         }
 
         for (JsonNode area : areas) {
-            AnalyseType type = null;
+            AnalyseType type;
             switch (area.get("type").textValue().toLowerCase()) {
                 case "metadata":
                     type = AnalyseType.META_DATA_FRAGMENT;
@@ -151,26 +193,33 @@ public enum Analyse {
             LayoutFragment fragment = new LayoutFragment(xStart, xEnd, yStart, yEnd, type);
 
             configuration.addLayoutFragment(fragment);
-            dbConfigurationFactory.addFragment(new SimpleLayoutConfigurationFactory().createLayoutFragmentFactory()
-                    .setXEnd(xEnd)
-                    .setXStart(xStart)
-                    .setYEnd(yEnd)
-                    .setYStart(yStart)
-                    .setType(area.get("type").textValue().toLowerCase())
-                    .build());
+            if(dbConfigurationFactory != null){
+                dbConfigurationFactory.addFragment(new SimpleLayoutConfigurationFactory().createLayoutFragmentFactory()
+                        .setXEnd(xEnd)
+                        .setXStart(xStart)
+                        .setYEnd(yEnd)
+                        .setYStart(yStart)
+                        .setType(area.get("type").textValue().toLowerCase())
+                        .build());
+            }
         }
 
-        JPA.withTransaction(() ->{
-            dbConfigurationFactory.addPostProcessing(PostProcessingType.TEXT_CHECK);
-            configuration.addPostProcessor(PostProcessingType.TEXT_CHECK);
+        configuration.addPostProcessor(PostProcessingType.TEXT_CHECK);
 
-            dbConfigurationFactory.setUser(dbJob.getUser());
-            //String name = areas.get("name").textValue();
-            String name = "test";
-            dbConfigurationFactory.setName(name);
+        final SimpleLayoutConfigurationFactory finalDbConfigurationFactory = dbConfigurationFactory;
+        final String finalName = name;
+        JPA.withTransaction(() -> {
+            if(finalDbConfigurationFactory != null) {
+                finalDbConfigurationFactory.addPostProcessing(PostProcessingType.TEXT_CHECK);
+                finalDbConfigurationFactory.setUser(dbJob.getUser());
+                finalDbConfigurationFactory.setName(finalName);
 
-            dbJob.setLayoutConfig(dbConfigurationFactory.build());
+                dbJob.setLayoutConfig(finalDbConfigurationFactory.build());
+            }else{
+                dbJob.setLayoutConfig(new SimpleLayoutConfigurationFactory().setName("custom").build());
+            }
         });
+
 
         worker.setImage(image);
         worker.setJob(dbJob);

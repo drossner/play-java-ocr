@@ -16,6 +16,8 @@ import modules.cms.data.FileType;
 import modules.database.*;
 import modules.database.UserController;
 import modules.database.entities.Job;
+import modules.database.entities.LayoutConfig;
+import modules.database.entities.LayoutFragment;
 import modules.database.entities.User;
 import org.apache.chemistry.opencmis.client.api.Document;
 import play.db.jpa.JPA;
@@ -68,15 +70,35 @@ public class JobController extends Controller {
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobTypes(){
-        ArrayList<String> rc = new ArrayList<>();
+        ArrayList<LayoutArea> rc = new ArrayList<>();
         String username = session().get("session");
 
-        //TODO select from database
+        User user;
+        try {
+            user = JPA.withTransaction(() -> new UserController().selectUserFromMail(username));
+        } catch (Throwable throwable) {
+            user = null;
+            throwable.printStackTrace();
+        }
 
-        rc.add("Rechnung");
-        rc.add("Dies");
-        rc.add("und");
-        rc.add("das");
+        final User finalUser = user;
+        JPA.withTransaction(() -> {
+            ArrayList<LayoutConfig> configs = new ArrayList<LayoutConfig>();
+            modules.database.LayoutConfigurationController controller = new modules.database.LayoutConfigurationController();
+            LayoutFragmentController fragmentController = new LayoutFragmentController();
+
+            configs.addAll(controller.selectEntityList(LayoutConfig.class, finalUser));
+            configs.addAll(controller.selectEntityListColumnNull("user"));
+
+            for(LayoutConfig config : configs){
+                LayoutArea temp = new LayoutArea();
+
+                temp.config = config;
+                temp.fragments = fragmentController.selectEntityList(LayoutFragment.class, "layoutConfig", config.getId());
+
+                rc.add(temp);
+            }
+        });
 
         return ok(Json.toJson(rc));
     }
@@ -140,11 +162,12 @@ public class JobController extends Controller {
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> process(){
+        String username = session().get("session");
         return F.Promise.promise(() -> {
             JsonNode jobs = request().body().asJson();
             Logger.info(jobs.toString());
 
-            Analyse.INSTANCE.analyse(jobs);
+            Analyse.INSTANCE.analyse(jobs, username);
 
             return ok();
         });
@@ -294,5 +317,11 @@ public class JobController extends Controller {
         }
 
                 //.put("fragments", Json.toJson(resultFragments));
+    }
+
+    public class LayoutArea{
+        public LayoutConfig config;
+
+        public List<LayoutFragment> fragments;
     }
 }

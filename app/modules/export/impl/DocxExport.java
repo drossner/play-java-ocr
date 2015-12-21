@@ -12,6 +12,7 @@ import org.docx4j.Docx4jProperties;
 import org.docx4j.dml.wordprocessingDrawing.Inline;
 import org.docx4j.jaxb.Context;
 import org.docx4j.model.structure.PageDimensions;
+import org.docx4j.model.structure.PageSizePaper;
 import org.docx4j.openpackaging.exceptions.Docx4JException;
 import org.docx4j.openpackaging.exceptions.InvalidFormatException;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
@@ -21,6 +22,7 @@ import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.vml.*;
 import org.docx4j.wml.*;
 import org.docx4j.wml.ObjectFactory;
+import play.Logger;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
@@ -45,6 +47,7 @@ public class DocxExport implements Export {
 
     WordprocessingMLPackage wordMLPackage;
     MainDocumentPart mainDocumentPart;
+    PageDimensions pageDimensions;
 
 
     @Override
@@ -61,8 +64,7 @@ public class DocxExport implements Export {
             e.printStackTrace();
         }
 
-        setOrientation(landscape);
-        setPageMargins(0,0,0,0);
+        configureMasterPage(landscape);
 
     }
 
@@ -92,7 +94,7 @@ public class DocxExport implements Export {
         }else{
             R r = Context.getWmlObjectFactory().createR();
             try {
-                r.getContent().add(createTextBox(style, createImageInTextBox((BufferedImage)fragment.getResult())));
+                r.getContent().add(createTextBox(style, createImageInTextBox((BufferedImage)fragment.getResult(), (long) width * 9, (long) height)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -120,7 +122,7 @@ public class DocxExport implements Export {
 
     @Override
     public File finish() {
-        File file = new File(path + fileName + ".docx");
+        File file = new File(fileName + ".docx");
 
         try {
             wordMLPackage.save(file);
@@ -217,7 +219,7 @@ public class DocxExport implements Export {
         return p;
     }
 
-    private P createImageInTextBox(BufferedImage content) throws Exception {
+    private P createImageInTextBox(BufferedImage content, long width, long heigth) throws Exception {
 
         P p = Context.getWmlObjectFactory().createP();
 
@@ -232,7 +234,8 @@ public class DocxExport implements Export {
         imageBytes = baos.toByteArray();
 
         BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imageBytes);
-        Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, false);
+        Logger.info("calculated image width: " + width);
+        Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, width, false);
 
         // Now add the inline in w:p/w:r/w:drawing
         org.docx4j.wml.ObjectFactory factory = Context.getWmlObjectFactory();
@@ -274,30 +277,17 @@ public class DocxExport implements Export {
     }
 
 
-    private void setPageMargins(int bottom, int top, int left, int right) {
-        try {
-            Body body = mainDocumentPart.getContents().getBody();
-            PageDimensions page = new PageDimensions();
-            SectPr.PgMar pgMar = page.getPgMar();
-            pgMar.setBottom(BigInteger.valueOf(bottom));
-            pgMar.setTop(BigInteger.valueOf(top));
-            pgMar.setLeft(BigInteger.valueOf(left));
-            pgMar.setRight(BigInteger.valueOf(right));
-            ObjectFactory factory = Context.getWmlObjectFactory();
-
-            SectPr sectPr = factory.createSectPr();
-            body.setSectPr(sectPr);
-            sectPr.setPgMar(pgMar);
-
-        } catch (Docx4JException e) {
-            e.printStackTrace();
-        }
-    }
 
 
-    //TODO: doesn't work
-    private void setOrientation(boolean landscape){
-        Properties properties = Docx4jProperties.getProperties();
-        properties.setProperty("docx4j.PageOrientationLandscape", Boolean.toString(landscape));
+    private void configureMasterPage(boolean landscape){
+        // Create a basic sectPr using our Page model
+        pageDimensions = new PageDimensions();
+        pageDimensions.setPgSize(PageSizePaper.A4, landscape);
+
+        SectPr.PgMar pgMar = pageDimensions.getPgMar();
+        pgMar.setBottom(BigInteger.valueOf(0));
+        pgMar.setTop(BigInteger.valueOf(0));
+        pgMar.setLeft(BigInteger.valueOf(0));
+        pgMar.setRight(BigInteger.valueOf(0));
     }
 }

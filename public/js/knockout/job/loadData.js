@@ -3,11 +3,30 @@
  */
 function loadData(jobViewModel){
     $.getJSON("/json/jobType", function(result){
-        console.log(result);
+
+        //pushing first entry
+        jobViewModel.jobtypes.push("");
+        jobViewModel.jobTypeAreas.push(new TypeArea());
+
         for(var i = 0; i < result.length; i++){
-            console.log("adding: " + result[i]);
-            jobViewModel.jobtypes.push(result[i]);
+            jobViewModel.jobtypes.push(result[i].config.name);
+
+            var fragments = ko.observableArray([]);
+            for(var k = 0; result[i].fragments != null && k < result[i].fragments.length; k++){
+                var fragment = result[i].fragments[k];
+                var type;
+                if(fragment.type == "IMAGE"){
+                    type = "img";
+                }else{
+                    type = "text";
+                }
+
+                fragments.push(new SelectArea(fragment.xStart, fragment.xEnd, fragment.yStart, fragment.yEnd, type));
+            }
+
+            jobViewModel.jobTypeAreas.push(new TypeArea(result[i].config.name, fragments));
         }
+        console.log(jobViewModel.jobTypeAreas());
     });
 
     $.getJSON("/json/jobLanguage", function(result){

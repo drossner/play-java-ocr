@@ -1,11 +1,9 @@
 package modules.database;
 
+import control.result.Type;
 import controllers.security.OcrPermission;
 import controllers.security.OcrRole;
-import modules.database.entities.Country;
-import modules.database.entities.CountryImpl;
-import modules.database.entities.SecurityRole;
-import modules.database.entities.UserPermission;
+import modules.database.entities.*;
 import play.Application;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -37,7 +35,63 @@ public class InitDatabase extends DatabaseController {
             createSecurityRoles();
 
             createUserPermissions();
+
+            createLayoutConfig();
         });
+    }
+
+    private void createLayoutConfig() {
+        String name = "Brief";
+
+        if(new LayoutConfigurationController().selectEntityList(LayoutConfig.class, "name", name) != null){
+            return;
+        }
+
+        LayoutConfig config = new LayoutConfig();
+
+        config.setLanguage(new CountryController().selectEntity(Country.class, CountryImpl.GERMAN));
+        config.setName(name);
+        config.setUser(null);
+
+        LayoutFragment fragment1 = new LayoutFragment();
+        fragment1.setLayoutConfig(config);
+        fragment1.setxEnd(0.927140255009107);
+        fragment1.setxStart(0.65391621129326);
+        fragment1.setyEnd(0.108665749656121);
+        fragment1.setyStart(0.0357634112792297);
+        fragment1.setType(Type.IMAGE.name());
+
+        LayoutFragment fragment2 = new LayoutFragment();
+        fragment2.setLayoutConfig(config);
+        fragment2.setxEnd(0.48816029143898);
+        fragment2.setxStart(0.0728597449908925);
+        fragment2.setyEnd(0.321870701513067);
+        fragment2.setyStart(0.154057771664374);
+        fragment2.setType(Type.TEXT.name());
+
+        LayoutFragment fragment3 = new LayoutFragment();
+        fragment3.setLayoutConfig(config);
+        fragment3.setxEnd(0.73224043715847);
+        fragment3.setxStart(0.0655737704918033);
+        fragment3.setyEnd(0.573590096286107);
+        fragment3.setyStart(0.360385144429161);
+        fragment3.setType(Type.TEXT.name());
+
+        LayoutFragment fragment4 = new LayoutFragment();
+        fragment4.setLayoutConfig(config);
+        fragment4.setxEnd(0.366120218579235);
+        fragment4.setxStart(0.0710382513661202);
+        fragment4.setyEnd(0.711141678129299);
+        fragment4.setyStart(0.620357634112792);
+        fragment4.setType(Type.IMAGE.name());
+
+        JPA.em().persist(config);
+
+        JPA.em().persist(fragment1);
+        JPA.em().persist(fragment2);
+        JPA.em().persist(fragment3);
+        JPA.em().persist(fragment4);
+
     }
 
     private void createCountries(){

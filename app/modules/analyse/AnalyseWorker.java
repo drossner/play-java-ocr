@@ -60,19 +60,7 @@ public class AnalyseWorker{
 
         File file = new File("./job_" + job.getUser().geteMail() + "_" + new Date() + ".json");
 
-        List<ResultFragment> tempFragments = new ArrayList<>();
-
         result.getResultFragments().forEach(fragment -> {
-            ResultFragment temp = new ResultFragment();
-            temp.setEndX(fragment.getEndX());
-            temp.setEndY(fragment.getEndY());
-            temp.setResult(fragment.getResult());
-            temp.setStartX(fragment.getStartX());
-            temp.setStartY(fragment.getStartY());
-            temp.setType(fragment.getType());
-
-            tempFragments.add(temp);
-
             if(fragment.getType() == Type.IMAGE) {
                 try {
                     File imageFile = new File("./job_" + job.getUser().geteMail() + "_" + new Date() +
@@ -108,8 +96,6 @@ public class AnalyseWorker{
 
             return result;
         }
-
-        result.setResultFragments(tempFragments);
         //file.delete();
         Logger.info("worker run complete!");
 
