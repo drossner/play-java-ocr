@@ -197,8 +197,12 @@ function JobHistoryViewModel(){
         console.log("delete: " + job);
 
         var path = "/json/deleteJob?id=" + job.job().id;
-        $.get(path, function(result){
-            self.jobs.remove(job);
+        $.ajax({
+            url: path,
+            type: 'DELETE',
+            success: function(result) {
+                self.jobs.remove(job);
+            }
         });
     };
 
@@ -212,7 +216,7 @@ function JobHistoryViewModel(){
             type: "post", contentType: "application/json",
             success: function(result) { console.log(result) }
         });
-    }
+    };
 
     self.dragStart = function (item) {
         item.dragging(true);
@@ -230,15 +234,5 @@ function JobHistoryViewModel(){
         }
     };
 }
-
-$.urlParam = function(name){
-    var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
-    if (results==null){
-        return null;
-    }
-    else{
-        return results[1] || 0;
-    }
-};
 
 ko.applyBindings(new JobHistoryViewModel());
