@@ -58,8 +58,6 @@ public class AnalyseWorker{
         CMSController controller = SessionHolder.getInstance().getController("ocr", "ocr");
         FolderController folderController = new FolderController(controller);
 
-        File file = new File("./job_" + job.getUser().geteMail() + "_" + new Date() + ".json");
-
         result.getResultFragments().forEach(fragment -> {
             if(fragment.getType() == Type.IMAGE) {
                 try {
@@ -72,30 +70,13 @@ public class AnalyseWorker{
 
                     fragment.setResult(doc.getId());
 
-                    //file.delete();
+                    imageFile.delete();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        try {
-            mapper.writeValue(file, result);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-            Document doc = controller.createDocument(folderController.getUserWorkspaceFolder(), file, FileType.FILE.getType());
-            JPA.withTransaction(() -> job.setResultFile(doc.getId()));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-
-            JPA.withTransaction(() -> job.setResultFile("error! " + Arrays.toString(e.getStackTrace())));
-
-            return result;
-        }
         //file.delete();
         Logger.info("worker run complete!");
 

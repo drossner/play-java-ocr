@@ -2,6 +2,7 @@ package modules.analyse;
 
 import analyse.AnalyseType;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import control.configuration.LayoutFragment;
 import control.factories.LayoutConfigurationFactory;
 import control.result.Result;
@@ -9,6 +10,7 @@ import control.result.ResultFragment;
 import control.result.Type;
 import errorhandling.OcrException;
 import modules.cms.CMSController;
+import modules.cms.FolderController;
 import modules.cms.SessionHolder;
 import modules.cms.data.FileType;
 import modules.database.UserController;
@@ -19,6 +21,7 @@ import modules.export.Export;
 import modules.export.impl.DocxExport;
 import modules.export.impl.OdtExport;
 import modules.export.impl.PdfExport;
+import org.apache.chemistry.opencmis.client.api.Document;
 import play.Logger;
 import play.db.jpa.JPA;
 import postprocessing.PostProcessingType;
@@ -26,8 +29,12 @@ import preprocessing.PreProcessingType;
 import preprocessing.PreProcessor;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by FRudi on 17.12.2015.
@@ -41,18 +48,24 @@ public enum Analyse {
     //private ExecutorService executor;
 
     private CMSController controller;
+    private final FolderController folderController;
 
     Analyse() {
         //executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
         controller = SessionHolder.getInstance().getController("ocr", "ocr");
+        folderController = new FolderController(controller);
         //context = Akka.system().dispatcher().prepare();
     }
 
-    public void analyse(JsonNode jobs, String username){
+    public void analyse(JsonNode jobs, String username) throws Throwable {
         Export export = new DocxExport();
+        ObjectMapper mapper = new ObjectMapper();
+        Result result = null;
+        User user = JPA.withTransaction(() -> new UserController().selectUserFromMail(username));
 
         if(jobs.get("combined").asBoolean()){
-            ArrayList<Result> results = new ArrayList<>();
+            Result temp = null;
+            ArrayList<ResultFragment> fragments = new ArrayList<>();
             String name = null;
             String folderId = null;
 
@@ -63,26 +76,38 @@ public enum Analyse {
                 if(folderId == null){
                     folderId = node.get("folderId").asText();
                 }
-                results.add(calculate(node));
+                temp = calculate(node);
+                fragments.addAll(temp.getResultFragments());
+
+                ResultFragment pageBreak = new ResultFragment();
+                pageBreak.setType(Type.PAGEBREAK);
+                fragments.add(pageBreak);
             }
 
             export.initialize(folderId, name, false);
 
-            for(Result result: results){
-                result.getResultFragments().stream().filter(fragment -> fragment.getType() == Type.IMAGE).forEach(fragment -> {
-                    fragment.setResult(controller.readingAImage((String) fragment.getResult()));
-                });
+            String imageID;
+            for(ResultFragment fragment: fragments){
+                if(fragment.getType() == Type.IMAGE){
+                    imageID = (String) fragment.getResult();
 
-                result.getResultFragments().forEach(export::export);
-                export.newPage();
+                    fragment.setResult(controller.readingAImage((String) fragment.getResult()));
+                    export.export(fragment);
+
+                    fragment.setResult(imageID);
+                }else if(fragment.getType() != Type.PAGEBREAK){
+                    export.export(fragment);
+                }else{
+                    export.newPage();
+                }
             }
 
             final String finalFolderId = folderId;
-            JPA.withTransaction(() ->{
-                User user = new UserController().selectUserFromMail(username);
-                SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
-                        .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
-            });
+            SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
+                    .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
+
+            temp.setResultFragments(fragments);
+            result = temp;
         }else{
             for(JsonNode node : jobs.withArray("jobs")){
                 String name = node.get("job").get("name").asText().split("\\.")[0];
@@ -93,7 +118,7 @@ public enum Analyse {
 
                 export.initialize(folderId, name, false);
 
-                Result result = calculate(node);
+                result = calculate(node);
 
                 result.getResultFragments().stream().filter(fragment -> fragment.getType() == Type.IMAGE).forEach(fragment -> {
                     fragment.setResult(controller.readingAImage((String) fragment.getResult()));
@@ -101,13 +126,40 @@ public enum Analyse {
 
                 result.getResultFragments().forEach(export::export);
 
-                final String finalFolderId = folderId;
-                JPA.withTransaction(() ->{
-                    User user = new UserController().selectUserFromMail(username);
-                    SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
-                            .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
-                });
+                SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
+                            .createDocument(folderId, export.finish(), FileType.FILE.getType());
             }
+        }
+
+
+        File file = new File("./job_" + user.geteMail() + "_" + new Date() + ".json");
+
+        try {
+            mapper.writeValue(file, result);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String idString = jobs.get("jobs").get("job").get("id").asText();
+        int jobID = Integer.parseInt(idString);
+        try {
+            Document doc = controller.createDocument(folderController.getUserWorkspaceFolder(), file, FileType.FILE.getType());
+
+            JPA.withTransaction(() -> {
+                Job job = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
+                job.setResultFile(doc.getId());
+
+                job.setProcessed(true);
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+
+            JPA.withTransaction(() -> {
+                Job job = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
+                job.setResultFile("error! " + Arrays.toString(e.getStackTrace()));
+
+                job.setProcessed(false);
+            });
         }
 
         Logger.info("node complete processed");
@@ -137,7 +189,7 @@ public enum Analyse {
             String idString = job.get("job").get("id").asText();
             int jobID = Integer.parseInt(idString);
             dbJob = JPA.withTransaction(() -> new modules.database.JobController().selectEntity(Job.class, "id", jobID));
-            image = JPA.withTransaction(() -> controller.readingAImage(dbJob.getImage().getSource()));
+            image = controller.readingAImage(dbJob.getImage().getSource());
         } catch (Throwable throwable) {
             throw new OcrException("Analyse", throwable);
         }
@@ -216,7 +268,7 @@ public enum Analyse {
 
                 dbJob.setLayoutConfig(finalDbConfigurationFactory.build());
             }else{
-                dbJob.setLayoutConfig(new SimpleLayoutConfigurationFactory().setName("custom").build());
+                dbJob.setLayoutConfig(null);
             }
         });
 
@@ -225,15 +277,12 @@ public enum Analyse {
         worker.setJob(dbJob);
         worker.setConfiguration(configuration.build());
 
-
         /*
         F.Promise<Integer> integerPromise = F.Promise.promise(worker::run
                 , context);
                 */
 
         Result rc = worker.run();
-
-        JPA.withTransaction(() -> dbJob.setProcessed(true));
 
         return rc;
     }
