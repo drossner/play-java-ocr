@@ -13,6 +13,7 @@ import modules.database.entities.Job;
 import modules.database.factory.SimpleLayoutConfigurationFactory;
 import modules.export.Export;
 import modules.export.impl.DocxExport;
+import modules.export.impl.OdtExport;
 import modules.export.impl.PdfExport;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -44,7 +45,7 @@ public enum Analyse {
 
     public void analyse(JsonNode jobs){
 
-        Export export = new PdfExport();
+        Export export = new OdtExport();
 
         if(jobs.get("combined").asBoolean()){
             ArrayList<Result> results = new ArrayList<>();

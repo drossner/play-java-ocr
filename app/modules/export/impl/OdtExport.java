@@ -59,20 +59,24 @@ public class OdtExport implements Export {
         System.out.println("Breite: "+ pageWidth + "cm");
 
 
-        double startX = pageWidth/100 * fragment.getStartX();
-        double startY = pageHeight/100 * fragment.getStartY();
-        double endX =  pageWidth/100 * fragment.getEndX();
-        double endY = pageHeight/100 * fragment.getEndY();
+        double startX = pageWidth/100 * (fragment.getStartX() * 100);
+        double startY = pageHeight/100 * (fragment.getStartY() * 100);
+        double endX =  pageWidth/100 * (fragment.getEndX() * 100);
+        double endY = pageHeight/100 * (fragment.getEndY() * 100);
         double width = endX - startX;
         double height = endY - startY;
 
         System.out.println("startX: "+ startX + "cm");
         System.out.println("endX: "+ endX + "cm");
+        System.out.println("startY: "+ startY + "cm");
+        System.out.println("heigth: "+ height + "cm");
+        System.out.println("width: "+ width + "cm");
 
-        if(fragment.getContent() instanceof String) {
-            setText((String) fragment.getContent(),startX, startY, width, height);
+
+        if(fragment.getType() == control.result.Type.TEXT) {
+            setText((String) fragment.getResult(),startX, startY, width, height);
         }else{
-            setImage((BufferedImage)fragment.getContent(),startX, startY, width, height);
+            setImage((BufferedImage)fragment.getResult(),startX, startY, width, height);
         }
 
     }
