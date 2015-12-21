@@ -82,9 +82,6 @@ public class UploadHandler {
         long timestamp = uploadIds.getOrDefault(uploadId, -1l);
         if(timestamp < 0) return false;
         if(!isTimestampValid(timestamp)){
-            //removed cause of efficency, better do async or in the scheduled job
-            /*deleteUploadedFiles(uploadId);
-            uploadIds.remove(uploadId);*/
             return false;
         } else {
             return true;
