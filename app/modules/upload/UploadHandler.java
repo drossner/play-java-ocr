@@ -29,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 public class UploadHandler {
 
     private final long MAXIMAL_CACHE_TIME = 1000*60*60; //1 Stunde
-    private final int THUMBNAIL_WIDTH = 80;
-    private final int THUMBNAIL_HEIGTH = 80;
     private final String TEMP_DIR_NAME = "/uploadTemp/";
     private final File TEMP_DIR;
 
