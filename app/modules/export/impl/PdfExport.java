@@ -1,5 +1,7 @@
 package modules.export.impl;
 
+import control.result.ResultFragment;
+import control.result.Type;
 import modules.export.Export;
 import modules.export.Fragment;
 import org.apache.pdfbox.exceptions.COSVisitorException;
@@ -51,7 +53,7 @@ public class PdfExport implements Export {
     }
 
     @Override
-    public void export(Fragment fragment) {
+    public void export(ResultFragment fragment) {
         float startX = (float) (rect.getWidth()/100 *fragment.getStartX()*100); //lo
         float startY = (float) (rect.getHeight()/100 *fragment.getStartY()*100); //lo
 
@@ -76,10 +78,10 @@ public class PdfExport implements Export {
         System.out.println("");
         */
 
-        if(fragment.getContent() instanceof String) {
-            setText((String)fragment.getContent(), startX, rect.getHeight()-startY);
+        if(fragment.getType() == Type.TEXT) {
+            setText((String) fragment.getResult(), startX, rect.getHeight()-startY);
         } else {
-            setImage((BufferedImage) fragment.getContent(), startX, rect.getHeight()-startY-width);
+            setImage((BufferedImage) fragment.getResult(), startX, rect.getHeight()-startY-width);
         }
     }
 

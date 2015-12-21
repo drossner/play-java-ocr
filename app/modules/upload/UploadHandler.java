@@ -63,6 +63,14 @@ public class UploadHandler {
     }
 
     /**
+     * invalidates the given uploadId by setting the timestamp to -1
+     * @param uploadId
+     */
+    public void invalidateUploadId(String uploadId){
+        uploadIds.put(uploadId, -1L);
+    }
+
+    /**
      * Creates an unique id to identify user-uploads. Should be compared with those in the session-cookie,
      * to secure the cache from unauthorized access.
      * @return uploadId

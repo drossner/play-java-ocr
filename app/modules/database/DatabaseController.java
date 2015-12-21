@@ -154,4 +154,8 @@ public abstract class DatabaseController<T extends DomainObject, T2> {
         JPA.em().persist(persistObject);
     }
 
+    public void deleteObject(DomainObject persistObject){
+        JPA.em().remove(persistObject);
+    }
+
 }

@@ -11,9 +11,9 @@
 
         <div class="panel panel-default">
                 <!-- Default panel contents -->
-            <div class="panel-heading">Dein Upload</div>
+            <div class="panel-heading">Upload</div>
             <div class="panel-body">
-                <p>Hier sieht man drei Zebras.</p>
+                <p>Hier sehen Sie Ihre hochgeladenen Dateien.</p>
             </div>
                 <!-- Table -->
             <table class="table">
@@ -36,12 +36,28 @@
                                             dragOver: $parent.reorder,
                                             data: { items: $root.jobs, item: job }
                                         }"></td>
-                        <td> <select data-bind="options: $root.languages, optionsText: function(item) {
-                                                                return item.language }"></select></td>
-                        <td> <select data-bind="options: $root.jobTypes"></select></td>
+                        <td class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false" data-bind="text: language"><span class="caret"></span></a>
+                            <ul class="dropdown-menu" data-bind="foreach: $root.languages">
+                                <li>
+                                    <a data-bind="text: $data"></a>
+                                    <!-- , click: setTheLanguage($data) -->
+                                </li>
+                            </ul>
+                        </td>
+                        <td><a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                            aria-expanded="false" data-bind="text: jobType"><span class="caret"></span></a>
+                            <ul class="dropdown-menu" data-bind="foreach: $root.jobtypes">
+                                <li>
+                                    <a data-bind="text: $data"></a>
+                                    <!-- , click: setTheJobType($data) -->
+                                </li>
+                            </ul>
+                        </td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
-                                              data-toggle="modal" data-bind="click: $root.showModal"></span></a>
+                            data-toggle="modal" data-bind="click: $root.showModal"></span></a>
                         </td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-trash icon-lachs" data-bind="click: $root.delete"
@@ -49,15 +65,17 @@
                         </td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-folder-open icon-lachs" aria-hidden="true"
-                            data-toggle="modal" data-target="#folderModal"></span></a> <span id="launchBT"></span>
+                            data-toggle="modal" data-bind="click: $root.showFolderModal"></span></a>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <label class="pull-right">
-            <span class="lightfont marginright10"> <input type="checkbox" value="">&nbspzu einem Dokument zusammenfassen</span>
-            <button type="button" class="btn btn-lila pull-right" data-bind="click: $root.processJobs" href="#">Erkennen</button>
+            <span class="lightfont marginright10"> <input type="checkbox" data-bind="checked: $root.combined">
+                &nbspzu einem Dokument zusammenfassen</span>
+            <button type="button" class="btn btn-lila pull-right" data-bind="click: $root.processJobs" href="#">
+                Erkennen</button>
         </label>
 
     </div>
