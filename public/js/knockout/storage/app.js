@@ -113,6 +113,17 @@ function StoredJobViewModel(){
             }
         });
     }
+
+    self.isChecked = function(onlyOne){
+        var count = 0;
+        ko.utils.arrayForEach(self.storedJobs(), function(job) {
+            if(job.selected()){
+                count++;
+            }
+        });
+
+        return (onlyOne && count === 1) || (count > 0 && !onlyOne);
+    }
 }
 
 ko.applyBindings(new StoredJobViewModel());

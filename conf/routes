@@ -16,6 +16,7 @@ GET           /getfile/:uploadId/:file        controllers.UploadController.getFi
 GET           /getPrev/:uploadId/:file        controllers.UploadController.getThumbnail(uploadId, file)
 
 GET        /template                 controllers.Application.template()
+GET         /download/:fileid          controllers.JobController.downloadFile(fileid)
 
 # json Endpoint
 GET         /json/jobHistory        controllers.JobController.getJobHistory(id: String)
