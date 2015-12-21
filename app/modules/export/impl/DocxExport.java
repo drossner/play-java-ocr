@@ -21,6 +21,7 @@ import org.docx4j.openpackaging.parts.WordprocessingML.MainDocumentPart;
 import org.docx4j.vml.*;
 import org.docx4j.wml.*;
 import org.docx4j.wml.ObjectFactory;
+import play.Logger;
 
 import javax.imageio.ImageIO;
 import javax.xml.bind.JAXBElement;
@@ -92,7 +93,7 @@ public class DocxExport implements Export {
         }else{
             R r = Context.getWmlObjectFactory().createR();
             try {
-                r.getContent().add(createTextBox(style, createImageInTextBox((BufferedImage)fragment.getResult())));
+                r.getContent().add(createTextBox(style, createImageInTextBox((BufferedImage)fragment.getResult(), (long) width * 9, (long) height)));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -217,7 +218,7 @@ public class DocxExport implements Export {
         return p;
     }
 
-    private P createImageInTextBox(BufferedImage content) throws Exception {
+    private P createImageInTextBox(BufferedImage content, long width, long heigth) throws Exception {
 
         P p = Context.getWmlObjectFactory().createP();
 
@@ -232,7 +233,8 @@ public class DocxExport implements Export {
         imageBytes = baos.toByteArray();
 
         BinaryPartAbstractImage imagePart = BinaryPartAbstractImage.createImagePart(wordMLPackage, imageBytes);
-        Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, false);
+        Logger.info("calculated image width: " + width);
+        Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, width, false);
 
         // Now add the inline in w:p/w:r/w:drawing
         org.docx4j.wml.ObjectFactory factory = Context.getWmlObjectFactory();

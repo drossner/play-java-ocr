@@ -33,16 +33,6 @@ function Job(id, initialJob, language, jobType){
     self.isSelected = ko.observable(false);
 }
 
-/*
-function Language(id, initialLanguage){
-    var self = this;
-    self.id = id;
-
-    self.language = initialLanguage;
-    console.log(self.language);
-}
-*/
-
 var currentJob;
 var preProcessing;
 
@@ -144,7 +134,9 @@ function JobHistoryViewModel(){
     self.combined = ko.observable(false);
 
     self.languages = ko.observableArray([]);
+
     self.jobtypes = ko.observableArray([]);
+    self.jobTypeAreas = ko.observableArray([]);
 
     loadData(self);
 
