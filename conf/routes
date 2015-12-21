@@ -21,11 +21,11 @@ GET        /template                 controllers.Application.template()
 GET         /json/jobHistory        controllers.JobController.getJobHistory
 GET         /json/jobType           controllers.JobController.getJobTypes
 GET         /json/jobLanguage       controllers.JobController.getLanguages
-GET         /json/getImageFromJobID/:id controllers.JobController.getImageFromJobID(id: Int)
+GET         /json/getImageFromJobID controllers.JobController.getImageFromJobID(id: Int)
 
 GET         /json/getUserFolders    controllers.FolderController.getUserFolders
 GET         /json/getSharedFolders    controllers.FolderController.getSharedFolders
-GET         /json/deleteJob/:id     controllers.JobController.delete(id: Int)
+DELETE      /json/deleteJob     controllers.JobController.delete(id: Int)
 
 POST         /json/processJobs       controllers.JobController.process
 GET          /json/getUser           controllers.UserController.getUser

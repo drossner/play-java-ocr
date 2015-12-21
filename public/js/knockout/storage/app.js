@@ -85,6 +85,35 @@ function StoredJobViewModel(){
     self.setCurrentJob = function(job){
         self.currentJob(job);
     }
+
+    self.deleteMarked = function(){
+        ko.utils.arrayForEach(self.storedJobs(), function(job) {
+            if(job.selected()){
+                $.ajax({
+                    url: '/json/deleteJob?id='+job.id,
+                    type: 'DELETE',
+                    success: function(result) {
+                        self.storedJobs.remove(job);
+                    }
+                });
+            }
+
+        });
+    }
+
+    self.downloadMarked = function(){
+        ko.utils.arrayForEach(self.storedJobs(), function(job) {
+            if(job.selected()){
+                $.ajax({
+                    url: '/json/deleteJob?id='+job.id,
+                    type: 'DELETE',
+                    success: function(result) {
+                        self.storedJobs.remove(job);
+                    }
+                });
+            }
+        });
+    }
 }
 
 ko.applyBindings(new StoredJobViewModel());
