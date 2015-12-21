@@ -42,19 +42,12 @@ import java.util.Date;
 public enum Analyse {
     INSTANCE();
 
-    private final int THREAD_POOL_COUNT = 4;
-
-    //private ExecutionContext context;
-    //private ExecutorService executor;
-
     private CMSController controller;
     private final FolderController folderController;
 
     Analyse() {
-        //executor = Executors.newFixedThreadPool(THREAD_POOL_COUNT);
         controller = SessionHolder.getInstance().getController("ocr", "ocr");
         folderController = new FolderController(controller);
-        //context = Akka.system().dispatcher().prepare();
     }
 
     public void analyse(JsonNode jobs, String username) throws Throwable {
@@ -63,7 +56,7 @@ public enum Analyse {
         Result result = null;
         String name = null;
         String folderId = null;
-        String idString = null;
+        ArrayList<String> idStrings = new ArrayList<>();
 
         User user = JPA.withTransaction(() -> new UserController().selectUserFromMail(username));
 
@@ -72,7 +65,7 @@ public enum Analyse {
             ArrayList<ResultFragment> fragments = new ArrayList<>();
 
             for (JsonNode node : jobs.withArray("jobs")) {
-                idString = node.get("job").get("id").asText();
+                idStrings.add(node.get("job").get("id").asText());
                 if(name == null){
                     name = node.get("job").get("name").asText().split("\\.")[0];
                 }
@@ -87,11 +80,15 @@ public enum Analyse {
                 fragments.add(pageBreak);
             }
 
+            if(fragments.get(fragments.size() - 1).getType() == Type.PAGEBREAK){
+                fragments.remove(fragments.size() - 1);
+            }
+
             temp.setResultFragments(fragments);
             result = temp;
         }else{
             for(JsonNode node : jobs.withArray("jobs")){
-                idString = node.get("job").get("id").asText();
+                idStrings.add(node.get("job").get("id").asText());
                 name = node.get("job").get("name").asText().split("\\.")[0];
                 folderId = node.get("folderId").asText();
 
@@ -110,27 +107,34 @@ public enum Analyse {
         }
 
         Job job;
-        int jobID = Integer.parseInt(idString);
         try {
             Document doc = controller.createDocument(folderController.getUserWorkspaceFolder(), file, FileType.FILE.getType());
 
             job = JPA.withTransaction(() -> {
-                Job dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
+                Job dbJob = null;
+                for(String idString: idStrings) {
+                    int jobID = Integer.parseInt(idString);
+                    dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
 
-                Logger.info("saving document id: " + doc.getId());
-                dbJob.setResultFile(doc.getId());
+                    Logger.info("saving: " + doc.getId());
+                    dbJob.setResultFile(doc.getId());
 
-                dbJob.setProcessed(true);
+                    dbJob.setProcessed(true);
+                }
                 return dbJob;
             });
         } catch (FileNotFoundException e) {
             e.printStackTrace();
 
             job = JPA.withTransaction(() -> {
-                Job dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
-                dbJob.setResultFile("error! " + Arrays.toString(e.getStackTrace()));
+                Job dbJob = null;
+                for(String idString: idStrings) {
+                    int jobID = Integer.parseInt(idString);
+                    dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
+                    dbJob.setResultFile("error! " + Arrays.toString(e.getStackTrace()));
 
-                dbJob.setProcessed(false);
+                    dbJob.setProcessed(false);
+                }
                 return dbJob;
             });
         }
@@ -254,11 +258,6 @@ public enum Analyse {
         worker.setImage(image);
         worker.setJob(dbJob);
         worker.setConfiguration(configuration.build());
-
-        /*
-        F.Promise<Integer> integerPromise = F.Promise.promise(worker::run
-                , context);
-                */
 
         Result rc = worker.run();
 
