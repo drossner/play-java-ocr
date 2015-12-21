@@ -37,7 +37,7 @@
                                             data: { items: $root.jobs, item: job }
                                         }"></td>
                         <td><select data-bind="options: $root.languages, value: language"></select></td>
-                        <td><select data-bind="options: $parent.jobtypes, value: jobType"></select></td>
+                        <td><select id="jobTypes" data-bind="options: $root.jobtypes, value: jobType, event: {change: $root.changeArea}"></select></td>
                         <td>
                             <a href="#"><span class="glyphicon glyphicon-pencil icon-lila" aria-hidden="true" data-id="job().id"
                             data-toggle="modal" data-bind="click: $root.showModal"></span></a>

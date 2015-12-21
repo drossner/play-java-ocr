@@ -45,7 +45,7 @@ public enum Analyse {
     }
 
     public void analyse(JsonNode jobs){
-        Export export = new OdtExport();
+        Export export = new DocxExport();
 
         if(jobs.get("combined").asBoolean()){
             ArrayList<Result> results = new ArrayList<>();
@@ -106,7 +106,10 @@ public enum Analyse {
         JsonNode preProcessor = job.get("preProcessing");
         JsonNode areas = job.get("areas");
 
-        String name = job.get("name").textValue();
+        String name = null;
+        if(job.get("templateName") != null){
+            name = job.get("templateName").textValue();
+        }
         SimpleLayoutConfigurationFactory dbConfigurationFactory = null;
         if(name != null && !name.equals("")) {
             dbConfigurationFactory = new SimpleLayoutConfigurationFactory();
@@ -189,11 +192,12 @@ public enum Analyse {
         configuration.addPostProcessor(PostProcessingType.TEXT_CHECK);
 
         final SimpleLayoutConfigurationFactory finalDbConfigurationFactory = dbConfigurationFactory;
+        final String finalName = name;
         JPA.withTransaction(() -> {
             if(finalDbConfigurationFactory != null) {
                 finalDbConfigurationFactory.addPostProcessing(PostProcessingType.TEXT_CHECK);
                 finalDbConfigurationFactory.setUser(dbJob.getUser());
-                finalDbConfigurationFactory.setName(name);
+                finalDbConfigurationFactory.setName(finalName);
 
                 dbJob.setLayoutConfig(finalDbConfigurationFactory.build());
             }else{

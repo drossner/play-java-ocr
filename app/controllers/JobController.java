@@ -17,6 +17,7 @@ import modules.database.*;
 import modules.database.UserController;
 import modules.database.entities.Job;
 import modules.database.entities.LayoutConfig;
+import modules.database.entities.LayoutFragment;
 import modules.database.entities.User;
 import play.db.jpa.JPA;
 import play.libs.F;
@@ -66,7 +67,7 @@ public class JobController extends Controller {
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobTypes(){
-        ArrayList<LayoutConfig> rc = new ArrayList<>();
+        ArrayList<LayoutArea> rc = new ArrayList<>();
         String username = session().get("session");
 
         User user;
@@ -79,13 +80,20 @@ public class JobController extends Controller {
 
         final User finalUser = user;
         JPA.withTransaction(() -> {
+            ArrayList<LayoutConfig> configs = new ArrayList<LayoutConfig>();
             modules.database.LayoutConfigurationController controller = new modules.database.LayoutConfigurationController();
+            LayoutFragmentController fragmentController = new LayoutFragmentController();
 
-            rc.addAll(controller.selectEntityList(LayoutConfig.class, finalUser));
-            rc.addAll(controller.selectEntityListColumnNull("user"));
+            configs.addAll(controller.selectEntityList(LayoutConfig.class, finalUser));
+            configs.addAll(controller.selectEntityListColumnNull("user"));
 
-            for(LayoutConfig config : rc){
+            for(LayoutConfig config : configs){
+                LayoutArea temp = new LayoutArea();
 
+                temp.config = config;
+                temp.fragments = fragmentController.selectEntityList(LayoutFragment.class, "layoutConfig", config.getId());
+
+                rc.add(temp);
             }
         });
 
@@ -228,5 +236,11 @@ public class JobController extends Controller {
                 .put("language", language)
                 .put("type", type)
                 .put("fragments", Json.toJson(resultFragments));
+    }
+
+    public class LayoutArea{
+        public LayoutConfig config;
+
+        public List<LayoutFragment> fragments;
     }
 }

@@ -120,18 +120,47 @@ function createArea(options) {
     document.getElementById('templating').contentWindow.createArea(options);
 }
 
+function checkName(value){
+    if(currentJob.templateName() == value){
+        currentJob.templateName("");
+        currentJob.areas([]);
+
+        return true;
+    }
+    return false
+}
+
 $('#deleteAreas').click(function () {
+    var val = $('#templateName').val();
+    if(val != "" && checkName(val)){
+        $('#templateName').val("");
+        currentJob.reset();
+    }
+
     reset();
     $('#type').val("");
     $('#editHeigth').val("");
     $('#editWidth').val("");
-})
+});
 
 
 $('#img').click(function () {
+    var val = $('#templateName').val();
+    if(val != "" && checkName(val)){
+        $('#templateName').val("");
+        currentJob.reset();
+    }
+
     document.getElementById('templating').contentWindow.createNewArea('img');
 });
+
 $('#text').click(function () {
+    var val = $('#templateName').val();
+    if(val != "" && checkName(val)){
+        $('#templateName').val("");
+        currentJob.reset();
+    }
+
     document.getElementById('templating').contentWindow.createNewArea('text');
 });
 
@@ -139,13 +168,14 @@ $('#text').click(function () {
 $('#next').click(function () {
     console.log("data-step: " + $(this).attr('data-step'));
     if ($(this).attr('data-step') != "complete") {
-        console.log("next method");
         var image = preProcessing.saveImage();
         var height = preProcessing.getCanvasHeight();
         var width = preProcessing.getCanvasWidth();
         var iframe = document.getElementById('templating');
         iframe.height = height;
         document.getElementById('templating').contentWindow.loadImageForSecondStep(image, height, width);
+
+        $('#templateName').val(currentJob.templateName());
     }
 });
 
@@ -154,10 +184,6 @@ $(':button').click(function () {
     if ($(this).attr('data-step') == "complete") {
 
         var templateName = $('#templateName').val();
-
-        console.log("Template Name: " + templateName);
-
-        //todo save Name to Template
 
         saveData();
     }

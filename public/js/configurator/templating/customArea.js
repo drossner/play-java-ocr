@@ -107,11 +107,22 @@ function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
         allowSelect: false
     });
 
-    $.each(areas, function(index, value){
-        exampleImage.selectAreas("add", value);
+    $.each(areas, function(index, value) {
+        if (value.x < 1 && value.y < 1 && value.width < 1 && value.height < 1) {
+            console.log("erstelle area mit canvas dimensionen");
+            console.log(value);
+            var options = {
+                x: value.x * canvasWidth,
+                width: value.width * canvasWidth,
+                y: value.y * canvasHeight,
+                height: value.height * canvasHeight,
+                type: value.type
+            };
+            createArea(options);
+        }else {
+            exampleImage.selectAreas("add", value);
+        }
     });
-
-
 
 }
 /*Does not work because customArea.js does not update it's selected areas

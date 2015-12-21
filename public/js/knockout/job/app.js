@@ -11,26 +11,31 @@ function Job(id, initialJob, language, jobType){
     self.jobType = ko.observable(jobType);
     self.job = ko.observable(initialJob);
 
-    self.setTheLanguage = function(lang){
-        self.language(lang);
-    };
-
-    self.setTheJobType = function(type){
-        self.jobType(type);
-    };
-
     self.folderId = ko.observable("");
 
     self.image = ko.observable("");
 
     self.preProcessing = ko.observableArray([]);
     self.areas = ko.observableArray([]);
+    self.templateName = ko.observable("");
 
     var path = "/json/getImageFromJobID/" + self.job().id;
     self.image(path);
 
     self.dragging = ko.observable(false);
     self.isSelected = ko.observable(false);
+
+    self.reset = function (){
+        currentJob.templateName("");
+        currentJob.jobType("");
+    }
+}
+
+function TypeArea(name, areas){
+    var self = this;
+
+    self.templateName = name;
+    self.areas = areas;
 }
 
 var currentJob;
@@ -71,6 +76,8 @@ function contrast(value){
 function saveData() {
     console.log("save data: " + currentJob);
 
+    currentJob.templateName($('#templateName').val());
+
     currentJob.preProcessing.removeAll();
     currentJob.areas.removeAll();
 
@@ -110,9 +117,21 @@ function initModal(job) {
         job.preProcessing()[i].process();
     }
 
-    for(var i = 0; i < job.areas().length; i++){
+    console.log(job.areas());
+    for(var i = 0; job.areas() != null && i < job.areas().length; i++){
         var area = job.areas()[i];
+
         console.log(area);
+
+        console.log(area.canvasWidth);
+        if(area.canvasWidth == null){
+            area.canvasWidth = 1;
+        }
+
+        console.log(area.canvasHeight);
+        if(area.canvasHeight == null){
+            area.canvasHeight = 1;
+        }
 
         var options = {
             x: area.xStart * area.canvasWidth,
@@ -139,6 +158,23 @@ function JobHistoryViewModel(){
     self.jobTypeAreas = ko.observableArray([]);
 
     loadData(self);
+
+    self.changeArea = function(job){
+        var index = $("#jobTypes")[0].selectedIndex;
+        var jobTypeArea = self.jobTypeAreas()[index];
+
+        console.log(index);
+        console.log(job);
+
+        if(jobTypeArea != null){
+            console.log(jobTypeArea.templateName);
+            job.templateName(jobTypeArea.templateName);
+
+            console.log(jobTypeArea.areas());
+            var areas = jobTypeArea.areas();
+            job.areas(areas);
+        }
+    };
 
     self.showModal = function(job){
         preProcessing = new PreProcessing();
