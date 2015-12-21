@@ -19,7 +19,7 @@ $(function () {
         // Uncomment the following to send cross-domain cookies:
         //xhrFields: {withCredentials: true},
         //url: 'server/php/'
-        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|tiff?|pdf)$/i,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png|tiff?)$/i,
         //28MB
         maxFileSize: 29360128
     });
