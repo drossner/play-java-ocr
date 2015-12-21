@@ -83,7 +83,6 @@ libraryDependencies ++= Seq(
 // now the following dependency can be resolved
 libraryDependencies += "com.practicum.web.architecture.ocr" % "java-ocr-analyse" % "1.0.0"
 
-
 resolvers += "Nuxeo Rep" at "https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases"
 
 libraryDependencies ++= Seq(
