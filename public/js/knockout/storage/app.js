@@ -102,15 +102,14 @@ function StoredJobViewModel(){
     }
 
     self.downloadMarked = function(){
+        console.log("get donwloadlinks");
         ko.utils.arrayForEach(self.storedJobs(), function(job) {
             if(job.selected()){
-                $.ajax({
-                    url: '/json/deleteJob?id='+job.id,
-                    type: 'DELETE',
-                    success: function(result) {
-                        self.storedJobs.remove(job);
-                    }
+                $.getJSON( "/json/getDownloadlink?id="+job.id,
+                    function( json ) {
+                        window.location = json.url;
                 });
+
             }
         });
     }

@@ -301,6 +301,14 @@ public class JobController extends Controller {
         });
     }
 
+    public  Result getDownloadlink(int id) {
+        Logger.debug("Downloadlink requested");
+        ObjectNode result = Json.newObject();
+        result.put("url", "https://www.dropbox.com/s/7p0aq8b9ekorz62/Erste%20Schritte.pdf?dl=1");
+
+        return ok(result);
+    }
+
     private void addObjectToArray(ArrayNode array, int id, String name,
                                   String language, String type, ArrayList<String> resultFragments){
         ArrayNode temp = array.addObject()
