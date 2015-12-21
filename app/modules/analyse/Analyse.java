@@ -10,7 +10,10 @@ import control.result.Type;
 import errorhandling.OcrException;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
+import modules.cms.data.FileType;
+import modules.database.UserController;
 import modules.database.entities.Job;
+import modules.database.entities.User;
 import modules.database.factory.SimpleLayoutConfigurationFactory;
 import modules.export.Export;
 import modules.export.impl.DocxExport;
@@ -23,6 +26,7 @@ import preprocessing.PreProcessingType;
 import preprocessing.PreProcessor;
 
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 /**
@@ -44,7 +48,7 @@ public enum Analyse {
         //context = Akka.system().dispatcher().prepare();
     }
 
-    public void analyse(JsonNode jobs){
+    public void analyse(JsonNode jobs, String username){
         Export export = new DocxExport();
 
         if(jobs.get("combined").asBoolean()){
@@ -72,7 +76,13 @@ public enum Analyse {
                 result.getResultFragments().forEach(export::export);
                 export.newPage();
             }
-            export.finish();
+
+            final String finalFolderId = folderId;
+            JPA.withTransaction(() ->{
+                User user = new UserController().selectUserFromMail(username);
+                SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
+                        .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
+            });
         }else{
             for(JsonNode node : jobs.withArray("jobs")){
                 String name = node.get("job").get("name").asText().split("\\.")[0];
@@ -91,7 +101,12 @@ public enum Analyse {
 
                 result.getResultFragments().forEach(export::export);
 
-                export.finish();
+                final String finalFolderId = folderId;
+                JPA.withTransaction(() ->{
+                    User user = new UserController().selectUserFromMail(username);
+                    SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword())
+                            .createDocument(finalFolderId, export.finish(), FileType.FILE.getType());
+                });
             }
         }
 

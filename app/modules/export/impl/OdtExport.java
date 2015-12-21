@@ -91,8 +91,8 @@ public class OdtExport implements Export {
     public File finish() {
         File file = null;
         try {
-            document.save(path+fileName+".odt");
-            file = new File(path+fileName+".odt");
+            document.save(fileName+".odt");
+            file = new File(fileName+".odt");
         } catch (Exception e) {
             Logger.info("ERROR: unable to create output file.");
         }

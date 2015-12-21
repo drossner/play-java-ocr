@@ -122,7 +122,7 @@ public class DocxExport implements Export {
 
     @Override
     public File finish() {
-        File file = new File(path + fileName + ".docx");
+        File file = new File(fileName + ".docx");
 
         try {
             wordMLPackage.save(file);

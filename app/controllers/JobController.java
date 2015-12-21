@@ -159,11 +159,12 @@ public class JobController extends Controller {
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> process(){
+        String username = session().get("session");
         return F.Promise.promise(() -> {
             JsonNode jobs = request().body().asJson();
             Logger.info(jobs.toString());
 
-            Analyse.INSTANCE.analyse(jobs);
+            Analyse.INSTANCE.analyse(jobs, username);
 
             return ok();
         });
