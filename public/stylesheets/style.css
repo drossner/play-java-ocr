@@ -387,11 +387,15 @@ textarea:focus, input:focus, input[type]:focus, .uneditable-input:focus {
     outline: 0 none;
 }
 
+.form-control{
+    margin-bottom: 10px;
+}
+
 .form-control:focus {
     border-color: #8082a6;
     box-shadow: 0 1px 1px #8082a6 inset, 0 0 8px #8082a6;
     outline: 0 none;
-    margin-bottom: 10px;
+
 }
 
 #cover{
