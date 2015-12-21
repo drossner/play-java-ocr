@@ -1,16 +1,19 @@
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
+import modules.database.entities.User;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.junit.Before;
 import org.junit.Test;
 import play.Logger;
+import play.db.jpa.JPA;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
@@ -105,6 +108,47 @@ public class CmsTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void getSharedFoldersTest(){
+        initSessionCMS();
+
+        ArrayList<Folder> sharedFolders = cmsController.listSharedFolder();
+        ArrayList<modules.cms.data.Folder> sharedFoldersTemp = new ArrayList<>();
+
+        for (org.apache.chemistry.opencmis.client.api.Folder folder : sharedFolders){
+
+            modules.cms.data.Folder tempFolder = new modules.cms.data.Folder();
+            tempFolder.setParentId("");
+            tempFolder.setId(folder.getId());
+            tempFolder.setTitle("Geteilt von: " + folder.getCreatedBy());
+            tempFolder.setDescription(folder.getDescription());
+            sharedFoldersTemp.add(tempFolder);
+
+            ArrayList<org.apache.chemistry.opencmis.client.api.Folder> folderTree = cmsController.getFolderTree(folder);
+            for (org.apache.chemistry.opencmis.client.api.Folder tree : folderTree){
+                modules.cms.data.Folder tempTreeFolder = new modules.cms.data.Folder();
+                tempTreeFolder.setParentId(tree.getParentId());
+                tempTreeFolder.setId(tree.getId());
+                tempTreeFolder.setTitle(tree.getName());
+                tempTreeFolder.setDescription(tree.getDescription());
+                sharedFoldersTemp.add(tempTreeFolder);
+            }
+        }
+
+
+        // print arraylist
+        //Logger.info("Folderlist: ");
+        for (modules.cms.data.Folder folder : sharedFoldersTemp){
+            String objectId = folder.getId();
+            String name = folder.getTitle();
+            System.out.println("Name: " +name + " ObjectId: "+  objectId);
+        }
+    }
+
+    private void initSessionCMS(){
+        cmsController = SessionHolder.getInstance().getController("test", "test");
     }
 
 }

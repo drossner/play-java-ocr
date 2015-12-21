@@ -59,7 +59,10 @@ public class Application extends Controller {
             } else if (step == 2) {
                 //use inUploadId
 
-                new SimpleJobFactory().createJobsJsonBulk(uploadHandler.loadFiles(inUploadId), userMail);
+                if(inUploadId != null && uploadHandler.isUploadIdValid(inUploadId)){
+                    new SimpleJobFactory().createJobsJsonBulk(uploadHandler.loadFiles(inUploadId), userMail);
+                    uploadHandler.invalidateUploadId(inUploadId);
+                }
 
                 return ok(hochladen_2.render());
             } else {

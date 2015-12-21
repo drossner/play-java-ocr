@@ -70,8 +70,17 @@ public class JobController extends DatabaseController<Job, Object> {
         });
     }
 
-    public List<Job> getUnProcessedJobs() throws Throwable {
-        return JPA.withTransaction(() -> selectEntityList(Job.class, "processed", false));
+    public List<Job> getUnProcessedJobs(String username) throws Throwable {
+        return JPA.withTransaction(() -> {
+            ArrayList<String> whereColumn = new ArrayList<>();
+            whereColumn.add("user");
+            whereColumn.add("processed");
+
+            ArrayList<Object> whereValue = new ArrayList<>();
+            whereValue.add(new UserController().selectUserFromMail(username));
+            whereValue.add(false);
+            return selectEntityList(Job.class, whereColumn, whereValue);
+        });
     }
 
     private class Language{

@@ -18,17 +18,18 @@
 
 
     <!-- The file upload form used as target for the file upload widget -->
-   <!-- <form id="fileupload" action="//upload/" method="POST" enctype="multipart/form-data">-->
-    @helper.form(action = routes.UploadController.upload(uploadId), 'enctype -> "multipart/form-data", 'id -> "fileupload") {
-        <!-- Redirect browsers with JavaScript disabled to the origin page -->
-        <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>
-        <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+    <!-- <form id="fileupload" action="//upload/" method="POST" enctype="multipart/form-data">-->
+    @helper.form(action = routes.UploadController.upload(uploadId), 'enctype -> "multipart/form-data", 'id ->
+    "fileupload") {
+    <!-- Redirect browsers with JavaScript disabled to the origin page -->
+    <noscript><input type="hidden" name="redirect" value="https://blueimp.github.io/jQuery-File-Upload/"></noscript>
+    <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
     </br></br>
-        <canvas id="myCanvas" width="205" height="152">
-            Your browser does not support the HTML5 canvas tag.
-        </canvas>
+    <canvas id="myCanvas" width="205" height="152">
+        Your browser does not support the HTML5 canvas tag.
+    </canvas>
 
-        <br>
+    <br>
 
     <div align=center>
         <br>
@@ -36,60 +37,73 @@
         <p>Dateien zum Upload auswählen oder auf das Browserfenster ziehen </p>
 
 
-        </div>
+    </div>
 
     <div class="row fileupload-buttonbar text-center">
 
 
         <div>
-                <!-- The fileinput-button span is used to style the file input field as button -->
+            <!-- The fileinput-button span is used to style the file input field as button -->
                 <span class="btn btn-file btn-lila" id="fileselect" name="fileselect[]">
 
                                  Datei auswählen <input type="file">
 
                 </span>
-            <button type="submit" class="btn start btn-lila">
+            <!--<button type="submit" class="btn start btn-lila">
 
                 <span>Hochladen (alle Dateien)</span>
-                </button>
+            </button>
 
             <button type="reset" class="btn cancel btn-lachs">
 
-                    <span>Hochladen abbrechen</span>
-                </button>
+                <span>Hochladen abbrechen</span>
+            </button>
 
 
-                <span class="fileupload-process"></span>
+            <span class="fileupload-process"></span>-->
         </div>
         <br>
-            <!-- The global progress state -->
+        <!-- The global progress state -->
         <div class="fileupload-progress fade text-center tablespacing">
 
-                <!-- The extended global progress state -->
-                <div class="progress-extended">&nbsp;</div>
+            <!-- The extended global progress state -->
+            <div class="progress-extended">&nbsp;</div>
             <!-- The global progress bar -->
 
             <div id="pb" class="progress progress-striped active" role="progressbar" aria-valuemin="0"
                  aria-valuemax="100">
                 <div id="ps" class="progress-bar progress-bar-success" style="width:0%;"></div>
             </div>
-            </div>
         </div>
-        <!-- The table listing the files available for upload/download -->
+    </div>
+    <!-- The table listing the files available for upload/download -->
     <table role="presentation" class=" tablespacing table table-striped">
-            <tbody class="files">
+        <tbody class="files">
+        </tbody>
+    </table>
 
-            </tbody>
 
-
-        </table>
-    }
-    <!--</form>-->
     <!--Weiter Button-->
-    <div class=" tablespacing">
-    <button type="button" onclick="checkFiles()" class="btn pull-right btn-lila" >Weiter</button>
+    <div class=" tablespacing fileupload-buttonbar">
+
+
+        <button type="reset" class="btn cancel btn-lachs">
+            <span>Hochladen abbrechen</span>
+        </button>
+
+        <button type="submit" class="btn start btn-lila">
+            <span>Hochladen (alle Dateien)</span>
+        </button>
+
+        <button type="button" onclick="checkFiles()" class="btn pull-right btn-lila">
+            Weiter
+        </button>
+
+
+        <span class="fileupload-process"></span>
     </div>
 </div>
+}
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
 
@@ -124,6 +138,10 @@
     </tr>
 
 {% } %}
+
+
+
+
 </script>
 
 
@@ -190,6 +208,10 @@
     </tr>
 {% } %}
 
+
+
+
+
 </script>
 
 <script>
@@ -204,35 +226,35 @@
 
 </script>
 
-    <script>
-            toastr.options = {
-                "closeButton": false,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": false,
-                "positionClass": "toast-top-center",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "150",
-                "hideDuration": "500",
-                "timeOut": "5000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            };
+<script>
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-center",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "150",
+        "hideDuration": "500",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    };
 
-        var checkFiles = function(){
-            $.getJSON('/json/checkFiles/@uploadId', function(result){
-                if(result.success){
-                    window.location.href = "@routes.Application.hochladen(2, uploadId)";
-                } else {
-                    toastr.warning('Bitte laden Sie mindestens eine Datei in die Anwendung');
-                }
-            });
-        }
-    </script>
+    var checkFiles = function () {
+        $.getJSON('/json/checkFiles/@uploadId', function (result) {
+            if (result.success) {
+                window.location.href = "@routes.Application.hochladen(2, uploadId)";
+            } else {
+                toastr.warning('Bitte laden Sie mindestens eine Datei in die Anwendung');
+            }
+        });
+    }
+</script>
 
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

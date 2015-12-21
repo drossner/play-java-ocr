@@ -57,8 +57,8 @@ libraryDependencies ++= Seq(
 //Export
 libraryDependencies ++= Seq(
   "org.docx4j" % "docx4j" % "3.2.2",
-  "org.apache.pdfbox" % "pdfbox" % "1.8.10"
-
+  "org.apache.pdfbox" % "pdfbox" % "1.8.10",
+  "org.apache.odftoolkit" % "simple-odf" % "0.8.1-incubating"
   )
 
 //Junit test
@@ -82,6 +82,7 @@ libraryDependencies ++= Seq(
 // use sbt publishLocal fot the project above
 // now the following dependency can be resolved
 libraryDependencies += "com.practicum.web.architecture.ocr" % "java-ocr-analyse" % "1.0.0"
+
 
 resolvers += "Nuxeo Rep" at "https://maven-eu.nuxeo.org/nexus/content/repositories/public-releases"
 

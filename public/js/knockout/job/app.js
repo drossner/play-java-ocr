@@ -2,12 +2,25 @@
  * Created by florian on 29.11.15.
  */
 // Row Class
-function Job(id, initialJob){
+function Job(id, initialJob, language, jobType){
     var self = this;
+
     self.id = id;
+
+    self.language = ko.observable(language);
+    self.jobType = ko.observable(jobType);
     self.job = ko.observable(initialJob);
 
-    self.folderId = ko.observable();
+    self.setTheLanguage = function(lang){
+        self.language(lang);
+    };
+
+    self.setTheJobType = function(type){
+        self.jobType(type);
+    };
+
+    self.folderId = ko.observable("");
+
     self.image = ko.observable("");
 
     self.preProcessing = ko.observableArray([]);
@@ -18,19 +31,17 @@ function Job(id, initialJob){
 
     self.dragging = ko.observable(false);
     self.isSelected = ko.observable(false);
-
-    /*
-    $.get(path,
-        function(data){
-            self.image(data);
-    });*/
 }
 
+/*
 function Language(id, initialLanguage){
     var self = this;
     self.id = id;
-    self.language = ko.observable(initialLanguage);
+
+    self.language = initialLanguage;
+    console.log(self.language);
 }
+*/
 
 var currentJob;
 var preProcessing;
@@ -130,8 +141,10 @@ function JobHistoryViewModel(){
 
     self.jobs = ko.observableArray([]);
 
+    self.combined = ko.observable(false);
+
     self.languages = ko.observableArray([]);
-    self.jobTypes = ko.observableArray([]);
+    self.jobtypes = ko.observableArray([]);
 
     loadData(self);
 
@@ -147,25 +160,28 @@ function JobHistoryViewModel(){
         $("#modal-sample-1").modal('show');
     };
 
+    self.showFolderModal = function(job){
+        currentJob = job;
+
+        $("#folderModal").modal('show');
+    };
+
     self.delete = function(job){
         console.log("delete: " + job);
-        self.jobs.remove(job);
 
-        var path = "/json/delete/" + job.id;
+        var path = "/json/deleteJob/" + job.job().id;
         $.get(path, function(result){
-            console.log(result);
+            self.jobs.remove(job);
         });
     };
 
     self.processJobs = function () {
         console.log(self.jobs());
         console.log(self.jobs()[0].areas());
-        //var data = self.jobs();
-
-        //$.getJSON("/json/processJobs", data);
+        console.log(self.combined());
 
         $.ajax("/json/processJobs", {
-            data: ko.toJSON({ jobs: self.jobs }),
+            data: ko.toJSON({ jobs: self.jobs, combined: self.combined() }),
             type: "post", contentType: "application/json",
             success: function(result) { console.log(result) }
         });

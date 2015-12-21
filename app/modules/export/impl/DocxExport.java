@@ -2,6 +2,8 @@ package modules.export.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import control.result.ResultFragment;
+import control.result.Type;
 import modules.cms.CMSController;
 import modules.cms.SessionHolder;
 import modules.export.Export;
@@ -65,7 +67,7 @@ public class DocxExport implements Export {
     }
 
     @Override
-    public void export(Fragment fragment) {
+    public void export(ResultFragment fragment) {
         double startX = fragment.getStartX() * 1000;
         double startY = fragment.getStartY() * 1000;
         double width = (fragment.getEndX() - fragment.getStartX()) * 1000;
@@ -83,14 +85,14 @@ public class DocxExport implements Export {
         mainDocumentPart.addObject(p);
 
 
-        if(fragment.getContent() instanceof String) {
+        if(fragment.getType() == Type.TEXT) {
             R r = Context.getWmlObjectFactory().createR();
-            r.getContent().add(createTextBox(style, createContent(((String) fragment.getContent()))));
+            r.getContent().add(createTextBox(style, createContent(((String) fragment.getResult()))));
             p.getContent().add(r);
         }else{
             R r = Context.getWmlObjectFactory().createR();
             try {
-                r.getContent().add(createTextBox(style, createImageInTextBox((BufferedImage)fragment.getContent())));
+                r.getContent().add(createTextBox(style, createImageInTextBox((BufferedImage)fragment.getResult())));
             } catch (Exception e) {
                 e.printStackTrace();
             }

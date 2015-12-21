@@ -1,5 +1,7 @@
 package modules.export;
 
+import control.result.ResultFragment;
+
 import java.io.File;
 
 /**
@@ -9,7 +11,7 @@ public interface Export {
 
     void initialize(String path, String fileName, boolean landscape);
 
-    void export(Fragment fragment);
+    void export(ResultFragment fragment);
 
     void newPage();
 

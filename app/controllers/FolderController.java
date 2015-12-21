@@ -7,9 +7,7 @@ import controllers.security.OcrDeadboltHandler;
 import modules.cms.CMSController;
 import modules.cms.data.Folder;
 import modules.cms.SessionHolder;
-import modules.database.entities.Job;
 import modules.database.entities.User;
-import play.Logger;
 import play.db.jpa.JPA;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -24,46 +22,21 @@ import java.util.ArrayList;
 @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
 public class FolderController extends Controller {
 
+    private CMSController cmsController;
+
     public Result getUserFolders(){
+        initSessionCMS();
+
         ArrayList<Folder> folders = new ArrayList<>();
 
-        String username = session().get("session");
-        User user = null;
-        try {
-            user = JPA.withTransaction(() ->
-                    new modules.database.JobController().selectEntity(User.class, "eMail", username));
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
-
-        CMSController controller = SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword());
-
-/*
-        Folder folder = new Folder();
-        folder.setId("1");
-        folder.setTitle("Folder1");
-        folder.setDescription("das ist ein Ordner");
-        folder.setParentId("");
-
-        Folder folder1 = new Folder();
-        folder1.setId("2");
-        folder1.setTitle("Folder2");
-        folder1.setDescription("das ist der Ordner 2");
-        folder1.setParentId("1");
-
-        folders.add(folder);
-        folders.add(folder1);
-        */
-
-
-        org.apache.chemistry.opencmis.client.api.Folder foldercms = controller.getWorkspaceFolder();
+        org.apache.chemistry.opencmis.client.api.Folder foldercms = cmsController.getWorkspaceFolder();
 
         Folder folderRC = new Folder();
         folderRC.setId(foldercms.getId());
         folderRC.setParentId(foldercms.getParentId());
         folderRC.setTitle(foldercms.getName());
 
-        ArrayList<org.apache.chemistry.opencmis.client.api.Folder> folderTree = controller.getFolderTree(foldercms);
+        ArrayList<org.apache.chemistry.opencmis.client.api.Folder> folderTree = cmsController.getFolderTree(foldercms);
 
         for (org.apache.chemistry.opencmis.client.api.Folder folder : folderTree){
 
@@ -79,8 +52,48 @@ public class FolderController extends Controller {
             tempFolder.setDescription(folder.getDescription());
             folders.add(tempFolder);
         }
-        //TODO save in Parent get the right ParentId, at the moment it is ""
         return ok(Json.toJson(folders));
+    }
+
+    public Result getSharedFolders(){
+        initSessionCMS();
+
+        ArrayList<org.apache.chemistry.opencmis.client.api.Folder> sharedFolders = cmsController.listSharedFolder();
+        ArrayList<Folder> sharedFoldersTemp = new ArrayList<>();
+
+        for (org.apache.chemistry.opencmis.client.api.Folder folder : sharedFolders){
+
+            modules.cms.data.Folder tempFolder = new Folder();
+            tempFolder.setParentId("");
+            tempFolder.setId(folder.getId());
+            tempFolder.setTitle("Geteilt von: " + folder.getCreatedBy());
+            tempFolder.setDescription(folder.getDescription());
+            sharedFoldersTemp.add(tempFolder);
+
+            ArrayList<org.apache.chemistry.opencmis.client.api.Folder> folderTree = cmsController.getFolderTree(folder);
+            for (org.apache.chemistry.opencmis.client.api.Folder tree : folderTree){
+                Folder tempTreeFolder = new Folder();
+                tempTreeFolder.setParentId(tree.getParentId());
+                tempTreeFolder.setId(tree.getId());
+                tempTreeFolder.setTitle(tree.getName());
+                tempTreeFolder.setDescription(tree.getDescription());
+                sharedFoldersTemp.add(tempTreeFolder);
+            }
+        }
+        return ok(Json.toJson(sharedFoldersTemp));
+    }
+
+    private void initSessionCMS(){
+        String username = session().get("session");
+        User user = null;
+        try {
+            user = JPA.withTransaction(() ->
+                    new modules.database.JobController().selectEntity(User.class, "eMail", username));
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+
+        cmsController = SessionHolder.getInstance().getController(user.getCmsAccount(), user.getCmsPassword());
     }
 }
 

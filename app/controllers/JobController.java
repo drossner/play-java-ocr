@@ -7,6 +7,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import control.result.ResultFragment;
+import control.result.Type;
 import controllers.security.OcrDeadboltHandler;
 import modules.analyse.Analyse;
 import modules.cms.CMSController;
@@ -49,27 +51,10 @@ public class JobController extends Controller {
         String username = session().get("session");
 
         try {
-            jobs = new modules.database.JobController().getUnProcessedJobs();
+            jobs = new modules.database.JobController().getUnProcessedJobs(username);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
-
-        /*
-        Job job = new Job();
-        job.setName("test.png");
-        job.setId(18);
-        jobs.add(job);
-
-        job = new Job();
-        job.setName("test2.png");
-        job.setId(22);
-        jobs.add(job);
-
-        job = new Job();
-        job.setName("test3.png");
-        job.setId(38);
-        jobs.add(job);
-        */
 
         if(jobs == null){
             return ok(Json.toJson(new ArrayList<Job>()));
@@ -95,14 +80,6 @@ public class JobController extends Controller {
 
     @SubjectPresent
     public Result getLanguages() throws Throwable {
-        /*ArrayList<String> rc = new ArrayList<>();
-        String username = session().get("session");
-
-        rc.add("Detusch");
-        rc.add("Anglisch");
-        rc.add("Schwiezerdütsch");
-        rc.add("Fränggisch"); */
-
         modules.database.JobController controller = new modules.database.JobController();
 
         return ok(Json.toJson(controller.getAllCountryLanguages()));
@@ -139,35 +116,23 @@ public class JobController extends Controller {
         }
         //TODO DANIEL ERROR
         return internalServerError();
-        /*
-        FileInputStream fileInputStream = null;
-        byte[] bFile = new byte[(int) file.length()];
-        try
-        {
-            //convert file into array of bytes
-            fileInputStream = new FileInputStream(file);
-            fileInputStream.read(bFile);
-            fileInputStream.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-
-        input = new ByteArrayInputStream(bFile);
-
-        return ok(input).as("image/png");
-        *//*
-        File file = new File(job.getImage().getSource());
-
-        Logger.info("returning: " + file);
-        return ok(Json.toJson(file));*/
-        //TODO ask daniel! return new UploadController(null, null).getFile("1", file.getAbsolutePath());
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
-    public Result delete(int id){
-        return ok();
+    public F.Promise<Result> delete(int id){
+        String userEmail = session().get("session");
+        return F.Promise.promise(() -> JPA.withTransaction(() -> {
+            modules.database.JobController controller = new modules.database.JobController();
+            Job job = controller.selectEntity(Job.class, "id", id);
+
+            if(!job.getUser().geteMail().equals(userEmail)){
+                return badRequest();
+            }
+
+            controller.deleteObject(job);
+
+            return ok();
+        }));
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
@@ -176,9 +141,7 @@ public class JobController extends Controller {
             JsonNode jobs = request().body().asJson();
             Logger.info(jobs.toString());
 
-            for (JsonNode node : jobs.withArray("jobs")) {
-                Analyse.INSTANCE.calculate(node);
-            }
+            Analyse.INSTANCE.analyse(jobs);
 
             return ok();
         });
@@ -231,8 +194,13 @@ public class JobController extends Controller {
                 String name = job.getName();
                 String language = "Deutsch";//job.getLayoutConfig().getLanguage().getCountry().getName();
                 String type = "Rechnung"; //job.getLayoutConfig().getName();
-                //TODO: add texts
-                addObjectToArray(arrayNode, name, language, type);
+                ArrayList<String> resultFragments = new ArrayList<String>();
+                for (ResultFragment fragment: tempResult.getResultFragments()){
+                    if(fragment.getType() == Type.TEXT){
+                        resultFragments.add(mapper.writeValueAsString(fragment));
+                    }
+                }
+                addObjectToArray(arrayNode, name, language, type, resultFragments);
             }
 
             return ok(result);
@@ -240,10 +208,11 @@ public class JobController extends Controller {
     }
 
     private void addObjectToArray(ArrayNode array, String name,
-                                  String language, String type){
+                                  String language, String type, ArrayList<String> resultFragments){
         array.addObject()
                 .put("name", name)
                 .put("language", language)
-                .put("type", type);
+                .put("type", type)
+                .put("fragments", Json.toJson(resultFragments));
     }
 }
