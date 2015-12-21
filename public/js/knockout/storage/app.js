@@ -105,13 +105,24 @@ function StoredJobViewModel(){
         console.log("get donwloadlinks");
         ko.utils.arrayForEach(self.storedJobs(), function(job) {
             if(job.selected()){
-                $.getJSON( "/json/getDownloadlink?id="+job.id,
+                $.getJSON( "/json/getDownloadlink?id="+job.id+"&ext="+job.fileType(),
                     function( json ) {
                         window.location = json.url;
                 });
 
             }
         });
+    }
+
+    self.isChecked = function(onlyOne){
+        var count = 0;
+        ko.utils.arrayForEach(self.storedJobs(), function(job) {
+            if(job.selected()){
+                count++;
+            }
+        });
+
+        return (onlyOne && count === 1) || (count > 0 && !onlyOne);
     }
 }
 

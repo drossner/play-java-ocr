@@ -11,6 +11,7 @@ import control.result.ResultFragment;
 import control.result.Type;
 import controllers.security.OcrDeadboltHandler;
 import modules.analyse.Analyse;
+import modules.analyse.AnalyseExport;
 import modules.cms.*;
 import modules.cms.data.FileType;
 import modules.database.*;
@@ -19,6 +20,9 @@ import modules.database.entities.Job;
 import modules.database.entities.LayoutConfig;
 import modules.database.entities.LayoutFragment;
 import modules.database.entities.User;
+import modules.export.Export;
+import modules.export.ExporterFactory;
+import modules.export.impl.DocxExport;
 import org.apache.chemistry.opencmis.client.api.Document;
 import play.db.jpa.JPA;
 import play.libs.F;
@@ -32,10 +36,8 @@ import views.html.ablage;
 import javax.inject.Inject;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 
 
 /**
@@ -44,10 +46,12 @@ import java.util.List;
 public class JobController extends Controller {
 
     private ImageHelper imageHelper;
+    private ConcurrentSkipListMap<String, File> downloadMap;
 
     @Inject
     public JobController(ImageHelper imageHelper){
         this.imageHelper = imageHelper;
+        this.downloadMap = new ConcurrentSkipListMap<>();
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
@@ -188,7 +192,10 @@ public class JobController extends Controller {
             //init root node
             ObjectNode result = Json.newObject();
             //add export filetypes TODO: dynamic loading
-            result.putArray("filetypes").add("docx").add("pdf").add("txt");
+            ArrayNode tempArrNode = result.putArray("filetypes");
+            for(String type : ExporterFactory.getImpls()){
+                tempArrNode.add(type);
+            }
             //init nodes array
             ArrayNode arrayNode = result.putArray("nodes");
 
@@ -304,12 +311,26 @@ public class JobController extends Controller {
         });
     }
 
-    public  Result getDownloadlink(int id) {
+    public  F.Promise<Result> getDownloadlink(int id, String ext) {
         Logger.debug("Downloadlink requested");
         ObjectNode result = Json.newObject();
-        result.put("url", "https://www.dropbox.com/s/7p0aq8b9ekorz62/Erste%20Schritte.pdf?dl=1");
 
-        return ok(result);
+        return F.Promise.promise(() -> {
+            modules.database.JobController jobController = new modules.database.JobController();
+            Job job = JPA.withTransaction(() -> jobController.selectEntity(Job.class, "id", id));
+            AnalyseExport ae = new AnalyseExport();
+            Export exporter = ExporterFactory.getExporter(ext);
+            if(exporter == null) return badRequest();
+            File toDownload = ae.getExportFile(exporter, job.getResultFile(), job.getName());
+            String filekey = addFileToMap(toDownload);
+            result.put("url", routes.JobController.downloadFile(filekey).url());
+            return ok(result);
+        });
+    }
+
+    public Result downloadFile(String fileid) {
+        File f = downloadMap.get(fileid);
+        return (f==null) ? badRequest() : ok(f);
     }
 
     private void addObjectToArray(ArrayNode array, int id, String name,
@@ -328,6 +349,13 @@ public class JobController extends Controller {
         }
 
                 //.put("fragments", Json.toJson(resultFragments));
+    }
+
+    private String addFileToMap(File f){
+        String uuid = UUID.randomUUID().toString();
+        String key = uuid+"&"+System.currentTimeMillis();
+        downloadMap.put(key, f);
+        return key;
     }
 
     public class LayoutArea{
