@@ -51,12 +51,12 @@ public class JobController extends Controller {
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
-    public Result getJobHistory(){
+    public Result getJobHistory(String uploadID){
         List<Job> jobs = null;
         String username = session().get("session");
 
         try {
-            jobs = new modules.database.JobController().getUnProcessedJobs(username);
+            jobs = new modules.database.JobController().getUnProcessedJobs(uploadID, username);
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }

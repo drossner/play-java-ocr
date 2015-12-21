@@ -2,6 +2,7 @@
  * Created by FRudi on 12.12.2015.
  */
 function loadData(jobViewModel){
+
     $.getJSON("/json/jobType", function(result){
 
         //pushing first entry
@@ -35,7 +36,8 @@ function loadData(jobViewModel){
         }
     });
 
-    $.getJSON("/json/jobHistory", function(result){
+    console.log("uploadid: " + uploadID);
+    $.getJSON("/json/jobHistory?id=" + uploadID, function(result){
         for(var i = 0; i < result.length; i++){
             console.log(result[i]);
             var job = new Job(i + 1, result[i], jobViewModel.languages()[0], jobViewModel.jobtypes()[0]);

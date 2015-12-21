@@ -70,17 +70,24 @@ public class JobController extends DatabaseController<Job, Object> {
         });
     }
 
-    public List<Job> getUnProcessedJobs(String username) throws Throwable {
+    public List<Job> getUnProcessedJobs(String uploadID, String username) throws Throwable {
         return JPA.withTransaction(() -> {
             ArrayList<String> whereColumn = new ArrayList<>();
             whereColumn.add("user");
             whereColumn.add("processed");
+            whereColumn.add("uploadId");
 
             ArrayList<Object> whereValue = new ArrayList<>();
             whereValue.add(new UserController().selectUserFromMail(username));
             whereValue.add(false);
+            whereValue.add(uploadID);
+
             return selectEntityList(Job.class, whereColumn, whereValue);
         });
+    }
+
+    public List<Job> getJobsByUploadId(String inUploadId) throws Throwable {
+        return JPA.withTransaction(() -> selectEntityList(Job.class, "uploadId", inUploadId));
     }
 
     private class Language{
