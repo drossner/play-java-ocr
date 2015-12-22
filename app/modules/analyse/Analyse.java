@@ -13,9 +13,9 @@ import modules.cms.CMSController;
 import modules.cms.FolderController;
 import modules.cms.SessionHolder;
 import modules.cms.data.FileType;
+import modules.database.LayoutConfigurationController;
 import modules.database.UserController;
-import modules.database.entities.Job;
-import modules.database.entities.User;
+import modules.database.entities.*;
 import modules.database.factory.SimpleLayoutConfigurationFactory;
 import modules.export.Export;
 import modules.export.impl.DocxExport;
@@ -224,13 +224,17 @@ public enum Analyse {
                     break;
             }
 
+            /*
             if(language.toLowerCase().equals("deutsch") || language.toLowerCase().equals("german")){
                 Logger.info("setting language deutsch");
                 type.getAnalyser().setValue("deu");
             }else{
                 Logger.info("setting language englisch");
                 type.getAnalyser().setValue("eng");
-            }
+            }*/
+
+            Logger.info("set language: " + CountryImpl.getEnumInstance(language).getIsoCode());
+            type.getAnalyser().setValue(CountryImpl.getEnumInstance(language).getIsoCode());
 
             double xStart = area.get("xStart").asDouble();
             double xEnd = area.get("xEnd").asDouble();
@@ -259,11 +263,19 @@ public enum Analyse {
         final String finalName = name;
         JPA.withTransaction(() -> {
             if(finalDbConfigurationFactory != null) {
-                finalDbConfigurationFactory.addPostProcessing(PostProcessingType.TEXT_CHECK);
-                finalDbConfigurationFactory.setUser(dbJob.getUser());
-                finalDbConfigurationFactory.setName(finalName);
+                LayoutConfig config = new LayoutConfigurationController().selectEntity(LayoutConfig.class, "name", finalName);
+                if(config == null){
+                    finalDbConfigurationFactory.addPostProcessing(PostProcessingType.TEXT_CHECK);
+                    finalDbConfigurationFactory.setUser(dbJob.getUser());
+                    finalDbConfigurationFactory.setName(finalName);
 
-                dbJob.setLayoutConfig(finalDbConfigurationFactory.build());
+                    CountryImpl lang = CountryImpl.getEnumInstance(language);
+                    finalDbConfigurationFactory.setLanguage(new UserController().selectEntity(Country.class, lang));
+
+                    dbJob.setLayoutConfig(finalDbConfigurationFactory.build());
+                }else{
+                    dbJob.setLayoutConfig(config);
+                }
             }else{
                 dbJob.setLayoutConfig(null);
             }
