@@ -224,7 +224,7 @@ public enum Analyse {
                     break;
             }
 
-            if(language.equals("Deutsch")){
+            if(language.toLowerCase().equals("deutsch") || language.toLowerCase().equals("german")){
                 Logger.info("setting language deutsch");
                 type.getAnalyser().setValue("deu");
             }else{
