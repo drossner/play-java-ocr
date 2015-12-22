@@ -303,12 +303,29 @@ public class JobController extends Controller {
     }
 
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
-    public F.Promise<Result> deleteJobs(){
-        JsonNode json = request().body().asJson();
-        return F.Promise.promise(() -> {
+    public F.Promise<Result> shareDocument(String folderid, int id, String ext){
+        String userEmail = session().get("session");
+
+        return F.Promise.promise(() -> JPA.withTransaction(() -> {
+            if(folderid == null || folderid.equals("")){
+                return badRequest();
+            }
+
+            modules.database.JobController controller = new modules.database.JobController();
+            Job job = controller.selectEntity(Job.class, "id", id);
+            CMSController cmsController;
+
+            if(!job.getUser().geteMail().equals(userEmail)){
+                return unauthorized();
+            }
+
+            cmsController = SessionHolder.getInstance().getController(job.getUser().getCmsAccount(), job.getUser().getCmsPassword());
+
+            File file = new AnalyseExport().getExportFile(ExporterFactory.getExporter(ext), job.getResultFile(), job.getName());
+            cmsController.createDocument(folderid, file, FileType.FILE.getType());
 
             return ok();
-        });
+        }));
     }
 
     public  F.Promise<Result> getDownloadlink(int id, String ext) {

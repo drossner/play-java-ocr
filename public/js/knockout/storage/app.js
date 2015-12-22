@@ -1,6 +1,12 @@
 /**
  * Daniel
  */
+
+//public js vars
+var folderID;
+var currJob;
+
+//knockout
 function Fragment(init){
     var self = this;
     self.fragment = ko.observable(init);
@@ -41,8 +47,6 @@ function StoredJob(id, name, language, type, initFiletype, initialFragments){
     }
 }
 
-//
-
 function StoredJobViewModel(){
     var self = this;
 
@@ -51,10 +55,13 @@ function StoredJobViewModel(){
     self.filetypes = ko.observableArray([]);
 
     self.currentJob = ko.observable(new StoredJob(-1, "dummy", "dummy", "dummy", "dummy", ["dummy1", "dummy2"]));
+    self.currentJob.subscribe(function(newValue) {
+        currJob = newValue;
+    });
 
     self.showModal = function(data){
         self.currentJob(data);
-        //self.currentJob.valueHasMutated();
+        //currentJob.valueHasMutated();
         console.log(data);
         console.log(self.currentJob());
         $("#afterWork").modal('show');
@@ -79,6 +86,8 @@ function StoredJobViewModel(){
     });
 
     self.showFolderModal = function(job){
+        self.currentJob(job);
+        console.log(self.currentJob());
         $("#folderModal").modal('show');
     };
 

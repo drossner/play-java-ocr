@@ -214,7 +214,9 @@ function JobHistoryViewModel(){
         $.ajax("/json/processJobs", {
             data: ko.toJSON({ jobs: self.jobs, combined: self.combined() }),
             type: "post", contentType: "application/json",
-            success: function(result) { console.log(result) }
+            success: function(result) {
+                console.log(result);
+            }
         });
     };
 

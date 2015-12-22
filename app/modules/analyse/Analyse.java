@@ -112,15 +112,20 @@ public enum Analyse {
 
             job = JPA.withTransaction(() -> {
                 Job dbJob = null;
-                for(String idString: idStrings) {
-                    int jobID = Integer.parseInt(idString);
+
+                for(int i = 0; i < idStrings.size() - 1; i++) {
+                    int jobID = Integer.parseInt(idStrings.get(i));
                     dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
-
-                    Logger.info("saving: " + doc.getId());
-                    dbJob.setResultFile(doc.getId());
-
-                    dbJob.setProcessed(true);
+                    JPA.em().remove(dbJob);
                 }
+
+                int jobID = Integer.parseInt(idStrings.get(idStrings.size() - 1));
+                dbJob = new modules.database.JobController().selectEntity(Job.class, "id", jobID);
+
+                Logger.info("saving: " + doc.getId());
+                dbJob.setResultFile(doc.getId());
+
+                dbJob.setProcessed(true);
                 return dbJob;
             });
         } catch (FileNotFoundException e) {
@@ -154,6 +159,8 @@ public enum Analyse {
 
         JsonNode preProcessor = job.get("preProcessing");
         JsonNode areas = job.get("areas");
+
+        String language = job.get("language").textValue();
 
         String name = null;
         if(job.get("templateName") != null){
@@ -215,6 +222,14 @@ public enum Analyse {
                 default:
                     type = AnalyseType.TEXT_FRAGMENT;
                     break;
+            }
+
+            if(language.equals("Deutsch")){
+                Logger.info("setting language deutsch");
+                type.getAnalyser().setValue("deu");
+            }else{
+                Logger.info("setting language englisch");
+                type.getAnalyser().setValue("eng");
             }
 
             double xStart = area.get("xStart").asDouble();

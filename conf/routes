@@ -39,6 +39,8 @@ GET          /json/checkFiles/:uploadId controllers.UploadController.checkFiles(
 POST         /json/saveUser          controllers.UserController.saveUser
 POST          /json/saveFragments     controllers.JobController.saveFragments
 
+GET           /json/shareDocument        controllers.JobController.shareDocument(folderid: String, id: Int, ext: String)
+
 # oAuth
 GET           /login                          controllers.AuthenticationController.login(method: Int)
 GET           /oauth2callback                 controllers.AuthenticationController.oauth(error: String ?=null, code: String ?=null, method: Int = 0)
