@@ -5,7 +5,7 @@ import modules.export.impl.OdtExport;
 import modules.export.impl.PdfExport;
 
 /**
- * Created by daniel on 21.12.15.
+ * Created by daniel and benedikt on 21.12.15.
  */
 public class ExporterFactory {
 
