@@ -1,5 +1,6 @@
 /**
- * Created by FRudi on 16.12.2015.
+ *
+ * Created by kurt on 16.12.2015.
  */
 function User(){
     var self = this;

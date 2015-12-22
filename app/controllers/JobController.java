@@ -16,10 +16,7 @@ import modules.cms.*;
 import modules.cms.data.FileType;
 import modules.database.*;
 import modules.database.UserController;
-import modules.database.entities.Job;
-import modules.database.entities.LayoutConfig;
-import modules.database.entities.LayoutFragment;
-import modules.database.entities.User;
+import modules.database.entities.*;
 import modules.export.Export;
 import modules.export.ExporterFactory;
 import modules.export.impl.DocxExport;
@@ -92,7 +89,7 @@ public class JobController extends Controller {
             LayoutFragmentController fragmentController = new LayoutFragmentController();
 
             List<LayoutConfig> tempLayoutConfigs = controller.selectEntityList(LayoutConfig.class, finalUser);
-            if(tempLayoutConfigs != null && tempLayoutConfigs.size() < 0){
+            if(tempLayoutConfigs != null && tempLayoutConfigs.size() > 0){
                 configs.addAll(tempLayoutConfigs);
             }
             configs.addAll(controller.selectEntityListColumnNull("user"));
@@ -229,9 +226,12 @@ public class JobController extends Controller {
                 control.result.Result tempResult = mapper.readValue(cmsController.readingJSON(job.getResultFile()), control.result.Result.class);
                 int id = job.getId();
                 String name = job.getName();
-                //TODO: load dynamic
-                String language = "Deutsch";//job.getLayoutConfig().getLanguage().getCountry().getName();
-                String type = "Rechnung"; //job.getLayoutConfig().getName();
+                String language = CountryImpl.GERMAN.getName();//job.getLayoutConfig().getLanguage().getCountry().getName();
+                String type = ""; //job.getLayoutConfig().getName();
+                if(job.getLayoutConfig() != null){
+                    language = job.getLayoutConfig().getLanguage().getCountry().getName();
+                    type = job.getLayoutConfig().getName();
+                }
                 ArrayList<String> resultFragments = new ArrayList<String>();
                 for (ResultFragment fragment: tempResult.getResultFragments()){
                     if(fragment.getType() == Type.TEXT){

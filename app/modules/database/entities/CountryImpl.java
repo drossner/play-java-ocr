@@ -22,7 +22,7 @@ public enum CountryImpl {
             return CountryImpl.ENGLISCH;
         }
 
-        return null;
+        return CountryImpl.GERMAN;
     }
 
     private String name;
