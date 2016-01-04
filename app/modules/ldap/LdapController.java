@@ -18,7 +18,6 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
 
 import modules.database.entities.User;
 import play.Logger;
@@ -35,8 +34,12 @@ public class LdapController {
     public static final String SECURITY_PRINCIPAL = "cn=admin";
     public static final String SECURITY_CREDENTIALS = "slapd101";
 
-    private Hashtable<String, String> env = new Hashtable<String, String>();
+    private Hashtable<String, String> env = new Hashtable<>();
 
+    /**
+     * constructor
+     * Set up the environment for creating the initial context
+     */
     public LdapController() {
         try {
             env.put(Context.INITIAL_CONTEXT_FACTORY, INITIAL_CONTEXT_FACTORY);
@@ -48,10 +51,19 @@ public class LdapController {
         }
     }
 
-
+    /**
+     * Insert a new user in the LDAP dictionary
+     * @param user who want to insert in the LDAP dictionary
+     * @return true only if the inserting successful
+     */
     public boolean insert(User user) {
         try {
+            /* Create the initial context
+               This object will be used to communicate with the server
+            */
             DirContext dctx = new InitialDirContext(env);
+
+            // set attributes for an new user
             Attributes matchAttrs = new BasicAttributes(true);
             matchAttrs.put(new BasicAttribute("uid", user.getCmsAccount()));
             matchAttrs.put(new BasicAttribute("cn", user.getCmsAccount()));
@@ -64,6 +76,7 @@ public class LdapController {
             matchAttrs.put(new BasicAttribute("objectclass", "organizationalPerson"));
             matchAttrs.put(new BasicAttribute("objectclass", "inetorgperson"));
 
+            // Add user in the group 'ou=groups'
             String name = "cn=" + user.getCmsAccount() + ",ou=groups";
             InitialDirContext iniDirContext = (InitialDirContext) dctx;
             iniDirContext.bind(name, dctx, matchAttrs);
@@ -76,9 +89,14 @@ public class LdapController {
         }
     }
 
+    /**
+     * Updates only the user password
+     * @param user who want to edit
+     * @return true only if the editing successful
+     */
     public boolean edit(User user) {
         try {
-
+            // Create the initial context
             DirContext ctx = new InitialDirContext(env);
             ModificationItem[] mods = new ModificationItem[1];
             Attribute mod0 = new BasicAttribute("userpassword", user.getCmsPassword());
@@ -94,9 +112,14 @@ public class LdapController {
         }
     }
 
+    /**
+     * remove an LDAP entry (User)
+     * @param user who want to delete
+     * @return true only if the deleting successful
+     */
     public boolean delete(User user) {
         try {
-
+            // Create the initial context
             DirContext ctx = new InitialDirContext(env);
             ctx.destroySubcontext("cn=" + user.getCmsAccount() + ",ou=groups");
             Logger.info("success deleting user:  "+user.getCmsAccount());
@@ -107,10 +130,17 @@ public class LdapController {
         }
     }
 
+    /**
+     * Search for an user in the ldap dictionary
+     * @param username who looking for
+     * @return true only if the user was found
+     */
     public boolean searchUser(String username) {
         try {
-
+            // Create the initial context
             DirContext ctx = new InitialDirContext(env);
+
+            // The search base is the level in the hierarchy that our search will start at.
             String base = "ou=groups";
 
             SearchControls sc = new SearchControls();
@@ -120,15 +150,6 @@ public class LdapController {
 
             NamingEnumeration results = ctx.search(base, filter, sc);
 
-
-            /*while (results.hasMore()) {
-                SearchResult sr = (SearchResult) results.next();
-                Attributes attrs = sr.getAttributes();
-
-                Attribute attr = attrs.get("cn");
-                if(attr != null)
-                    Logger.info("record found "+attr.get());
-            }*/
             ctx.close();
             return results.hasMore();
         } catch (Exception e) {
@@ -138,7 +159,11 @@ public class LdapController {
     }
 
 
-
+    /**
+     * encrypt an String with md5
+     * @param password of the current user
+     * @return md5 encrypted password in base64 with an identifier
+     */
     private String digestMd5(final String password) {
         String base64;
         try {
@@ -161,6 +186,12 @@ public class LdapController {
         return "{MD5}" + base64;
     }
 
+
+    /**
+     * encrypt an String with blowfish
+     * @param password of the current user
+     * @return blowfish encrypted password in base64 with an identifier
+     */
     private String encryptLdapPassword(String password) throws Exception {
         byte[] keyData = (password).getBytes();
         SecretKeySpec secretKeySpec = new SecretKeySpec(keyData, "Blowfish");
@@ -168,7 +199,6 @@ public class LdapController {
         cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
         byte[] hasil = cipher.doFinal(password.getBytes());
         String rc = "{CRYPT}"+ Base64.getEncoder().encodeToString(hasil);
-        rc= "{MD5}0lW/bn6RBGiEWKTO/rAgyg==";
         Logger.info(rc);
         return rc;
     }
