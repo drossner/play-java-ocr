@@ -48,6 +48,10 @@ public class AnalyseWorker{
         this.controller = new MainController();
     }
 
+    /**
+     * analysiert den gesetzten job und verwendet dafür die programmierte analyse bibliothek
+     * @return ergebnis der analyse der analyse bibliothek
+     */
     public Result run() {
         Logger.info("start analyse");
         Result result = controller.analyse(image, configuration);
@@ -59,7 +63,7 @@ public class AnalyseWorker{
         result.getResultFragments().forEach(fragment -> {
             if(fragment.getType() == Type.IMAGE) {
                 try {
-                    File imageFile = new File("./job_" + job.getUser().geteMail() + "_" + new Date() +
+                    File imageFile = new File("./job_" + job.getUser().geteMail() + "_" + new Date().getTime() +
                             "part_image" + fragment.getStartX() + fragment.getStartY() + ".json");
                     ImageIO.write((BufferedImage) fragment.getResult(), "png", imageFile);
                     Document doc = controller.createDocument(folderController.getUserWorkspaceFolder(),

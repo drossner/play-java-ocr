@@ -28,6 +28,15 @@ import views.html.*;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
+/**
+ * Class controlling main requests for
+ *  - index
+ *  - hochladen
+ *  - verwalten
+ *  - ablage
+ *  - hilfe
+ *  - template => wird in hochladen 2 für das selektieren der bereiche verwendet
+ */
 public class Application extends Controller {
 
     private CacheApi cache;
@@ -39,6 +48,10 @@ public class Application extends Controller {
         this.uploadHandler = uploadHandler;
     }
 
+    /**
+     * Gibt die gerenderte index.scala.html zurück, wenn man nicht eingeloggt ist, andernfalls die hochladen step 1 html Seite
+     * @return rendert Page
+     */
     public Result index() {
         if (session().get("session") != null) {
             return redirect(routes.Application.hochladen(1, null));
@@ -48,6 +61,14 @@ public class Application extends Controller {
         }
     }
 
+    /**
+     * gibt entweder hochladen step 1 oder 2 zurück, dies ist abhängig vom übergebenen step.
+     * upload id wird von step 1 an 2 übergeben und auf basis dieser id werden die in step 1 definierten dateien in die Datenbank gespeichert und daraufhin in der liste angezeigt
+     * diese seite wird nur angezeigt, wenn der Benutzer einen CMS Account erstellt hat und dadurch die Rolle in der Datenbank erhalten hat
+     * @param step gibt die seite an
+     * @param inUploadId gibt die id an, welche gerade hochgeladen wurden
+     * @return renderet page
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> hochladen(int step, String inUploadId) {
         final String userMail = session().get("session");
@@ -75,6 +96,12 @@ public class Application extends Controller {
         });
     }
 
+    /**
+     * gibt die werwalten.scala.html seite zurück
+     * showWarning definiert die anzeige einer warnung, dass zunächst ein cms account erstellt werden soll
+     * @param showWarning true => warnung wird angezeigt; false => warnung wird nicht angezeigt
+     * @return gibt die gerenderte seite zurück
+     */
     @SubjectPresent
     public F.Promise<Result> verwalten(boolean showWarning) {
         final String userMail = session().get("session");
@@ -88,59 +115,32 @@ public class Application extends Controller {
                 ));
     }
 
+    /**
+     * gibt die ablage.scala.html gerendert zurück
+     * diese seite wird nur angezeigt, wenn der Benutzer einen CMS Account erstellt hat und dadurch die Rolle in der Datenbank erhalten hat
+     * @return gerenderte seite
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result ablage() {
         return ok(ablage.render());
     }
 
+    /**
+     * gibt die hilfe.scala.html gerendert zurück
+     * @return gerenderte seite
+     */
     @SubjectPresent
     public Result hilfe() {
         return ok(hilfe.render());
     }
 
+    /**
+     * gibt template.scala.html zurück für das Iframe zur Konfiguration der untersuchenden Fragmente
+     * diese seite wird nur angezeigt, wenn der Benutzer einen CMS Account erstellt hat und dadurch die Rolle in der Datenbank erhalten hat
+     * @return
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result template() {
         return ok(views.html.modals.templating.render());
-    }
-
-   /* @Transactional
-    public Result testDatabase(){
-        User temp = new DataCreator().getUser();
-        JPA.em().persist(temp.getCountry());
-        JPA.em().persist(temp);
-
-        if(JPA.em().find(User.class, temp.getId()).geteMail().equals(temp.geteMail())){
-            return ok(database.render("erfolgreich!"));
-        }else{
-            return ok(database.render("nicht erfolgreich!"));
-        }
-    }
-
-    public class DataCreator{
-
-
-        public User getUser(){
-            User rc = new User();
-
-            Country c = new Country();
-            c.setName("Deutscheland");
-
-            rc.seteMail("test@test.de");
-            rc.setCountry(c);
-            rc.setPassword("test");
-
-            return rc;
-        }
-
-    } */
-
-    private class UserTemp {
-        public String language;
-        public String email;
-
-        public UserTemp(String email, String language) {
-            this.email = email;
-            this.language = language;
-        }
     }
 }

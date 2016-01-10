@@ -26,6 +26,10 @@ public class FolderController extends Controller {
 
     private CMSController cmsController;
 
+    /**
+     * gibt den kompletten Ordner-Baum des eingeloggten Benutzers aus dem CMS-System als JSON zurück
+     * @return JSON ordner baum
+     */
     public Result getUserFolders(){
         initSessionCMS();
 
@@ -62,6 +66,10 @@ public class FolderController extends Controller {
         return ok(Json.toJson(folders));
     }
 
+    /**
+     * gibt den kompletten von anderen Benutzern geteilten Ordner-Baum des eingeloggten Benutzers aus dem CMS-System als JSON zurück
+     * @return JSON ordner baum
+     */
     public Result getSharedFolders(){
         initSessionCMS();
 
@@ -90,6 +98,9 @@ public class FolderController extends Controller {
         return ok(Json.toJson(sharedFoldersTemp));
     }
 
+    /**
+     * initialisiert die CMS Session für den eingeloggten Benutzer mit den CMS-Daten aus der Datenbank
+     */
     private void initSessionCMS(){
         String username = session().get("session");
         User user = null;
