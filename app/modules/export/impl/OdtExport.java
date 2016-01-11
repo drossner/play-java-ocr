@@ -37,8 +37,8 @@ public class OdtExport implements Export {
     /**
      * Initialisiert ein Textdokument
      * @param path Speicherort
-     * @param fileName Names des Dokumentes
-     * @param landscape Orientation des Dokument
+     * @param fileName Names des Dokuments
+     * @param landscape Orientation des Dokuments
      */
     @Override
     public void initialize(String path, String fileName, boolean landscape) {

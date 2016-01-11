@@ -13,7 +13,7 @@ public interface Export {
      * Initialisiert ein Textdokument
      * @param path Speicherort
      * @param fileName Names des Dokumentes
-     * @param landscape Orientation des Dokument
+     * @param landscape Orientation des Dokuments
      */
     void initialize(String path, String fileName, boolean landscape);
 

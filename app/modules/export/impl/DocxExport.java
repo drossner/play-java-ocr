@@ -53,7 +53,7 @@ public class DocxExport implements Export {
     /**
      * Initialisiert ein Textdokument
      * @param path Speicherort
-     * @param fileName Names des Dokumentes
+     * @param fileName Names des Dokuments
      * @param landscape Orientation des Dokument
      */
     @Override
