@@ -4,6 +4,7 @@ import be.objectify.deadbolt.java.ConfigKeys;
 
 /**
  * Created by Daniel on 21.11.2015.
+ * Defines the default Deadbolt Handlerkey
  */
 public enum HandlerKeys
 {

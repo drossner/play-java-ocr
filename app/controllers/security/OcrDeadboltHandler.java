@@ -23,6 +23,8 @@ import java.util.Optional;
 
 /**
  * Created by Daniel on 21.11.2015.
+ * DeadboltHander used by this application. (Authentication Framework)
+ * Methods in this class are called via the framework annotations.
  */
 public class OcrDeadboltHandler extends AbstractDeadboltHandler {
 
@@ -37,14 +39,21 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
         this.uc = new UserController();
     }
 
+    /**
+     * Method performed before authentication check.
+     * @param context
+     * @return returning null means that everything is OK.  Return a real result if you want a redirect to a login page or somewhere else
+     */
     public F.Promise<Optional<Result>> beforeAuthCheck(final Http.Context context) {
-        // returning null means that everything is OK.  Return a real result if you want a redirect to a login page or
-        // somewhere else
         return F.Promise.promise(() -> Optional.ofNullable(null/*redirect(routes.Application.index())*/));
     }
 
+    /**
+     * Returns the current Subject (in this case: user)
+     * @param context
+     * @return Empty Promise if no Subject is present, otherwise the Subject
+     */
     public F.Promise<Optional<Subject>> getSubject(final Http.Context context) {
-        // in a real application, the user name would probably be in the session following a login process
         final String userMail = context.session().get("session");
         if (userMail == null) {
             return F.Promise.promise(Optional::empty);
@@ -66,11 +75,22 @@ public class OcrDeadboltHandler extends AbstractDeadboltHandler {
 
     }
 
+    /**
+     * Not used.
+     * @param context
+     * @return
+     */
     public F.Promise<Optional<DynamicResourceHandler>> getDynamicResourceHandler(final Http.Context context) {
         //return F.Promise.promise(() -> Optional.of(new MyDynamicResourceHandler()));
         return F.Promise.promise(Optional::empty);
     }
 
+    /**
+     * Method called after a failed authentication.
+     * @param context
+     * @param content optional String, specified by the framework annotations
+     * @return
+     */
     @Override
     public F.Promise<Result> onAuthFailure(final Http.Context context,
                                            final String content) {

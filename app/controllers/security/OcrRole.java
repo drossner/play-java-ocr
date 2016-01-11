@@ -4,6 +4,7 @@ import be.objectify.deadbolt.core.models.Role;
 
 /**
  * Created by Daniel on 25.11.2015.
+ * Roles used by Deadbolt in this application
  */
 public enum OcrRole implements Role {
     DEFAULT("DEFAULT"),
