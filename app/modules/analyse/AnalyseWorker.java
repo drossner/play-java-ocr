@@ -48,6 +48,12 @@ public class AnalyseWorker{
         this.controller = new MainController();
     }
 
+    /**
+     * analysiert das gesetzte Bild mit den gesetzten Configurationen und verwendet dafür die analyse bibliothek
+     * die bilder des ergebnisses werden im dms abgelegt und durch die id ersetzt
+     * Aufbau ist in dieser Form, sodass man sehr einfach Multithreading einbauen kann
+     * @return ergebnis der analyse der analyse bibliothek
+     */
     public Result run() {
         Logger.info("start analyse");
         Result result = controller.analyse(image, configuration);
@@ -59,7 +65,7 @@ public class AnalyseWorker{
         result.getResultFragments().forEach(fragment -> {
             if(fragment.getType() == Type.IMAGE) {
                 try {
-                    File imageFile = new File("./job_" + job.getUser().geteMail() + "_" + new Date() +
+                    File imageFile = new File("./job_" + job.getUser().geteMail() + "_" + new Date().getTime() +
                             "part_image" + fragment.getStartX() + fragment.getStartY() + ".json");
                     ImageIO.write((BufferedImage) fragment.getResult(), "png", imageFile);
                     Document doc = controller.createDocument(folderController.getUserWorkspaceFolder(),

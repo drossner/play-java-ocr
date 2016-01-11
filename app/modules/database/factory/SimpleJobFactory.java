@@ -28,6 +28,10 @@ public class SimpleJobFactory {
 
     private LayoutConfig layoutConfig;
 
+    /**
+     * speichert einen job in der Datenbank mit den vorher über die setter gesetzten werte und gibt diesen job zurück
+     * @return erstellter und in der datenbank abgelegter job
+     */
     public Job persist(){
         if(image != null && layoutConfig != null && job.getUser() != null){
             new JobController().persistJob(job, image, layoutConfig, job.getUser());
@@ -74,6 +78,17 @@ public class SimpleJobFactory {
         return this;
     }
 
+    /**
+     * ermöglicht das einfügen mehrerer jobs mit einem aufruf
+     * dafür muss eine liste an dateien mit der dazugehörigen uploadid und dem benutzer, dem die jobs hinzugefügt werden sollen, übergeben werden
+     * aus den dateien und der uploadid werden einzelne jobs erstellt und die bilder dem dms hinzugefügt
+     * zuletzt wird der erstellte job in der datenbank gespeichert und nachdem alle jobs erstellt wurden die liste dieser zurückgegeben
+     * @param files zu analysierende bilder
+     * @param inUploadId uploadid der analysierten bilder
+     * @param session benutzer-email zu selektion des benutzers
+     * @return liste der erstellen jobs
+     * @throws IOException
+     */
     public List<Job> createJobsJsonBulk(List<FileContainer> files, String inUploadId, String session) throws IOException {
         ArrayList<Job> rc = new ArrayList<>();
         CMSController cms = SessionHolder.getInstance().getController("ocr", "ocr");

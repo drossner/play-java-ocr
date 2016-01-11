@@ -18,6 +18,10 @@ public class SimpleLayoutConfigurationFactory {
     private ArrayList<PreProcessing> preProcessing = new ArrayList<>();
     private ArrayList<PostProcessing> postProcessing = new ArrayList<>();
 
+    /**
+     * setzt die fragments, pre- und postprocessoren der Layoutconfig und gibt diese dann zurück
+     * @return layout konfiguration mit den vorher gesetzten werten
+     */
     public LayoutConfig build (){
         LayoutConfigurationController controller = new LayoutConfigurationController();
 
@@ -41,6 +45,12 @@ public class SimpleLayoutConfigurationFactory {
         return layoutConfig;
     }
 
+    /**
+     * erzeugt ein neues postprocessing objekt aus dem package database und setzt den klassennamen des übergebenen postprocessors in die variable
+     * dieser wird der postprocessing liste hinzugefügt
+     * @param postProcessor postprocessor der hinzugefügt werden soll
+     * @return sich selbst, für method chain
+     */
     public SimpleLayoutConfigurationFactory addPostProcessing(PostProcessor postProcessor){
         PostProcessing post = new PostProcessing();
         post.setPostProcessor(postProcessor.toString());
@@ -49,6 +59,12 @@ public class SimpleLayoutConfigurationFactory {
         return this;
     }
 
+    /**
+     * erzeugt ein neues preprocessing objekt aus dem package database und setzt den klassennamen des übergebenen preprocessors in die variable
+     * dieser wird der preProcessing liste hinzugefügt
+     * @param preProcessor preProcessor der hinzugefügt werden soll
+     * @return sich selbst, für method chain
+     */
     public SimpleLayoutConfigurationFactory addPreProcessing(PreProcessor preProcessor){
         PreProcessing pre = new PreProcessing();
         pre.setPreProcessor(preProcessor.toString());
@@ -81,14 +97,25 @@ public class SimpleLayoutConfigurationFactory {
         return this;
     }
 
+    /**
+     * erzeugt eine neue layout fragment factory
+     * @return inner class simplelayoutfragmentfactory
+     */
     public SimpleLayoutFragmentFactory createLayoutFragmentFactory(){
         return new SimpleLayoutFragmentFactory();
     }
 
+    /**
+     * inner class für die erstellung eines layoutfragments
+     */
     public class SimpleLayoutFragmentFactory{
 
         LayoutFragment fragment = new LayoutFragment();
 
+        /**
+         * gibt das Layoutfragment mit den gesetzten werten zurück
+         * @return layoutfragment
+         */
         public LayoutFragment build(){
 
             return fragment;

@@ -27,6 +27,9 @@ public class InitDatabase extends DatabaseController {
         return INSTANCE;
     }*/
 
+    /**
+     * initialisiert die datenbank
+     */
     public InitDatabase(){
         Logger.info("Contructor Init Database");
         JPA.withTransaction(() -> {
@@ -40,6 +43,9 @@ public class InitDatabase extends DatabaseController {
         });
     }
 
+    /**
+     * erstellt die für jeden benutzer vorhandenen layoutconfigurationen/templates
+     */
     private void createLayoutConfig() {
         String name = "Brief";
 
@@ -94,6 +100,10 @@ public class InitDatabase extends DatabaseController {
 
     }
 
+    /**
+     * erstellt die für den benutzer verfügbaren sprachen in der datenbank
+     * dabei werden alle enumeration constanten der enum countryimpl abgespeichert
+     */
     private void createCountries(){
         Logger.info("creating countries");
         Object[] possibleValues = CountryImpl.GERMAN.getDeclaringClass().getEnumConstants();
@@ -113,6 +123,10 @@ public class InitDatabase extends DatabaseController {
         Logger.info("countries created");
     }
 
+    /**
+     * erstellt die für das system vorhandenen sicherheits relevaten rollen
+     * dabei werden alle enumeration constanten der enum ocrrole abgespeichert
+     */
     private void createSecurityRoles(){
         Logger.info("creating security roles");
         Object[] possibleValues = OcrRole.USER.getDeclaringClass().getEnumConstants();
@@ -130,6 +144,10 @@ public class InitDatabase extends DatabaseController {
         Logger.info("security roles created");
     }
 
+    /**
+     * erstellt die für das system vorhandenen sicherheits relevaten zugriffsrechte
+     * dabei werden alle enumeration constanten der enum ocrpermission abgespeichert
+     */
     private void createUserPermissions(){
         Logger.info("creating user permissions");
         Object[] possibleValues = OcrPermission.FULL.getDeclaringClass().getEnumConstants();

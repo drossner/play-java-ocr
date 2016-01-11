@@ -50,6 +50,13 @@ public enum Analyse {
         folderController = new FolderController(controller);
     }
 
+    /**
+     * analysiert die übergebenen Jobs, die in Json vorhanden sind und speichert sie anschließend in der Datenbank mit dem Benutzer, dessen email übergeben wurde
+     * Dabei werden die einzelnen Jobs ausgelesen und der calculate Methode übergeben
+     * @param jobs Jobs in JSON format
+     * @param username email des Benutzers der jobs
+     * @throws Throwable
+     */
     public void analyse(JsonNode jobs, String username) throws Throwable {
         AnalyseExport exporter = new AnalyseExport();
         ObjectMapper mapper = new ObjectMapper();
@@ -152,6 +159,11 @@ public enum Analyse {
         Logger.info("node complete processed");
     }
 
+    /**
+     * analysiert den übergebenen JSON job mittels des Analyseworker
+     * @param job zu analysierender job
+     * @return reuslt aus der analyse
+     */
     private Result calculate(JsonNode job) {
         Logger.info("analyse job: " + job);
         AnalyseWorker worker = new AnalyseWorker();

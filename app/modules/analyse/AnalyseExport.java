@@ -18,6 +18,13 @@ import java.util.ArrayList;
  */
 public class AnalyseExport {
 
+    /**
+     * gibt das Java File zurück, das das ergebnis der Berechnung enthält
+     * @param export Export implementierung für den Dateiexport in docx, odt, pdf
+     * @param docid id des dokuments im cms
+     * @param name datei name
+     * @return java file, das die exportierten daten enthält
+     */
     public File getExportFile (Export export, String docid, String name){
         CMSController cmsController = SessionHolder.getInstance().getController("ocr", "ocr");
         ObjectMapper mapper = new ObjectMapper();

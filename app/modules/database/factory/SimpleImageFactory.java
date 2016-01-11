@@ -8,12 +8,17 @@ import java.sql.SQLException;
 import java.util.Date;
 
 /**
+ * factory for method chain call
  * Created by florian on 02.12.15.
  */
 public class SimpleImageFactory {
 
     private Image image = new Image();
 
+    /**
+     * gibt das datenbank objekt image mit den gesetzten werten zurück
+     * @return datenbank objekt image
+     */
     public Image build(){
         return image;
     }

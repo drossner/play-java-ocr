@@ -34,6 +34,11 @@ public class UploadController extends Controller {
         this.uploadHandler = uploadHandler;
     }
 
+    /**
+     * überprüft, ob die dateien in dem datei container die richtigen dateiendungen haben
+     * @param uploadId id des datei containers
+     * @return ok result
+     */
     public Result checkFiles(String uploadId) {
         List<FileContainer> filelist = uploadHandler.loadFiles(uploadId);
         ObjectNode result = Json.newObject();
@@ -45,6 +50,11 @@ public class UploadController extends Controller {
         return ok(result);
     }
 
+    /**
+     * lädt die dateien aus dem datei container mit der upload id auf den server hoch
+     * @param uploadId id des datei containers
+     * @return ok result
+     */
     public F.Promise<Result> upload(String uploadId){
         Logger.debug("File upload started from " + session().get("session"));
         return F.Promise.promise(() -> {
@@ -66,6 +76,12 @@ public class UploadController extends Controller {
 
     }
 
+    /**
+     * löscht die datei mit dem übergebenen datei namen aus dem datei container, der die übergebene id hat
+     * @param uploadId datei container id
+     * @param file datei namen, der datei die gelöscht werden soll
+     * @return ok result
+     */
     public F.Promise<Result> delete(String uploadId, String file){
         return F.Promise.promise(() -> {
             ObjectNode result = uploadHandler.deleteFileFromCache(uploadId, file);
@@ -74,6 +90,12 @@ public class UploadController extends Controller {
         });
     }
 
+    /**
+     * gibt die datei mit dem datei namen aus dem datei container mit der übergebenen id zurück
+     * @param uploadId datei container id
+     * @param file datei namen
+     * @return file pfad
+     */
     public F.Promise<Result> getFile(String uploadId, String file){
         return F.Promise.promise(() -> {
             Optional<FileContainer> of = uploadHandler.loadFile(uploadId, file);
@@ -86,6 +108,12 @@ public class UploadController extends Controller {
         });
     }
 
+    /**
+     * gibt das vorschaubild der übergebenen datei aus dem datei container mit der übergebenen id zurück
+     * @param uploadId datei container id
+     * @param file datei name
+     * @return bild array stream
+     */
     public F.Promise<Result> getThumbnail(String uploadId, String file){
         return F.Promise.promise(() -> {
             ByteArrayOutputStream baos = null;

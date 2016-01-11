@@ -22,6 +22,12 @@ public class SimpleUserFactory{
     private ArrayList<OcrRole> roleList = new ArrayList<>();
     private ArrayList<OcrPermission> permissionList = new ArrayList<>();
 
+    /**
+     * speichert den user mit den gesetzten werten, rollen und rechten in der datenbank ab und gibt ihn danach zurück
+     * dabei wird überprüft, ob die email bereits vorhanden ist, wenn ja wird der benutzer aus der datenbank zurückgegeben, andersfalls wird der benutzer gespeichert
+     * wenn keine language/country übergeben wurde, wird deutsch als standard gesetzt
+     * @return erstellter benutzer
+     */
     public User persist(){
         Logger.info("persist user from simple user factory: " + user);
         UserController controller = new UserController();
@@ -29,7 +35,7 @@ public class SimpleUserFactory{
         if(controller.selectUserFromMail(user) == null){
             if(user.getCountry() == null){
                 Country country = new Country();
-                country.setCountry(CountryImpl.ENGLISCH);
+                country.setCountry(CountryImpl.GERMAN);
                 user.setCountry(country);
             }
             controller.persistUser(user, roleList, permissionList);

@@ -51,6 +51,12 @@ public class JobController extends Controller {
         this.downloadMap = new ConcurrentSkipListMap<>();
     }
 
+    /**
+     * gibt alle zu der upload id gehörenden unverarbeiteten Dateien zurück
+     * diese Methode kann nur aufgerufen werden, wenn der benutzer die CMS Daten eingegeben hat und die Rolle erhalten hat
+     * @param uploadID upload id der Dateien in hochladen step 1 angegeben
+     * @return json aller unverarbeiteten dateien
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobHistory(String uploadID){
         List<Job> jobs = null;
@@ -69,6 +75,11 @@ public class JobController extends Controller {
         }
     }
 
+    /**
+     * gibt alle Job Typen des Benutzers in JSON Format zurück
+     * diese Methode kann nur aufgerufen werden, wenn der benutzer die CMS Daten eingegeben hat und die Rolle erhalten hat
+     * @return JSON job typen Liste
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getJobTypes(){
         ArrayList<LayoutArea> rc = new ArrayList<>();
@@ -107,6 +118,10 @@ public class JobController extends Controller {
         return ok(Json.toJson(rc));
     }
 
+    /**
+     * gibt alle Sprachen des Benutzers in JSON Format zurück
+     * @return JSON sprachen Liste
+     */
     @SubjectPresent
     public Result getLanguages() throws Throwable {
         modules.database.JobController controller = new modules.database.JobController();
@@ -114,6 +129,14 @@ public class JobController extends Controller {
         return ok(Json.toJson(controller.getAllCountryLanguages()));
     }
 
+    /**
+     * gibt das Bild aus dem CMS zu der übergebenen job id zurück
+     * die bild id ist in der datenbank gespeichert und über das CMS abrufbar
+     * diese method ist nur abrufbar, wenn die CMS Rolle in der Datenbank gesetzt ist
+     * @param id id des gewollten jobs das das Bild enhält
+     * @return bild als bytearraystream
+     * @throws IOException
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public Result getImageFromJobID(int id) throws IOException {
         Logger.info("id erhalten: " + id);
@@ -147,6 +170,12 @@ public class JobController extends Controller {
         return internalServerError();
     }
 
+    /**
+     * löscht den zur id gehörenden job aus der datenbank
+     * diese method ist nur abrufbar, wenn die CMS Rolle in der Datenbank gesetzt ist
+     * @param id
+     * @return
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> delete(int id){
         String userEmail = session().get("session");
@@ -164,6 +193,11 @@ public class JobController extends Controller {
         }));
     }
 
+    /**
+     * holt sich die übergebenen Jobs aus dem Body des requests und startet mit diesen JSON daten den Analyse Prozess
+     * diese method ist nur abrufbar, wenn die CMS Rolle in der Datenbank gesetzt ist
+     * @return ok result wenn analyse erfolgreich, sonst die dazugehörige exception
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> process(){
         String username = session().get("session");
@@ -181,6 +215,11 @@ public class JobController extends Controller {
         Ablage
        _____________________________________ */
 
+    /**
+     * gibt alle analysierten Jobs des eingeloggten Benutzers im JSON Format zurück
+     * diese method ist nur abrufbar, wenn die CMS Rolle in der Datenbank gesetzt ist
+     * @return analysierte Jobs
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> getProcessedJobs(){
         String username = session().get("session");
@@ -245,6 +284,10 @@ public class JobController extends Controller {
         });
     }
 
+    /**
+     *
+     * @return
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> saveFragments() {
         Logger.debug("FragmentSave requested");
@@ -302,6 +345,13 @@ public class JobController extends Controller {
         });
     }
 
+    /**
+     * speichert das ergebnis des analysierten Jobs, der die übergebenen ID hat, in den geteilten Ordner mit der übergebenen ID und exportiert in dem übergebenen format
+     * @param folderid ID des geteilten Ordners
+     * @param id id des analysierten Jobs
+     * @param ext definiertes export format
+     * @return wenn erfolgreich ok result
+     */
     @Pattern(value="CMS", patternType = PatternType.EQUALITY, content = OcrDeadboltHandler.MISSING_CMS_PERMISSION)
     public F.Promise<Result> shareDocument(String folderid, int id, String ext){
         String userEmail = session().get("session");
