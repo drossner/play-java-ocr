@@ -54,7 +54,7 @@ public class FolderController {
 
 
     /**
-     * Gibt den kompletten Ordner-Baum, der sich in einem übergeordneten Ordner befinden zurück
+     * Gibt den kompletten Ordner-Baum zurück, der sich in einem übergeordneten Ordner befinden
      * @param parent übergeordente Ordner bei dem begonnen wird
      * @return eine Liste von Ordnern
      */
@@ -160,7 +160,7 @@ public class FolderController {
 
     /**
      * Gibt alle Folder und Dateien eines Ordners zurück
-     * @param target ElternOrdner
+     * @param target übergeordneter Ordner
      * @return Liste von Ordnern und Dateien
      */
     public ItemIterable<CmisObject> getChildren(Folder target) {
@@ -175,7 +175,7 @@ public class FolderController {
 
 
     /**
-     * Sucht alle geteilten Ordner mit Hilfe einer CMIS Query.
+     * Sucht alle geteilten Ordner eines Benutzers mit Hilfe einer CMIS Query.
      * Dabei werden der Admin, der Systembenutzer und der eigene Benutzer ausgeschlossen
      * @return eine Liste aller geteilten Ordner
      */
@@ -190,7 +190,7 @@ public class FolderController {
             whereStatment += "NOT dc:creator=" + result;
         }
 
-        // get the query name of cmis:objectId and cmis:parentId
+        // Holt den Abfragename vom cmis:objectId und cmis:parentId
         String myType = "cmis:folder";
         ObjectType type = cmsController.getSession().getTypeDefinition(myType);
         PropertyDefinition<?> objectIdPropDef = type.getPropertyDefinitions().get(PropertyIds.OBJECT_ID);
@@ -199,7 +199,7 @@ public class FolderController {
         PropertyDefinition<?> objectParendIdPropDef = type.getPropertyDefinitions().get(PropertyIds.PARENT_ID);
         String objectParentIdQueryName = objectParendIdPropDef.getQueryName();
 
-        // execute query
+        // führt Abfrage aus
         String queryString = "SELECT " + objectIdQueryName +", "+objectParentIdQueryName +" FROM " + type.getQueryName() + " WHERE " + whereStatment;
         ItemIterable<QueryResult> results = cmsController.getSession().query(queryString, false);
 
@@ -215,7 +215,7 @@ public class FolderController {
             parentIdList.add(parentId);
         }
 
-        // Delete duplicate parentID fpr parentIdList
+        // löscht alle duplicate mit selben parentID aus der Liste parentIdList
         HashSet hs = new HashSet();
         hs.addAll(parentIdList);
         parentIdList.clear();

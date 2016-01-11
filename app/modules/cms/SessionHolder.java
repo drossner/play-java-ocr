@@ -19,11 +19,12 @@ import scala.concurrent.duration.Duration;
  */
 public class SessionHolder {
 
-    //Set CMIS Endpoint
+    //Setzen des CMIS Endpunktes
     private static final String CMIS_ENDPOINT = "http://v22015042759824376.yourvserver.net:8080/nuxeo/atom/cmis";
+    //Definieren der Sesison Zeit
     private static final long MAX_SESSION_TIME = 1000*60*30;
 
-    // a Map, which contains all activ Sessions
+    // Map, welche alle aktiven Session enthält
     Map<String, CMSSession> sessions = new TreeMap<>();
 
     private static SessionHolder instance = null;
@@ -84,11 +85,11 @@ public class SessionHolder {
         SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
         Map<String, String> parameter = new HashMap<String, String>();
 
-        // Nutzer-Anmeldedaten
+        // Nutzer-Anmeldedaten setzen
         parameter.put(SessionParameter.USER, username);
         parameter.put(SessionParameter.PASSWORD, password);
 
-        // Verbindungseinstellungen
+        // Verbindungseinstellungen stezen
         parameter.put(SessionParameter.ATOMPUB_URL, CMIS_ENDPOINT);
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
 
@@ -96,7 +97,7 @@ public class SessionHolder {
         List<Repository> repositories = sessionFactory.getRepositories(parameter);
         Session session = repositories.get(0).createSession();
 
-        // Schalen den Sessioncache aus
+        // Schaltet den Sessioncache aus
         session.getDefaultContext().setCacheEnabled(false);
 
         return new CMSSession(username, session);
