@@ -16,23 +16,48 @@ public class FolderController {
 
     private CMSController cmsController;
 
+    /**
+     * Konstruktor
+     * initialisiert einen FolderController
+     * @param cmsController
+     */
     public FolderController(CMSController cmsController){
         this.cmsController = cmsController;
     }
 
+    /**
+     * gibt den Workspace-Ordner eines Benutzers zurück
+     * @return Ordner
+     */
     public Folder getUserWorkspaceFolder(){
         String workspacePath = "/default-domain/UserWorkspaces/"+ cmsController.getUsername();
         return  (Folder) cmsController.getSession().getObjectByPath(workspacePath);
     }
 
+    /**
+     * gibt einen Ordner auf Basis eines Pfades zurück
+     * @param folderpath Pfad des Ordners
+     * @return Ordner
+     */
     public Folder getFolderByPath(String folderpath){
         return (Folder) cmsController.getSession().getObjectByPath("/default-domain/UserWorkspaces/"+ folderpath);
     }
 
+    /**
+     * gibt einen Ordner auf Basis der Ordner-IDs zurück
+     * @param objectId ID des Ordners
+     * @return Ordner
+     */
     public Folder getFolderByObjectId(String objectId){
         return (Folder) cmsController.getSession().getObject(objectId);
     }
 
+
+    /**
+     * Gibt den kompletten Ordner-Baum, der sich in einem übergeordneten Ordner befinden zurück
+     * @param parent übergeordente Ordner bei dem begonnen wird
+     * @return eine Liste von Ordnern
+     */
     public ArrayList<Folder> getFolderTree(Folder parent) {
         ArrayList<Folder> folders = new ArrayList<Folder>();
         if (!cmsController.getSession().getRepositoryInfo().getCapabilities().isGetFolderTreeSupported()) {
@@ -43,12 +68,15 @@ public class FolderController {
             }
         }
 
-        printFolder(folders);
         return folders;
     }
 
 
-
+    /**
+     * Hilfsmethode für die Funktion "getFolderTree"
+     * @param tree
+     * @param folders
+     */
     private void printFolderTree(Tree<FileableCmisObject> tree, ArrayList<Folder> folders) {
         Logger.info("Folder " + tree.getItem().getName());
         folders.add((Folder) tree.getItem());
@@ -57,6 +85,12 @@ public class FolderController {
         }
     }
 
+    /**
+     * Erstellen eines Unterordners
+     * @param parentFolder Name des übergeordneten Ordners
+     * @param folderName Name des neuen Ordners
+     * @return gibt den neuen Ordner zurück
+     */
     public Folder createFolder(Folder parentFolder, String folderName) {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(PropertyIds.NAME, folderName);
@@ -66,6 +100,11 @@ public class FolderController {
         return newFolder;
     }
 
+    /**
+     * Löscht einen Ordner und alle sein Inhalte: Unterordner sowie Dokumente
+     * @param target der Ordner, der gelöscht werden soll
+     * @return true wenn es erfolgreich war
+     */
     public boolean deleteFolder(Folder target) {
         try {
             target.deleteTree(true, UnfileObject.DELETE, true);
@@ -77,6 +116,12 @@ public class FolderController {
         }
     }
 
+    /**
+     * Unbenennen eines Ordners
+     * @param folder des zu bearbeitenden Ordners
+     * @param newFolderName neuer Ordnername
+     * @return gibt den Ordner zurück
+     */
     public Folder updateFolder(Folder folder, String newFolderName){
         try {
             Map<String, Object> updateProperties = new HashMap<String, Object>();
@@ -90,6 +135,9 @@ public class FolderController {
         return null;
     }
 
+    /**
+     * Löschen des aller Inhalte eines Benutzers
+     */
     protected void deleteAllContent() {
         Folder rootFolder = getUserWorkspaceFolder();
         try {
@@ -110,6 +158,11 @@ public class FolderController {
         }
     }
 
+    /**
+     * Gibt alle Folder und Dateien eines Ordners zurück
+     * @param target ElternOrdner
+     * @return Liste von Ordnern und Dateien
+     */
     public ItemIterable<CmisObject> getChildren(Folder target) {
         ItemIterable<CmisObject> children = target.getChildren();
         int ret = 0;
@@ -121,6 +174,11 @@ public class FolderController {
     }
 
 
+    /**
+     * Sucht alle geteilten Ordner mit Hilfe einer CMIS Query.
+     * Dabei werden der Admin, der Systembenutzer und der eigene Benutzer ausgeschlossen
+     * @return eine Liste aller geteilten Ordner
+     */
     public ArrayList<Folder> listSharedFolder(){
         ArrayList<String> user = new ArrayList<String>();
         user.add("'system'"  + " AND ");
@@ -179,18 +237,6 @@ public class FolderController {
             }
         }
 
-        printFolder(sharedFolder);
-
         return sharedFolder;
-    }
-
-
-    private void printFolder(ArrayList<Folder> folders){
-        Logger.info("Folderlist: ");
-        for (Folder folder : folders){
-            String objectId = folder.getId();
-            String name = folder.getName();
-            System.out.println("Name: " +name + " ObjectId: "+  objectId);
-        }
     }
 }

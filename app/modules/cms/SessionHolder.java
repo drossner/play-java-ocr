@@ -19,29 +19,41 @@ import scala.concurrent.duration.Duration;
  */
 public class SessionHolder {
 
+    //Set CMIS Endpoint
     private static final String CMIS_ENDPOINT = "http://v22015042759824376.yourvserver.net:8080/nuxeo/atom/cmis";
     private static final long MAX_SESSION_TIME = 1000*60*30;
 
+    // a Map, which contains all activ Sessions
     Map<String, CMSSession> sessions = new TreeMap<>();
 
     private static SessionHolder instance = null;
 
+    /**
+     * Konstruktor
+     * Ruft die Methode zur Überprüfung einer Session; alle 30 Minuten auf
+     */
     private SessionHolder() {
-        //cleanup code
         Akka.system().scheduler().schedule(
-                Duration.create(30, TimeUnit.MINUTES),   // initial delay
-                Duration.create(30, TimeUnit.MINUTES),   // run job every 30 minutes
+                Duration.create(30, TimeUnit.MINUTES),
+                Duration.create(30, TimeUnit.MINUTES),   // Aufruf des Jobs alle 30 Minuten
                 (Runnable) this::checkSessions, Akka.system().dispatcher());
     }
 
+    // Ein Singelton Objekt
     public static SessionHolder getInstance() {
         if(instance == null) {
             instance = new SessionHolder();
-
         }
         return instance;
     }
 
+    /**
+     * Läd eine Session aus einer SessionMap.
+     * Falls keine Session existiert wird eine Neue erzeugt
+     * @param username  wird zur Authentifizieren benötigt
+     * @param password wird zur Authentifizieren benötigt
+     * @return CMSController
+     */
     public CMSController getController(String username, String password){
         if(sessions.containsKey(username)){
             CMSSession sessionCMS = sessions.get(username);
@@ -59,29 +71,42 @@ public class SessionHolder {
         }
     }
 
+
+
+    /**
+     * Erstellen einer Session und verbindet diese mit dem Repository
+     * @param username wird zur Authentifizieren benötigt
+     * @param password wird zur Authentifizieren benötigt
+     * @return eine neue CMSSession
+     */
     private CMSSession createSession(String username, String password) {
+        // default factory implementation
         SessionFactory sessionFactory = SessionFactoryImpl.newInstance();
         Map<String, String> parameter = new HashMap<String, String>();
+
+        // Nutzer-Anmeldedaten
         parameter.put(SessionParameter.USER, username);
         parameter.put(SessionParameter.PASSWORD, password);
+
+        // Verbindungseinstellungen
         parameter.put(SessionParameter.ATOMPUB_URL, CMIS_ENDPOINT);
         parameter.put(SessionParameter.BINDING_TYPE, BindingType.ATOMPUB.value());
 
-        // Use the first repository
+        // Nimmt das erste Repository
         List<Repository> repositories = sessionFactory.getRepositories(parameter);
         Session session = repositories.get(0).createSession();
 
-        // Turn off the session cache completely
+        // Schalen den Sessioncache aus
         session.getDefaultContext().setCacheEnabled(false);
 
         return new CMSSession(username, session);
     }
 
-    void disconnectSession(String sessionName) {
-        sessions.remove(sessionName);
-    }
 
-
+    /**
+     * Überprüft, ob eine Session noch valide ist.
+     * Wenn nicht wird diese nach einer definierten Zeit gelöscht.
+     */
     public void checkSessions() {
         for(String username: sessions.keySet()){
             if(new Date().getTime() - sessions.get(username).getLastActivity().getTime() > MAX_SESSION_TIME ){

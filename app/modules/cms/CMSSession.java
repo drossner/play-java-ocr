@@ -24,7 +24,12 @@ public class CMSSession {
 
     private Date lastActivity;
 
-
+    /**
+     * Konstruktor
+     * Initialisiert  eine CMSSession
+     * @param username
+     * @param session
+     */
     public CMSSession(String username, Session session){
         this.username = username;
         this.session = session;

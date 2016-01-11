@@ -37,8 +37,8 @@ public class LdapController {
     private Hashtable<String, String> env = new Hashtable<>();
 
     /**
-     * constructor
-     * Set up the environment for creating the initial context
+     * Konstruktor
+     * Initialisiert  die Umgebung zur Erstellung des  Initial Contextes
      */
     public LdapController() {
         try {
@@ -52,14 +52,14 @@ public class LdapController {
     }
 
     /**
-     * Insert a new user in the LDAP dictionary
-     * @param user who want to insert in the LDAP dictionary
-     * @return true only if the inserting successful
+     * Fügt einene neuen Nutzer in das LDAP Verzeichnis hinzu
+     * @param user ,welcher in das LDAP Verzeichnis hinzugefüge werden soll
+     * @return true wenn das Hinzufügen erflogreich war
      */
     public boolean insert(User user) {
         try {
-            /* Create the initial context
-               This object will be used to communicate with the server
+            /* Erstellt den Initial Context
+               Diese Objekt wird gebracht zm mit dem Server zu kommunizieren
             */
             DirContext dctx = new InitialDirContext(env);
 
@@ -76,7 +76,7 @@ public class LdapController {
             matchAttrs.put(new BasicAttribute("objectclass", "organizationalPerson"));
             matchAttrs.put(new BasicAttribute("objectclass", "inetorgperson"));
 
-            // Add user in the group 'ou=groups'
+            // Füg den User in die Gruppe: 'ou=groups' hinzu
             String name = "cn=" + user.getCmsAccount() + ",ou=groups";
             InitialDirContext iniDirContext = (InitialDirContext) dctx;
             iniDirContext.bind(name, dctx, matchAttrs);
@@ -90,13 +90,13 @@ public class LdapController {
     }
 
     /**
-     * Updates only the user password
-     * @param user who want to edit
-     * @return true only if the editing successful
+     * Bearbeitet des Benutzer (nur das Passwort)
+     * @param user welcher bearbeit werden soll
+     * @return true wenn das Editieren erfolgreich war
      */
     public boolean edit(User user) {
         try {
-            // Create the initial context
+            // Erstellung des initial context
             DirContext ctx = new InitialDirContext(env);
             ModificationItem[] mods = new ModificationItem[1];
             Attribute mod0 = new BasicAttribute("userpassword", user.getCmsPassword());
@@ -113,13 +113,13 @@ public class LdapController {
     }
 
     /**
-     * remove an LDAP entry (User)
-     * @param user who want to delete
-     * @return true only if the deleting successful
+     * Löscht einen LDAP-Eintrag (User)
+     * @param user, welcher gelöscht werden soll
+     * @return true wernn das Löschen erfolgreich war
      */
     public boolean delete(User user) {
         try {
-            // Create the initial context
+            // Erstellung des initial context
             DirContext ctx = new InitialDirContext(env);
             ctx.destroySubcontext("cn=" + user.getCmsAccount() + ",ou=groups");
             Logger.info("success deleting user:  "+user.getCmsAccount());
@@ -131,16 +131,16 @@ public class LdapController {
     }
 
     /**
-     * Search for an user in the ldap dictionary
-     * @param username who looking for
-     * @return true only if the user was found
+     * Sucht nach eien Nutezer in dem LDAP-Verzeichnis
+     * @param username nach dem gesucht werden soll
+     * @return true wenn der Nutzer gefunden worden ist
      */
     public boolean searchUser(String username) {
         try {
-            // Create the initial context
+            // Erstellung des initial context
             DirContext ctx = new InitialDirContext(env);
 
-            // The search base is the level in the hierarchy that our search will start at.
+            // Die Suche beschränkt sich nur auf diese Gruppe
             String base = "ou=groups";
 
             SearchControls sc = new SearchControls();
@@ -160,9 +160,9 @@ public class LdapController {
 
 
     /**
-     * encrypt an String with md5
-     * @param password of the current user
-     * @return md5 encrypted password in base64 with an identifier
+     * Verschlüsselung des Passwortes mittels md5
+     * @param password des aktuellen Nutzers
+     * @return md5 encrypted Passwort in base64 mit eine Identifier
      */
     private String digestMd5(final String password) {
         String base64;
@@ -188,9 +188,9 @@ public class LdapController {
 
 
     /**
-     * encrypt an String with blowfish
-     * @param password of the current user
-     * @return blowfish encrypted password in base64 with an identifier
+     * Verschlüsselung des Passwortes mittels blowfish
+     * @param password des aktuellen Nutzers
+     * @return blowfish encrypted Passwort in base64 mit eine Identifier
      */
     private String encryptLdapPassword(String password) throws Exception {
         byte[] keyData = (password).getBytes();
