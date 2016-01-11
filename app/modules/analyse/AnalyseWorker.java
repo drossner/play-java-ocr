@@ -49,7 +49,9 @@ public class AnalyseWorker{
     }
 
     /**
-     * analysiert den gesetzten job und verwendet dafür die programmierte analyse bibliothek
+     * analysiert das gesetzte Bild mit den gesetzten Configurationen und verwendet dafür die analyse bibliothek
+     * die bilder des ergebnisses werden im dms abgelegt und durch die id ersetzt
+     * Aufbau ist in dieser Form, sodass man sehr einfach Multithreading einbauen kann
      * @return ergebnis der analyse der analyse bibliothek
      */
     public Result run() {

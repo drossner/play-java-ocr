@@ -90,6 +90,7 @@ libraryDependencies ++= Seq(
   "org.apache.chemistry.opencmis" % "chemistry-opencmis-client-impl" % "0.13.0",
   "org.nuxeo.ecm.automation" % "nuxeo-automation-client" % "7.10"
 )
+
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
 routesGenerator := InjectedRoutesGenerator
