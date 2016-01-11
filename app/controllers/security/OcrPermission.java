@@ -4,6 +4,7 @@ import be.objectify.deadbolt.core.models.Permission;
 
 /**
  * Created by Daniel on 25.11.2015.
+ * Permissions used by Deadbolt in this application
  */
 public enum OcrPermission implements Permission {
     NONE("NONE"),

@@ -8,7 +8,6 @@ import modules.authentication.OAuthentication;
 import modules.database.entities.CountryImpl;
 import modules.database.factory.SimpleUserFactory;
 import modules.database.entities.User;
-import modules.ldap.LdapController;
 import play.Logger;
 import play.db.jpa.JPA;
 import play.libs.F.Promise;
@@ -16,14 +15,12 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.io.IOException;
 import java.security.InvalidParameterException;
 
 /**
  * Created by Daniel on 19.11.2015.
+ * Authentication Controller handles the authentication within the oAuth2 process for facebook and google+
  */
 public class AuthenticationController extends Controller{
     private final OAuthentication gp;
@@ -35,6 +32,13 @@ public class AuthenticationController extends Controller{
         this.fb = new FacebookAuthentication();
     }
 
+    /**
+     * Called by the oAuth2-Server (facebook/ google)
+     * @param error specific error code
+     * @param code oAuth2 code, which can be parsed to get the access_token, username, etc.
+     * @param method method identifier (0=google 1=facebook)
+     * @return
+     */
     public Promise<Result> oauth(String error, String code, int method) {
         if(error != null || code == null){
             Logger.info(request().body().asText());
@@ -44,6 +48,11 @@ public class AuthenticationController extends Controller{
         return Promise.promise(() -> authorize(code, method));
     }
 
+    /**
+     * Redirects the user to the oAuth2 URL (e.g. facebook/ google)
+     * @param method
+     * @return
+     */
     public Result login(int method) {
         try {
             OAuthentication oauth = getOAuthenticationImpl(method);
@@ -57,12 +66,22 @@ public class AuthenticationController extends Controller{
         }
     }
 
+    /**
+     * Invalidates the session.
+     * @return
+     */
     @SubjectPresent
     public Result logout(){
         session().clear();
         return redirect(routes.Application.index());
     }
 
+    /**
+     * Generates a AuthResponse containing userinformation from the oAuth content Provider
+     * @param code oAuth2 response code
+     * @param method method identifier (0=google 1=facebook)
+     * @return
+     */
     private Result authorize(String code, int method){
         try {
             OAuthentication oauth = getOAuthenticationImpl(method);
@@ -84,6 +103,11 @@ public class AuthenticationController extends Controller{
         }
     }
 
+    /**
+     * Authorizes the user after successful authentication as logged in user.
+     * @param authResponse
+     * @return
+     */
     private Result setUpSession(AuthResponse authResponse){
         //Is there a target present?
         String target = session().get("target");
@@ -112,6 +136,12 @@ public class AuthenticationController extends Controller{
         }
     }
 
+    /**
+     * Get the OAuthentication Implementation
+     * @param method method identifier (0=google 1=facebook)
+     * @return OAuthentication
+     * @throws InvalidParameterException
+     */
     private OAuthentication getOAuthenticationImpl(int method) throws InvalidParameterException{
         if(method == 0)return gp;
         else if(method == 1) return fb;
@@ -119,6 +149,10 @@ public class AuthenticationController extends Controller{
     }
 
 
+    /**
+     * Stublogin without facebook/ google or others (used for testing and not yes set up oAuth2 applications)
+     * @return
+     */
     public Promise<Result> stubLogin() {
         return Promise.promise(() -> JPA.withTransaction(() -> {
             String target = session().get("target");

@@ -57,6 +57,9 @@ public class UserController extends Controller {
         this.ldapController = ldapController;
     }
 
+    /**
+     * @return Json containing the user information, which is rendered by the client code
+     */
     public F.Promise<Result> getUser() {
         final String userMail = session().get("session");
         if (userMail == null) return F.Promise.promise(Results::unauthorized);
@@ -71,6 +74,10 @@ public class UserController extends Controller {
         );
     }
 
+    /**
+     * Receive a Json with modified user information and save them, if everything is correct.
+     * @return
+     */
     public F.Promise<Result> saveUser() {
         final String userMail = session().get("session");
         return F.Promise.promise(() ->
@@ -137,8 +144,8 @@ public class UserController extends Controller {
                 })
         );
     }
-
-    public Country getCountry(String value){
+    
+    private Country getCountry(String value){
         return new CountryController().selectEntity(Country.class, CountryImpl.getEnumInstance(value));
     }
 

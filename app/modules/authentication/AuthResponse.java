@@ -2,6 +2,7 @@ package modules.authentication;
 
 /**
  * Created by Daniel on 19.11.2015.
+ * DTO for encapsulating user information from the oAuth2 content provider.
  */
 public class AuthResponse {
 
