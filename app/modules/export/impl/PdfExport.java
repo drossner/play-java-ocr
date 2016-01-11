@@ -37,6 +37,12 @@ public class PdfExport implements Export {
 
     int pageCounter = 0;
 
+    /**
+     * Initialisiert ein Textdokument
+     * @param path Speicherort
+     * @param fileName Names des Dokumentes
+     * @param landscape Orientation des Dokument
+     */
     @Override
     public void initialize(String path, String fileName, boolean landscape) {
         this.path = path;
@@ -52,8 +58,14 @@ public class PdfExport implements Export {
 
     }
 
+    /**
+     * Setzt den Content in dem Textdokument
+     * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
+     */
     @Override
     public void export(ResultFragment fragment) {
+
+        // Definieren der Position des einzufügendes Elemtens
         float startX = (float) (rect.getWidth()/100 *fragment.getStartX()*100); //lo
         float startY = (float) (rect.getHeight()/100 *fragment.getStartY()*100); //lo
 
@@ -63,21 +75,7 @@ public class PdfExport implements Export {
         float width = endX - startX;
         float height = endY - startY;
 
-        /*
-        System.out.println("Gesamt-Höhe: " +rect.getHeight());
-        System.out.println("Gesamt-Breite: " + rect.getWidth());
-        System.out.println("");
-        System.out.println("width: " + width);
-        System.out.println("height: " + height);
-        System.out.println("startX: " + startX);
-        System.out.println("startY: " + startY);
-        System.out.println("");
-        System.out.println("endX: " + endX);
-        System.out.println("endY: " + endY);
-        System.out.println("");
-        System.out.println("");
-        */
-
+        // Überprüfung welcher Type von Content eingefügt werden soll
         if(fragment.getType() == Type.TEXT) {
             setText((String) fragment.getResult(), startX, rect.getHeight()-startY);
         } else {
@@ -85,12 +83,19 @@ public class PdfExport implements Export {
         }
     }
 
+    /**
+     * Seitenumbruch in einen Dokument erzeugen
+     */
     @Override
     public void newPage(){
         doc.addPage(new PDPage(PDPage.PAGE_SIZE_A4));
         pageCounter++;
     }
 
+    /**
+     * Speichert das Dokument in einer Datei ab
+     * @return das gespeicherte Dokument
+     */
     @Override
     public File finish() {
         File file = null;
@@ -108,6 +113,12 @@ public class PdfExport implements Export {
         return file;
     }
 
+    /**
+     * Fügt ein Test im Textdokument ein
+     * @param content Text
+     * @param startX Startposition des Textes
+     * @param startY Startposition des Textes
+     */
     private void setText(String content, float startX, float startY){
 
         PDPage test =  (PDPage) doc.getDocumentCatalog().getAllPages().get(pageCounter);
@@ -131,14 +142,20 @@ public class PdfExport implements Export {
         }
     }
 
-
+    /**
+     * Fügt ein Bild im Textdokument ein
+     * @param content Bild (BufferdImage)
+     * @param x Startposition des Textes
+     * @param y Startposition des Textes
+     * @param width Breite des Bildes
+     * @param height Höhe des Bildes
+     */
     private void setImage(BufferedImage content, float x, float y, float width, float height){
         PDXObjectImage image = null;
         try {
             image = new PDJpeg(doc, content);
 
             PDPageContentStream contentStream = new PDPageContentStream(doc, page, true, true);
-            //contentStream.drawImage(image,x,y);
             contentStream.drawXObject(image,x,y, width, height);
             contentStream.close();
 
@@ -148,22 +165,9 @@ public class PdfExport implements Export {
 
     }
 
-    private void drawRect(float startX, float startY, float width, float height){
-        PDPageContentStream cos = null;
-        try {
-            cos = new PDPageContentStream(doc, page);
-            cos.setNonStrokingColor(Color.RED);
-            cos.fillRect(startX, startY, width, height);
-            cos.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     /**
      * Break the text in lines
-     * @return
+     * @return String-Array
      */
     private ArrayList<String> getLines(String content) {
         ArrayList<String> result = new ArrayList<String>();
