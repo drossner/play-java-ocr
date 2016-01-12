@@ -3,6 +3,7 @@ package modules.export;
 /**
  * Created by Benedikt Linke on 12.12.15.
  */
+@Deprecated
 public class Fragment {
 
     double startX;

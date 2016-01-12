@@ -18,7 +18,7 @@ public interface Export {
     void initialize(String path, String fileName, boolean landscape);
 
     /**
-     * Setzt den Content in dem Textdokument
+     * fügt das übergebene Fragment dem Content in dem Textdokument hinzu
      * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
      */
     void export(ResultFragment fragment);
