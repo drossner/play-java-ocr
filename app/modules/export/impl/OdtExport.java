@@ -152,7 +152,7 @@ public class OdtExport implements Export {
     }
 
     /**
-     * Festlegen des Dokumentlayputs auf Basis einer Masterpage
+     * Festlegen des Dokumentlayouts auf Basis einer Masterpage
      * @param landscape definiert die Orintation eines Dokuments
      */
     private void configureMasterPage(boolean landscape){

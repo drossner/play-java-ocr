@@ -311,7 +311,7 @@ public class DocxExport implements Export {
 
 
     /**
-     * Festlegen des Dokumentlayputs
+     * Festlegen des Dokumentlayouts
      * @param landscape definiert die Orintation eines Dokuments
      */
     private void configureMasterPage(boolean landscape){
