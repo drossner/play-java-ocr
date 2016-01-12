@@ -15,10 +15,20 @@ import java.util.stream.Collectors;
  */
 public class RolesController extends DatabaseController<SecurityRole, OcrRole>{
 
+    /**
+     * selektiert alle persistierter securityroles, die in der übergebenen liste vorhanden sind
+     * @param roles liste von ocrroles, die selektiert werden sollten
+     * @return liste persistierter securityroles
+     */
     public List<SecurityRole> getRoles(List<OcrRole> roles) {
         return roles.stream().map(role -> (getRole(role))).collect(Collectors.toList());
     }
 
+    /**
+     * selektiert die persistierte securityrole zur übergebnene ocrrole
+     * @param role gesuchte ocrrole
+     * @return securityrole
+     */
     public SecurityRole getRole(OcrRole role){
         return selectEntity(SecurityRole.class, role);
     }

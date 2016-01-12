@@ -27,6 +27,12 @@ public class UserController extends DatabaseController<User, CountryImpl> {
         permissionController = new PermissionController();
     }
 
+    /**
+     * selektiert die übergebenen rollen und rechte aus der datenbank, übergibt diese dem user und speichert den user zuletzt ab
+     * @param user zu speichernder user
+     * @param roles rollen des benutzers
+     * @param permissions rechte des benutzer
+     */
     public void persistUser(User user, List<OcrRole> roles, List<OcrPermission> permissions){
         Logger.info("persist user: " + user);
         Country country = selectEntity(Country.class, user.getCountry().getCountry());
