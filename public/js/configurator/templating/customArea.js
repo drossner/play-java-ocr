@@ -15,6 +15,8 @@ $(document).ready(function () {
 // Log the quantity of selections
 function debugQtyAreas (event, id, areas) {
     console.log(areas.length + " areas", arguments);
+
+    // Übergibt die areas den ParentFrame (aus dem Iframe an das Modal)
     window.parent.getValuesForInput(areas[id]);
     window.parent.getValuesOfSelectedArea(areas);
 }
@@ -43,6 +45,10 @@ function debugQtyAreas (event, id, areas) {
 
 };*/
 
+/**
+ * Erstellt ein Auswahlfeld, wobei die Größe zufällig ist. Der Übergabeparameter definiert die Art eines Feldes (Meta, Bild oder Text)
+ * @param type Art des selektieren Feldes
+ */
 function createNewArea(type){
     var areaOptions = {
         x: Math.floor((Math.random() * 200)),
@@ -82,9 +88,14 @@ function areaToString(area) {
 
 function output(text) {
     window.parent.displayAreas(text);
-
 }
 
+/**
+ * Errechnet die Größe des Canvas im Step 2
+ * @param imageBase64 Bild aus Step 1
+ * @param canvasHeight Höhe des Bildes aus Step 1
+ * @param canvasWidth Höhe des Bildes aus Step 1
+ */
 function loadImageForSecondStep(imageBase64, canvasHeight, canvasWidth){
     this.canvasHeight = canvasHeight;
     this.canvasWidth = canvasWidth;

@@ -23,7 +23,12 @@ function PreProcessing() {
         return $('#canvas').width();
     };
 
+
     $(function () {
+        /**
+         * Iteriert über die alles Slieder, holt sich dabei die einstellunge und fügt diese beim
+         * caman Objekt an
+         */
         $('.slider').each(function () {
             var op = $(this).attr('id');
 
@@ -73,6 +78,9 @@ function PreProcessing() {
 
     });
 
+    /**
+     * fügt die Werte der Slieders dem Camam Objekt hinzu
+     */
     self.applyFilters = function() {
         self.caman.revert(false);
 
