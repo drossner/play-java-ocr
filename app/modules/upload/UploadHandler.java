@@ -61,7 +61,7 @@ public class UploadHandler {
     }
 
     /**
-     * invalidates the given uploadId by setting the timestamp to -1
+     * Invalidates the given uploadId by setting the timestamp to -1
      * @param uploadId
      */
     public void invalidateUploadId(String uploadId){
@@ -98,6 +98,13 @@ public class UploadHandler {
         return System.currentTimeMillis() - timestamp < MAXIMAL_CACHE_TIME;
     }
 
+    /**
+     * Add the uploaded files to the cache, referenced with the given upload id (uuid)
+     * @param uploadId uuid
+     * @param fileParts http fileparts
+     * @return json response for the jquery upload plugin (client)
+     * @throws IOException
+     */
     public ObjectNode addFilesToCache(final String uploadId, List<FilePart> fileParts) throws IOException {
         //Preparing Json Answer
         ObjectNode result = Json.newObject();
@@ -143,6 +150,12 @@ public class UploadHandler {
         return result;
     }
 
+    /**
+     * Deletes uploaded files from cache.
+     * @param uploadId upload uuid
+     * @param filename file to delete
+     * @return json response for the jquery upload plugin (client)
+     */
     public ObjectNode deleteFileFromCache(final String uploadId, String filename){
         //Preparing Json Answer
         ObjectNode result = Json.newObject();
@@ -163,6 +176,13 @@ public class UploadHandler {
         return result;
     }
 
+    /**
+     * Generates a Thumbnail of a given image file using a {@see ImageHelper}
+     * @param uploadId upload uuid
+     * @param filename file
+     * @return the thumbnail
+     * @throws IOException
+     */
     public ByteArrayOutputStream getThumbnail(final String uploadId, String filename) throws IOException {
         Optional<FileContainer> of = loadFile(uploadId, filename);
         if(of.isPresent()){
@@ -173,6 +193,12 @@ public class UploadHandler {
         return null; //handled in controller
     }
 
+    /**
+     * Loads a specific {@see FileContainer} from the cache.
+     * @param uploadId upload uuid
+     * @param filename filename
+     * @return Optional FileContainer
+     */
     public Optional<FileContainer> loadFile(final String uploadId, String filename){
         CopyOnWriteArrayList<FileContainer> cachedFiles = fileList.get(uploadId);
         FileContainer rcFile = null;
@@ -183,6 +209,11 @@ public class UploadHandler {
         return Optional.ofNullable(rcFile);
     }
 
+    /**
+     * Load all FileContainer associated with the given upload id
+     * @param uploadId upload uuid
+     * @return all files
+     */
     public List<FileContainer> loadFiles(final String uploadId){
         return fileList.get(uploadId);
     }
@@ -199,6 +230,9 @@ public class UploadHandler {
         return routes.UploadController.delete(uploadId, f.getName()).path();
     }
 
+    /**
+     * Deletes all invalid Files from the HDD and the cache.
+     */
     private void cleanup(){
         Iterator<Map.Entry<String, Long>> it = uploadIds.entrySet().iterator();
         while (it.hasNext()){

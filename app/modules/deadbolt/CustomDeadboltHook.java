@@ -11,6 +11,7 @@ import javax.inject.Singleton;
 
 /**
  * Created by Daniel on 21.11.2015.
+ * Publishes the DeadboltHandlerCache to Play
  */
 public class CustomDeadboltHook extends Module
 {

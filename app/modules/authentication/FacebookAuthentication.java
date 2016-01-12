@@ -12,6 +12,7 @@ import java.io.IOException;
 
 /**
  * Created by Daniel on 20.11.2015.
+ * Facebook implementation
  */
 public class FacebookAuthentication implements  OAuthentication {
     private OAuthService oAuthService;
@@ -28,12 +29,16 @@ public class FacebookAuthentication implements  OAuthentication {
     }
 
 
-    @Override
+    /**
+     * @inheritDoc
+     */
     public String getAuthURL() throws IOException {
         return oAuthService.getAuthorizationUrl(null);
     }
 
-    @Override
+    /**
+     * @inheritDoc
+     */
     public AuthResponse exchangeToken(String code) throws IOException {
         final Verifier verifier = new Verifier(code);
         final Token accessToken = oAuthService.getAccessToken(null, verifier);
