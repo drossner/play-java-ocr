@@ -34,7 +34,12 @@ public class OdtExport implements Export {
     TextDocument document;
     MasterPage master;
 
-
+    /**
+     * Initialisiert ein Textdokument
+     * @param path Speicherort
+     * @param fileName Names des Dokuments
+     * @param landscape Orientation des Dokuments
+     */
     @Override
     public void initialize(String path, String fileName, boolean landscape) {
         this.path = path;
@@ -50,15 +55,17 @@ public class OdtExport implements Export {
 
     }
 
+    /**
+     * Setzt den Content in dem Textdokument
+     * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
+     */
     @Override
     public void export(ResultFragment fragment) {
 
+        // Definieren der Position des einzufügendes Elemtens
+
         double pageHeight = master.getPageHeight()/10;
         double pageWidth = master.getPageWidth()/10;
-
-        System.out.println("Höhe: "+ pageHeight + "cm");
-        System.out.println("Breite: "+ pageWidth + "cm");
-
 
         double startX = pageWidth/100 * (fragment.getStartX() * 100);
         double startY = pageHeight/100 * (fragment.getStartY() * 100);
@@ -67,13 +74,7 @@ public class OdtExport implements Export {
         double width = endX - startX;
         double height = endY - startY;
 
-        System.out.println("startX: "+ startX + "cm");
-        System.out.println("endX: "+ endX + "cm");
-        System.out.println("startY: "+ startY + "cm");
-        System.out.println("heigth: "+ height + "cm");
-        System.out.println("width: "+ width + "cm");
-
-
+        // Überprüfung welcher Type von Content eingefügt werden soll
         if(fragment.getType() == control.result.Type.TEXT) {
             setText((String) fragment.getResult(),startX, startY, width, height);
         }else{
@@ -82,11 +83,18 @@ public class OdtExport implements Export {
 
     }
 
+    /**
+     * Seitenumbruch in einen Dokument erzeugen
+     */
     @Override
     public void newPage() {
         document.addPageBreak();
     }
 
+    /**
+     * Speichert das Dokument in einer Datei ab
+     * @return das gespeicherte Dokument
+     */
     @Override
     public File finish() {
         File file = null;
@@ -100,6 +108,12 @@ public class OdtExport implements Export {
         return file;
     }
 
+    /**
+     * Fügt ein Test im Textdokument ein
+     * @param content Text
+     * @param startX Startposition des Textes
+     * @param startY Startposition des Textes
+     */
     private void setText(String content, double startX, double startY, double width, double height){
         // add paragraph
 
@@ -110,9 +124,15 @@ public class OdtExport implements Export {
     }
 
 
+    /**
+     * Fügt ein Bild im Textdokument ein
+     * @param content Bild (BufferdImage)
+     * @param startX Startposition des Textes
+     * @param startY Startposition des Textes
+     * @param width Breite des Bildes
+     * @param height Höhe des Bildes
+     */
     private void setImage(BufferedImage content, double startX, double startY, double width, double height){
-
-        // add image
         try {
             File file = new File(path + new Date().getTime() +"result.png");
             ImageIO.write(content, "png", file);
@@ -131,8 +151,11 @@ public class OdtExport implements Export {
         }
     }
 
+    /**
+     * Festlegen des Dokumentlayouts auf Basis einer Masterpage
+     * @param landscape definiert die Orintation eines Dokuments
+     */
     private void configureMasterPage(boolean landscape){
-        //create a customized page style with specified width, height, margins and other properties.
         try {
             master.setPageWidth(210);
 

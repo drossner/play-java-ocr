@@ -21,18 +21,43 @@ public class DocumentController {
 
     private CMSController cmsController;
 
+    /**
+     * Konstruktor
+     * initialisiert einen DocumentController
+     * @param cmsController
+     */
     public DocumentController(CMSController cmsController){
         this.cmsController = cmsController;
     }
 
+    /**
+     * gibt ein bestimmtes Dokument aus dem CMIS Repository zurück
+     * @param parentFolder der Ordner in dem sich das Dokument befindet
+     * @param fileName Name des Dokuments
+     * @return document
+     */
     public Document getDocumentByPath(Folder parentFolder, String fileName){
         return (Document) cmsController.getSession().getObjectByPath(parentFolder.getPath()+ "/"+ fileName);
     }
 
+    /**
+     * gibt ein bestimmtes Dokument aus dem CMIS Repository zurück
+     * @param documentId  ID des zurückzugebenden Dokuments
+     * @return document
+     */
     public Document getDocumentById(String documentId){
         return (Document) cmsController.getSession().getObject(documentId);
     }
 
+    /**
+     * Erstellung eines Dokuments in dem CMIS Repository auf Basis eines bereits existierenden Dokuments.
+     * Das Dokument existiert entweder nur Temporär oder in einem Verzeichnis des Betriebsystems
+     * @param parentFolder Zielordner in dem das Dokument erstellt werden soll
+     * @param file das existierde Dokument
+     * @param fileType Art des Dokuments
+     * @return document, das erstellte Dokument aus dem CMIS Repository
+     * @throws FileNotFoundException
+     */
     public Document createDocument(Folder parentFolder, File file, String fileType) throws FileNotFoundException {
         String fileName = file.getName();
 
@@ -59,6 +84,11 @@ public class DocumentController {
         return document;
     }
 
+    /**
+     * Löscht ein Dokument aus dem CMIS Repositoy
+     * @param object  id des zulöschenden Dokuments
+     * @return ture wenn der Löschvorgang erfolgreich war
+     */
     public boolean deleteDocument(String object){
         try {
             Document document = (Document) cmsController.getSession().getObject(object);
@@ -71,6 +101,12 @@ public class DocumentController {
         }
     }
 
+    /**
+     * Läd ein Dokument aus dem CMIS Repository
+     * @param object id des Dokuments
+     * @param destinationPath Pfad in dem das geladenen Dokument gespeichert werden soll
+     * @return true wenn der Download erfolgreich war
+     */
     public boolean downloadDocument(String object, String destinationPath){
         try {
             FileUtils.download((Document) cmsController.getSession().getObject(object), destinationPath);
@@ -81,9 +117,14 @@ public class DocumentController {
         return false;
     }
 
+
+    /**
+     * Liest ein (Dokument)Bild aus dem CMIS Repository und erstellt ein BufferdImage
+     * @param object id des (Dokument) Bildes
+     * @return  Bufferedimage
+     */
     public BufferedImage readingImage(String object){
         Document document = (Document) cmsController.getSession().getObject(object);
-        String filename = document.getName();
         InputStream stream = document.getContentStream().getStream();
 
         BufferedImage bufferedImage = null;
@@ -96,9 +137,13 @@ public class DocumentController {
         return bufferedImage;
     }
 
+    /**
+     * Läd eine JSON Datei aus dem CMIS Repository
+     * @param object id der JSON Datei
+     * @return eine JSON Datei vom CMIS Repostory als Stream
+     */
     public InputStream readingJSON(String object){
         Document document = (Document) cmsController.getSession().getObject(object);
-        String filename = document.getName();
         InputStream stream = document.getContentStream().getStream();
         return stream;
     }

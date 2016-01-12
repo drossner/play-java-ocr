@@ -50,6 +50,12 @@ public class DocxExport implements Export {
     PageDimensions pageDimensions;
 
 
+    /**
+     * Initialisiert ein Textdokument
+     * @param path Speicherort
+     * @param fileName Names des Dokuments
+     * @param landscape Orientation des Dokument
+     */
     @Override
     public void initialize(String path, String fileName, boolean landscape) {
         this.path = path;
@@ -68,6 +74,10 @@ public class DocxExport implements Export {
 
     }
 
+    /**
+     * Setzt den Content in dem Textdokument
+     * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
+     */
     @Override
     public void export(ResultFragment fragment) {
         double startX = fragment.getStartX() * 1000;
@@ -75,7 +85,7 @@ public class DocxExport implements Export {
         double width = (fragment.getEndX() - fragment.getStartX()) * 1000;
         double height = (fragment.getEndY() - fragment.getStartY()) * 1000;
 
-
+        // Definieren der Position des einzufügendes Elemtens
         String style ="position:absolute;" +
                 "mso-wrap-style:square;" +
                 "mso-width-percent:"+ width + ";" +
@@ -86,7 +96,7 @@ public class DocxExport implements Export {
         P p = new P();
         mainDocumentPart.addObject(p);
 
-
+        // Überprüfung welcher Type von Content eingefügt werden soll
         if(fragment.getType() == Type.TEXT) {
             R r = Context.getWmlObjectFactory().createR();
             r.getContent().add(createTextBox(style, createContent(((String) fragment.getResult()))));
@@ -104,7 +114,7 @@ public class DocxExport implements Export {
     }
 
     /**
-     * Adds a page break to the document.
+     * Seitenumbruch in einen Dokument erzeugen
      */
     @Override
     public void newPage() {
@@ -120,6 +130,10 @@ public class DocxExport implements Export {
         }
     }
 
+    /**
+     * Speichert das Dokumente in einer Datei
+     * @return das gespeichert Dokument
+     */
     @Override
     public File finish() {
         File file = new File(fileName + ".docx");
@@ -133,7 +147,12 @@ public class DocxExport implements Export {
         return file;
     }
 
-    // Create a TextBox inside a Picture
+    /**
+     *  Erstellung einer Textbox innerhalb eines Pictures-Element
+     *  @param style definiert die Position der TexBox
+     *  @param textboxContent Inhalt der Textbox als Paragraph
+     *  @return ein Word Bildelement
+     */
     private JAXBElement createTextBox(String style, P textboxContent) {
         org.docx4j.wml.ObjectFactory wmlObjectFactory = new org.docx4j.wml.ObjectFactory();
 
@@ -141,17 +160,17 @@ public class DocxExport implements Export {
         JAXBElement<org.docx4j.wml.Pict> pictWrapped = wmlObjectFactory.createRPict(pict);
         org.docx4j.vml.ObjectFactory vmlObjectFactory = new org.docx4j.vml.ObjectFactory();
 
-        // Create object for shapetype (wrapped in JAXBElement)
+        // Erstellung eines Shapetype (wrapped in einem JAXBElement)
         CTShapetype shapetype = vmlObjectFactory.createCTShapetype();
         JAXBElement<org.docx4j.vml.CTShapetype> shapetypeWrapped = vmlObjectFactory.createShapetype(shapetype);
         pict.getAnyAndAny().add( shapetypeWrapped);
 
-        //define a textfield instead of autoform
+        //Definieren eses Textfieldes anstatt der Autoform
         shapetype.setInsetmode(org.docx4j.vml.officedrawing.STInsetMode.CUSTOM);
         shapetype.setSpt( new Float(202.0) );
         shapetype.setConnectortype(org.docx4j.vml.officedrawing.STConnectorType.STRAIGHT);
 
-        // Create object for path (wrapped in JAXBElement)
+        // Erstellung eines Path (wrapped in einem JAXBElement)
         CTPath path = vmlObjectFactory.createCTPath();
         JAXBElement<org.docx4j.vml.CTPath> pathWrapped = vmlObjectFactory.createPath(path);
         shapetype.getEGShapeElements().add( pathWrapped);
@@ -162,7 +181,7 @@ public class DocxExport implements Export {
         shapetype.setHralign(org.docx4j.vml.officedrawing.STHrAlign.LEFT);
         shapetype.setPath( "m,l,21600r21600,l21600,xe");
 
-        // Create object for shape (wrapped in JAXBElement)
+        // Zeichenflächen Objekt erstellen (wrapped in einem JAXBElement)
         CTShape shape = vmlObjectFactory.createCTShape();
         JAXBElement<org.docx4j.vml.CTShape> shapeWrapped = vmlObjectFactory.createShape(shape);
 
@@ -171,18 +190,18 @@ public class DocxExport implements Export {
         shape.setStyle( style);
         shape.setSpid( "_x0000_s1026");
 
-        // Remove the Stroke around textfield
+        // Entferenn der Kontur um das später Textfeld
         shape.setStroked(STTrueFalse.FALSE);
         shape.setFilled(STTrueFalse.FALSE);
 
 
-        // Create object for textbox (wrapped in JAXBElement)
+        // Erstellung einer Textbox, welche durch eine JAXElement gerwrappd wird
         CTTextbox textbox = vmlObjectFactory.createCTTextbox();
         JAXBElement<org.docx4j.vml.CTTextbox> textboxWrapped = vmlObjectFactory.createTextbox(textbox);
         shape.getEGShapeElements().add( textboxWrapped);
         textbox.setStyle( style);
         textbox.setInsetmode(org.docx4j.vml.officedrawing.STInsetMode.CUSTOM);
-        // Create object for txbxContent
+        // Erstellung des TexboxContent Objekt
         CTTxbxContent txbxcontent = wmlObjectFactory.createCTTxbxContent();
         textbox.setTxbxContent(txbxcontent);
 
@@ -193,10 +212,14 @@ public class DocxExport implements Export {
         shape.setVmlId("TextBox");
         shape.setHralign(org.docx4j.vml.officedrawing.STHrAlign.LEFT);
         shape.setType( "#_x0000_t202");
-        // <w10:wrap type="topAndBottom"/>
         return pictWrapped;
     }
 
+    /**
+     * Den Inhalt für eine Textbox als Paragraph erstellen
+     * @param textContent Inhalt der Textbox
+     * @return Paragraph
+     */
     private P createContent(String textContent) {
 
         P p = Context.getWmlObjectFactory().createP();
@@ -206,19 +229,27 @@ public class DocxExport implements Export {
 
         String[] lines = textContent.split("\n");
         for(String line : lines) {
-            // Create object for t (wrapped in JAXBElement)
+            // Erstellen eines Textelemnets (wrapped in eimem JAXBElement)
             Text text = Context.getWmlObjectFactory().createText();
             JAXBElement<org.docx4j.wml.Text> textWrapped = Context.getWmlObjectFactory().createRT(text);
             r.getContent().add( textWrapped);
             text.setValue(line.trim());
 
-            Br br = Context.getWmlObjectFactory().createBr(); // this Br element is used break the current and go for next line
+            // Einfügen eines Zeilenumbruchs
+            Br br = Context.getWmlObjectFactory().createBr();
             r.getContent().add(br);
         }
 
         return p;
     }
 
+    /**
+     * Den Inhalt für eine Textbox als Paragraph erstellen
+     * @param content Inhalt (Bild) der Textbox
+     * @param heigth Höhe des Bildes
+     * @param width Breite des Bildes
+     * @return Paragraph
+     */
     private P createImageInTextBox(BufferedImage content, long width, long heigth) throws Exception {
 
         P p = Context.getWmlObjectFactory().createP();
@@ -237,7 +268,7 @@ public class DocxExport implements Export {
         Logger.info("calculated image width: " + width);
         Inline inline = imagePart.createImageInline( filenameHint, altText, id1, id2, width, false);
 
-        // Now add the inline in w:p/w:r/w:drawing
+        // Hinzufügen eines Inlines in w:p/w:r/w:drawing
         org.docx4j.wml.ObjectFactory factory = Context.getWmlObjectFactory();
 
         R  run = factory.createR();
@@ -250,7 +281,11 @@ public class DocxExport implements Export {
     }
 
 
-    // Add Metadata
+    /**
+     * Hinzufügen von Metadata
+     * @param key Metadatentyp
+     * @param value Wert einer Metadata
+     */
     private void addCustomDocProp(String key, String value){
         DocPropsCustomPart docPropsCustomPart = null;
         try {
@@ -260,14 +295,12 @@ public class DocxExport implements Export {
             org.docx4j.docProps.custom.Properties customProps = cpfactory.createProperties();
             docPropsCustomPart.setJaxbElement(customProps);
 
-            // Ok, let's add a custom property.
+            // Hinzufügen der Metadaten
             org.docx4j.docProps.custom.Properties.Property newProp = cpfactory.createPropertiesProperty();
             newProp.setName(key);
             newProp.setFmtid(docPropsCustomPart.fmtidValLpwstr ); // Magic string
             newProp.setPid( customProps.getNextId() );
             newProp.setLpwstr(value);
-
-            // .. add it
             customProps.getProperty().add(newProp);
 
         } catch (InvalidFormatException e) {
@@ -277,10 +310,11 @@ public class DocxExport implements Export {
     }
 
 
-
-
+    /**
+     * Festlegen des Dokumentlayouts
+     * @param landscape definiert die Orintation eines Dokuments
+     */
     private void configureMasterPage(boolean landscape){
-        // Create a basic sectPr using our Page model
         pageDimensions = new PageDimensions();
         pageDimensions.setPgSize(PageSizePaper.A4, landscape);
 

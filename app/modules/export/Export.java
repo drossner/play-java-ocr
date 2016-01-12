@@ -9,11 +9,28 @@ import java.io.File;
  */
 public interface Export {
 
+    /**
+     * Initialisiert ein Textdokument
+     * @param path Speicherort
+     * @param fileName Names des Dokumentes
+     * @param landscape Orientation des Dokuments
+     */
     void initialize(String path, String fileName, boolean landscape);
 
+    /**
+     * fügt das übergebene Fragment dem Content in dem Textdokument hinzu
+     * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
+     */
     void export(ResultFragment fragment);
 
+    /**
+     * Seitenumbruch in einen Dokument erzeugen
+     */
     void newPage();
 
+    /**
+     * Speichert das Dokument in einer Datei ab
+     * @return das gespeicherte Dokument
+     */
     File finish();
 }

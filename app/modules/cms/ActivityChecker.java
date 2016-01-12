@@ -6,6 +6,9 @@ package modules.cms;
 
 public class ActivityChecker implements Runnable{
 
+    /**
+     * wird nicht verwendet
+     */
     @Override
     public void run() {
         while(true) {

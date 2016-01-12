@@ -14,22 +14,34 @@ import static play.test.Helpers.running;
  */
 public class LdapTest {
 
-    /*
     LdapController lc;
+    User temp;
 
     @Before
     public void setupTest(){
         lc = new LdapController();
+        temp = new LDAPUserCreator().getUser();
     }
 
     @Test
     public void createUserTest() {
-        User temp = new LDAPUserCreator().getUser();
+        assertTrue(lc.insert(temp));
+    }
 
-        lc.insert(temp);
-        lc.searchUser(temp);
+    @Test
+    public void searchUserTest(){
+        assertTrue(lc.searchUser(temp.getCmsAccount()));
+    }
+
+    @Test
+    public void editUserTest(){
+        //change an Attribute before edit an user
         temp.setCmsPassword("testtest");
-        lc.edit(temp);
+        assertTrue(lc.edit(temp));
+    }
+
+    @Test
+    public void deleteUserTest(){
         assertTrue(lc.delete(temp));
     }
 
@@ -37,12 +49,7 @@ public class LdapTest {
 
         public User getUser(){
             User rc = new User();
-
-            Country c = new Country();
-            c.setName("Deutscheland");
-
             rc.seteMail("test@test.de");
-            rc.setCountry(c);
             rc.setCmsPassword("test");
             rc.setCmsAccount("test");
 
@@ -50,5 +57,5 @@ public class LdapTest {
         }
 
     }
-    */
+
 }

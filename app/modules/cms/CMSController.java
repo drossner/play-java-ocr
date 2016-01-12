@@ -22,6 +22,12 @@ public class CMSController {
     private FolderController folderController;
     private DocumentController documentController;
 
+    /**
+     * Konstruktor
+     * CMSController enthält eine CMSSession,
+     * erstellt einen neuen FolderController und DocumentController
+     * @param session CMSSession
+     */
     public CMSController(CMSSession session) {
         this.folderController = new FolderController(this);
         this.documentController = new DocumentController(this);
