@@ -91,7 +91,7 @@ function ItemViewModel(parent, isFolder, id, title, description, folderId) {
         self.isActive(true);
     };
 
-    /*
+    /**
     * Opens item, depending on it's type
     */
     self.openItem = function () {

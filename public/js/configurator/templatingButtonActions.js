@@ -4,6 +4,13 @@
 var areas;
 var currArea;
 
+/**
+ * setzt das gelandene bild in den canvas bereich und passt das canvas auf die maße des bildes an
+ * wenn das bild fertig geladen ist, wird die callback methode mit dem übergebenen job aufgerufen
+ * @param data
+ * @param callback
+ * @param job
+ */
 function setImageSource(data, callback, job) {
     var image = $('#canvas');
     image.remove();
@@ -71,8 +78,6 @@ function getValuesOfSelectedArea(areas) {
 
 
 function getValuesForInput(area) {
-
-
     if (area != null) {
         //set Area gloabal
         currArea = area;

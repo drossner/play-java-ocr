@@ -72,6 +72,9 @@ function contrast(value){
     preProcessing.caman.render();
 }
 
+/**
+ * speichert die daten, die im template festgelegt wurden, im dazugehörigen job ab
+ */
 function saveData() {
     console.log("save data: " + currentJob);
 
@@ -108,6 +111,10 @@ function saveData() {
     }
 }
 
+/**
+ * initialisiert das template modal mit dem in dem übergebenen job möglicherweise schon definierten daten
+ * @param job job, der im modal dargestellt werden soll
+ */
 function initModal(job) {
     preProcessing.resetFilters();
     reset();
@@ -175,6 +182,10 @@ function JobHistoryViewModel(){
         }
     };
 
+    /**
+     * zeigt das template modal mit dem übergebenen job
+     * @param job anzuzeigender job
+     */
     self.showModal = function(job){
         preProcessing = new PreProcessing();
 
@@ -187,12 +198,20 @@ function JobHistoryViewModel(){
         $("#modal-sample-1").modal('show');
     };
 
+    /**
+     * zeigt den ordener baum modal an mit den daten des übergebenen jobs
+     * @param job
+     */
     self.showFolderModal = function(job){
         currentJob = job;
 
         $("#folderModal").modal('show');
     };
 
+    /**
+     * löscht den übergebenen job
+     * @param job zu löschender job
+     */
     self.delete = function(job){
         console.log("delete: " + job);
 
@@ -206,6 +225,9 @@ function JobHistoryViewModel(){
         });
     };
 
+    /**
+     * analysiert alle in der liste vorhandenen jobs
+     */
     self.processJobs = function () {
         console.log(self.jobs());
         console.log(self.jobs()[0].areas());

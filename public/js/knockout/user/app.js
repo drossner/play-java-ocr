@@ -33,6 +33,9 @@ function UserViewModel(){
         }
     });
 
+    /**
+     * sending the user to the server packing the data to json format
+     */
     self.sendUser = function(){
         console.log(self.user());
         $('#cmsp').css("display", "none");

@@ -1,8 +1,8 @@
 /**
+ * loading initial data
  * Created by FRudi on 12.12.2015.
  */
 function loadData(jobViewModel){
-
     $.getJSON("/json/jobType", function(result){
 
         //pushing first entry

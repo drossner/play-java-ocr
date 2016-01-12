@@ -26,7 +26,7 @@ function PreProcessing() {
 
     $(function () {
         /**
-         * Iteriert über die alles Slieder, holt sich dabei die einstellunge und fügt diese beim
+         * Iteriert über die alle Slider, holt sich dabei die einstellungen und fügt diese beim
          * caman Objekt an
          */
         $('.slider').each(function () {
@@ -79,7 +79,7 @@ function PreProcessing() {
     });
 
     /**
-     * fügt die Werte der Slieders dem Camam Objekt hinzu
+     * fügt die Werte der Sliders dem Camam Objekt hinzu
      */
     self.applyFilters = function() {
         self.caman.revert(false);
