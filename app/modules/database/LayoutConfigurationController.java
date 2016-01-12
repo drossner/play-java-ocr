@@ -23,7 +23,11 @@ public class LayoutConfigurationController extends DatabaseController<LayoutConf
         super.persistObject(persistObject);
     }
 
-
+    /**
+     * selektiert alle layout configurationen bei denen die übergebene spalte null ist
+     * @param whereColumn spalte die keinen wert haben soll
+     * @return selektierte liste
+     */
     public List<LayoutConfig> selectEntityListColumnNull(String whereColumn){
         CriteriaBuilder builder = JPA.em().getCriteriaBuilder();
 
