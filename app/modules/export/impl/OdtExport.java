@@ -35,10 +35,7 @@ public class OdtExport implements Export {
     MasterPage master;
 
     /**
-     * Initialisiert ein Textdokument
-     * @param path Speicherort
-     * @param fileName Names des Dokuments
-     * @param landscape Orientation des Dokuments
+     * @inheritDoc
      */
     @Override
     public void initialize(String path, String fileName, boolean landscape) {
@@ -56,8 +53,7 @@ public class OdtExport implements Export {
     }
 
     /**
-     * Setzt den Content in dem Textdokument
-     * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
+     * @inheritDoc
      */
     @Override
     public void export(ResultFragment fragment) {
@@ -84,7 +80,7 @@ public class OdtExport implements Export {
     }
 
     /**
-     * Seitenumbruch in einen Dokument erzeugen
+     * @inheritDoc
      */
     @Override
     public void newPage() {
@@ -92,8 +88,7 @@ public class OdtExport implements Export {
     }
 
     /**
-     * Speichert das Dokument in einer Datei ab
-     * @return das gespeicherte Dokument
+     * @inheritDoc
      */
     @Override
     public File finish() {

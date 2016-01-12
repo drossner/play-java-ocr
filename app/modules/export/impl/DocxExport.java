@@ -51,10 +51,7 @@ public class DocxExport implements Export {
 
 
     /**
-     * Initialisiert ein Textdokument
-     * @param path Speicherort
-     * @param fileName Names des Dokuments
-     * @param landscape Orientation des Dokument
+     * @inheritDoc
      */
     @Override
     public void initialize(String path, String fileName, boolean landscape) {
@@ -75,8 +72,7 @@ public class DocxExport implements Export {
     }
 
     /**
-     * Setzt den Content in dem Textdokument
-     * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
+     * @inheritDoc
      */
     @Override
     public void export(ResultFragment fragment) {
@@ -114,7 +110,7 @@ public class DocxExport implements Export {
     }
 
     /**
-     * Seitenumbruch in einen Dokument erzeugen
+     * @inheritDoc
      */
     @Override
     public void newPage() {
@@ -131,8 +127,7 @@ public class DocxExport implements Export {
     }
 
     /**
-     * Speichert das Dokumente in einer Datei
-     * @return das gespeichert Dokument
+     * @inheritDoc
      */
     @Override
     public File finish() {

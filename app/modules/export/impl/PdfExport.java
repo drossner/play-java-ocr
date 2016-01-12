@@ -38,10 +38,7 @@ public class PdfExport implements Export {
     int pageCounter = 0;
 
     /**
-     * Initialisiert ein Textdokument
-     * @param path Speicherort
-     * @param fileName Names des Dokuments
-     * @param landscape Orientation des Dokuments
+     * @inheritDoc
      */
     @Override
     public void initialize(String path, String fileName, boolean landscape) {
@@ -59,8 +56,7 @@ public class PdfExport implements Export {
     }
 
     /**
-     * Setzt den Content in dem Textdokument
-     * @param fragment enthält ein Bild oder Text sowie Positionierungsangaben
+     * @inheritDoc
      */
     @Override
     public void export(ResultFragment fragment) {
@@ -84,7 +80,7 @@ public class PdfExport implements Export {
     }
 
     /**
-     * Seitenumbruch in einen Dokument erzeugen
+     * @inheritDoc
      */
     @Override
     public void newPage(){
@@ -93,8 +89,7 @@ public class PdfExport implements Export {
     }
 
     /**
-     * Speichert das Dokument in einer Datei ab
-     * @return das gespeicherte Dokument
+     * @inheritDoc
      */
     @Override
     public File finish() {
@@ -114,10 +109,7 @@ public class PdfExport implements Export {
     }
 
     /**
-     * Fügt ein Test im Textdokument ein
-     * @param content Text
-     * @param startX Startposition des Textes
-     * @param startY Startposition des Textes
+     * @inheritDoc
      */
     private void setText(String content, float startX, float startY){
 
