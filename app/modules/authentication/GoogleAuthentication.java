@@ -19,6 +19,7 @@ import java.util.Arrays;
 
 /**
  * Created by Daniel on 11.11.2015.
+ * Google+ Implementation
  */
 @Singleton
 public class GoogleAuthentication implements OAuthentication{
@@ -48,10 +49,16 @@ public class GoogleAuthentication implements OAuthentication{
         return instance;
     }*/
 
+    /**
+     * @inheritDoc
+     */
     public String getAuthURL() throws IOException {
         return gacf.newAuthorizationUrl().setRedirectUri(redirectURI).build();
     }
 
+    /**
+     * @inheritDoc
+     */
     public AuthResponse exchangeToken(String token) throws IOException {
         GoogleTokenResponse gtr = gacf.newTokenRequest(token).setRedirectUri(gcs.getDetails().getRedirectUris().get(0)).execute(); //get(1)
         GoogleIdToken idToken = gtr.parseIdToken();

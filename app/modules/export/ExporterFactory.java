@@ -6,6 +6,7 @@ import modules.export.impl.PdfExport;
 
 /**
  * Created by daniel and benedikt on 21.12.15.
+ * Class for initializing a document exporter
  */
 public class ExporterFactory {
 
@@ -15,6 +16,11 @@ public class ExporterFactory {
         return types;
     }
 
+    /**
+     *
+     * @param dataType file extension
+     * @return Specific exporter
+     */
     public static Export getExporter(String dataType){
         dataType = dataType.toLowerCase();
         Export rc;

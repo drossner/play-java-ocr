@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * Created by Daniel on 21.11.2015.
+ * Custom Deadbolt HandlerCache
  */
 @Singleton
 public class DeadboltHandlerCache implements HandlerCache{
@@ -26,12 +27,18 @@ public class DeadboltHandlerCache implements HandlerCache{
         handlers.put(HandlerKeys.DEFAULT.key, defaultHandler);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public DeadboltHandler apply(final String key)
     {
         return handlers.get(key);
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public DeadboltHandler get()
     {

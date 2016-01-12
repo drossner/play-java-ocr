@@ -4,6 +4,7 @@ import java.io.File;
 
 /**
  * Created by daniel on 30.11.15.
+ * Encapsulation of a file and some meta data.
  */
 public class FileContainer {
 
@@ -37,6 +38,10 @@ public class FileContainer {
         this.file = file;
     }
 
+    /**
+     * Builder class for easy initialization of a FileContainer
+     * @author daniel
+     */
     public static class Builder{
         private FileContainer fc;
 

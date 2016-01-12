@@ -36,6 +36,9 @@ public class ImageHelperImpl implements ImageHelper{
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public BufferedImage convertFile(FileContainer inputFile) throws IOException {
         File f = inputFile.getFile();
         String fileType = getFileType(inputFile);
@@ -46,6 +49,11 @@ public class ImageHelperImpl implements ImageHelper{
         } else throw new IOException("Unsupported file-type");
     }
 
+    /**
+     * Exchange transparent pixels with white ones.
+     * @param image input image
+     * @return fixed image
+     */
     private BufferedImage fixTransparency(BufferedImage image){
         BufferedImage img = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
         //fill transparent pixels with white
@@ -53,18 +61,27 @@ public class ImageHelperImpl implements ImageHelper{
         return img;
     }
 
+    /**
+     * @inheritDoc
+     */
     public ByteArrayOutputStream convertBaos(BufferedImage image) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, OUTPUT_FORMAT, baos);
         return baos;
     }
 
+    /**
+     * @inheritDoc
+     */
     public ByteArrayOutputStream convertBaos(File file) throws IOException{
         //File is unchecked!
         BufferedImage image = ImageIO.read(file);
         return convertBaos(image);
     }
 
+    /**
+     * @inheritDoc
+     */
     public boolean fileIsValid(FileContainer fc){
         boolean readable = false;
         String fileType = getFileType(fc);
@@ -75,6 +92,9 @@ public class ImageHelperImpl implements ImageHelper{
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public boolean fileIsValid(File f){
         boolean readable = false;
         try {
@@ -93,12 +113,18 @@ public class ImageHelperImpl implements ImageHelper{
         return splittedType[1].toLowerCase();
     }
 
+    /**
+     * @inheritDoc
+     */
     public BufferedImage scale(BufferedImage image, int width, int height){
         BufferedImage thumbnail =
                 Scalr.resize(image, Scalr.Method.AUTOMATIC, Scalr.Mode.FIT_TO_WIDTH, width, height, Scalr.OP_ANTIALIAS);
         return fixTransparency(thumbnail);
     }
 
+    /**
+     * @inheritDoc
+     */
     public BufferedImage getThumbnail(BufferedImage image){
         BufferedImage thumbnail =
                 Scalr.resize(image, Scalr.Method.SPEED, Scalr.Mode.FIT_TO_HEIGHT,
