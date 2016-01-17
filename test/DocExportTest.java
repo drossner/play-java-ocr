@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
  */
 public class DocExportTest {
 
-
+/*
     Export export;
     String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
     String fileName = "outputDocx";
@@ -152,5 +152,5 @@ public class DocExportTest {
 
 
 
-    }
+    }*/
 }

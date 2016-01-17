@@ -18,6 +18,8 @@ import java.util.ArrayList;
 import static java.lang.Thread.sleep;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static play.test.Helpers.fakeApplication;
+import static play.test.Helpers.running;
 
 /**
  * Created by Benedikt Linke on 23.11.15.
@@ -32,42 +34,60 @@ public class CmsTest {
 
     @Before
     public void setupTest(){
-        cmsController = SessionHolder.getInstance().getController(user, password);
+        running(fakeApplication(), () -> {
+            cmsController = SessionHolder.getInstance().getController(user, password);
+
+        });
+
+
     }
 
     @Test
     public void folderTest(){
-        Folder workspaceFolder = cmsController.getWorkspaceFolder();
+        running(fakeApplication(), () -> {
 
-        Folder newFolder = cmsController.createFolder(workspaceFolder, "testfolder");
-        String testFolderId = newFolder.getId();
+            Folder workspaceFolder = cmsController.getWorkspaceFolder();
 
-        assertEquals(testFolderId, cmsController.getFolderById(testFolderId).getId());
-        Folder testFolder = cmsController.getFolderById(testFolderId);
+            Folder newFolder = cmsController.createFolder(workspaceFolder, "testfolder");
+            String testFolderId = newFolder.getId();
 
-        Folder updatedFolder = cmsController.updateFolder(testFolder, "newName");
-        assertEquals(updatedFolder.getName(), "newName");
+            assertEquals(testFolderId, cmsController.getFolderById(testFolderId).getId());
+            Folder testFolder = cmsController.getFolderById(testFolderId);
 
-        assertTrue(cmsController.deleteFolder(testFolder));
+            Folder updatedFolder = cmsController.updateFolder(testFolder, "newName");
+            assertEquals(updatedFolder.getName(), "newName");
 
+            assertTrue(cmsController.deleteFolder(testFolder));
+        });
     }
 
     @Test
     public void documentTest(){
-        File file = new File("./test/testFiles/Wissenschaftlicher_Artikel.PNG");
-        String fileType = "File";
+        running(fakeApplication(), () -> {
 
-        Folder workspaceFolder = cmsController.getWorkspaceFolder();
+            File file = new File("./test/testFiles/Wissenschaftlicher_Artikel.PNG");
+            String fileType = "File";
 
-        try {
-            Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
-            assertEquals(testDocument.getName(),"Wissenschaftlicher_Artikel.PNG");
-            Logger.info(testDocument.getContentUrl());
-            assertTrue(cmsController.deleteDocument(testDocument.getId()));
+            Folder workspaceFolder = cmsController.getWorkspaceFolder();
 
-        } catch (FileNotFoundException e) {
-            Logger.info("File not found",e);
-        }
+            try {
+                Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
+                assertEquals(testDocument.getName(),"Wissenschaftlicher_Artikel.PNG");
+                Logger.info(testDocument.getContentUrl());
+                assertTrue(cmsController.deleteDocument(testDocument.getId()));
+
+            } catch (FileNotFoundException e) {
+                Logger.info("File not found",e);
+            }
+        });
+    }
+
+    @Test
+    public void getCMISObject(){
+        Folder workspaceFolder = (Folder) cmsController.getDocument("b88407c2-4a2f-4d61-8eff-d5a3fc369a4e");
+        cmsController.downloadDocument(workspaceFolder.getId(), "./test/testFiles/" );
+
+        System.out.println(workspaceFolder.getName());
     }
 
     @Test

@@ -22,7 +22,7 @@ import static org.junit.Assert.assertNotNull;
  * Created by Benedikt Linke on 17.12.15.
  */
 public class PDFTest {
-
+/*
     Export export;
     String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
     String fileName = "outputPDF";
@@ -142,5 +142,5 @@ public class PDFTest {
 
 
 
-    }
+    }*/
 }
