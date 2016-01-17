@@ -1,4 +1,5 @@
 import modules.database.entities.Country;
+import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
 import org.junit.*;
 
@@ -19,7 +20,6 @@ import static play.test.Helpers.*;
  */
 public class DatabaseTest {
 
-/*
     @Test
     public void createUserTest(){
         running(fakeApplication(), () -> {
@@ -40,9 +40,8 @@ public class DatabaseTest {
 
         public User getUser(){
             User rc = new User();
-
             Country c = new Country();
-            c.setName("Deutscheland");
+            c.setCountry(CountryImpl.GERMAN);
 
             rc.seteMail("test@test.de");
             rc.setCountry(c);
@@ -52,5 +51,4 @@ public class DatabaseTest {
         }
 
     }
-    */
 }
