@@ -1,47 +1,46 @@
-import modules.database.entities.Country;
 import modules.database.entities.User;
 import modules.ldap.LdapController;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
-import play.Logger;
+import org.junit.runners.MethodSorters;
 
 import static org.junit.Assert.assertTrue;
-import static play.test.Helpers.fakeApplication;
-import static play.test.Helpers.running;
 
 /**
  * Created by Benedikt Linke on 23.11.15.
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LdapTest {
 
     LdapController lc;
     User temp;
 
     @Before
-    public void setupTest(){
+    public void SetupTest(){
         lc = new LdapController();
         temp = new LDAPUserCreator().getUser();
     }
 
     @Test
-    public void createUserTest() {
+    public void bCreateUserTest() {
         assertTrue(lc.insert(temp));
     }
 
     @Test
-    public void searchUserTest(){
+    public void cSearchUserTest(){
         assertTrue(lc.searchUser(temp.getCmsAccount()));
     }
 
     @Test
-    public void editUserTest(){
+    public void dEditUserTest(){
         //change an Attribute before edit an user
         temp.setCmsPassword("testtest");
         assertTrue(lc.edit(temp));
     }
 
     @Test
-    public void deleteUserTest(){
+    public void eDeleteUserTest(){
         assertTrue(lc.delete(temp));
     }
 
