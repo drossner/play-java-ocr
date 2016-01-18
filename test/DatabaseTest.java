@@ -1,28 +1,20 @@
-import controllers.security.OcrPermission;
-import controllers.security.OcrRole;
+import modules.database.DatabaseController;
 import modules.database.UserController;
 import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
+import modules.database.entities.DomainObject;
 import modules.database.entities.User;
 import modules.database.factory.SimpleUserFactory;
 import org.junit.*;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.rules.ExpectedException;
 import play.db.jpa.JPA;
-import play.db.jpa.Transactional;
-import play.mvc.*;
-import play.test.*;
-import play.libs.F.*;
-
-import java.util.ArrayList;
+import play.test.WithApplication;
 
 import static org.junit.Assert.assertEquals;
-import static play.test.Helpers.*;
+import static org.junit.Assert.assertNull;
 
 /**
+ *
  * Created by FRudi on 20.11.2015.
  */
 public class DatabaseTest extends WithApplication {
@@ -42,24 +34,46 @@ public class DatabaseTest extends WithApplication {
         user.seteMail("test@test.de");
         user.setCountry(c);
         user.setPassword("test");
+
+        createUserFromFactory();
+    }
+
+
+    /**
+     * create user from factory
+     */
+    private void createUserFromFactory() {
+        try {
+            JPA.withTransaction(() -> new SimpleUserFactory().setCountry(user.getCountry().getCountry())
+                    .setEmail(user.geteMail())
+                    .setPassword(user.getPassword())
+                    .persist());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     /**
-     * delete user after test
+     * delete user check
      */
-    @After
+    //@After
     public void delete(){
-        JPA.withTransaction(() -> controller.deleteObject(user));
+        JPA.withTransaction(() -> {
+            controller.deleteObject(user);
+        });
+
+        JPA.withTransaction(() -> {
+            assertNull(controller.selectUserFromMail(user).geteMail());
+        });
     }
 
     /**
      * check database if persistation with @simpleuserfactory is working
      */
+    @Test
     public void checkCreate(){
-        System.out.println("email selection from object: ");
-        assertEquals(user.geteMail(), controller.selectUserFromMail(user).geteMail());
-        System.out.println("email selection from string: ");
-        assertEquals(user.geteMail(), controller.selectUserFromMail(user.geteMail()).geteMail());
+        JPA.withTransaction(() -> assertEquals(user.geteMail(), controller.selectUserFromMail(user).geteMail()));
+        JPA.withTransaction(() -> assertEquals(user.geteMail(), controller.selectUserFromMail(user.geteMail()).geteMail()));
     }
 
     /**
@@ -67,34 +81,10 @@ public class DatabaseTest extends WithApplication {
      */
     @Test
     public void checkPasswordChange(){
-        JPA.withTransaction(() -> {
-            user.setPassword("test2");
-        });
-        assertEquals(user.getPassword(), controller.selectUserFromMail(user).getPassword());
-    }
+        user.setPassword("test2");
+        JPA.withTransaction(() -> controller.selectUserFromMail(user).setPassword(user.getPassword()));
 
-    /**
-     *check user creation
-     */
-    @Test
-    public void checkUserCreation(){
-        JPA.withTransaction(() -> {
-            controller.persistUser(user);
-        });
-
-        checkCreate();
-    }
-
-    /**
-     * check user creation with factory
-     */
-    @Test
-    private void checkCreateUserFromFactory() {
-        new SimpleUserFactory().setCountry(user.getCountry().getCountry())
-                .setEmail(user.geteMail())
-                .setPassword(user.getPassword())
-                .persist();
-        checkCreate();
+        JPA.withTransaction(() -> assertEquals(user.getPassword(), controller.selectUserFromMail(user).getPassword()));
     }
 
     @Rule public ExpectedException thrown= ExpectedException.none();
@@ -104,9 +94,14 @@ public class DatabaseTest extends WithApplication {
      */
     @Test
     public void checkFalseSelection(){
-        thrown.expect(NullPointerException.class );
-        thrown.expectMessage("selection must be unique database object parameter");
+        thrown.expect(Exception.class );
 
+        JPA.withTransaction(() -> {
+            new TestController().selectEntity(User.class, user.getPassword());
+        });
+    }
+
+    public class TestController extends DatabaseController<DomainObject, String>{
 
     }
 }
