@@ -38,7 +38,6 @@ public class DatabaseTest extends WithApplication {
         createUserFromFactory();
     }
 
-
     /**
      * create user from factory
      */
@@ -57,8 +56,15 @@ public class DatabaseTest extends WithApplication {
      * check database if persistation with @simpleuserfactory is working
      */
     @Test
-    public void checkCreate(){
+    public void checkCreateFromObject(){
         JPA.withTransaction(() -> assertEquals(user.geteMail(), controller.selectUserFromMail(user).geteMail()));
+    }
+
+    /**
+     * check database if persistation with @simpleuserfactory is working
+     */
+    @Test
+    public void checkCreateFromString(){
         JPA.withTransaction(() -> assertEquals(user.geteMail(), controller.selectUserFromMail(user.geteMail()).geteMail()));
     }
 
@@ -73,8 +79,8 @@ public class DatabaseTest extends WithApplication {
         JPA.withTransaction(() -> assertEquals(user.getPassword(), controller.selectUserFromMail(user).getPassword()));
     }
 
-    @Rule public ExpectedException thrown= ExpectedException.none();
 
+    @Rule public ExpectedException thrown= ExpectedException.none();
     /**
      * check nullpointer when false selection
      */
