@@ -7,6 +7,7 @@ import controllers.security.OcrRole;
 import modules.database.entities.Country;
 import modules.database.entities.CountryImpl;
 import modules.database.entities.User;
+import modules.database.entities.UserPermission;
 import org.hibernate.criterion.Projection;
 import play.Logger;
 import play.db.jpa.JPA;
@@ -54,4 +55,5 @@ public class UserController extends DatabaseController<User, CountryImpl> {
     public User selectUserFromMail(String userMail){
         return selectEntity(User.class, "eMail", userMail);
     }
+
 }

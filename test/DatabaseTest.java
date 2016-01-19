@@ -54,20 +54,6 @@ public class DatabaseTest extends WithApplication {
     }
 
     /**
-     * delete user check
-     */
-    //@After
-    public void delete(){
-        JPA.withTransaction(() -> {
-            controller.deleteObject(user);
-        });
-
-        JPA.withTransaction(() -> {
-            assertNull(controller.selectUserFromMail(user).geteMail());
-        });
-    }
-
-    /**
      * check database if persistation with @simpleuserfactory is working
      */
     @Test
@@ -94,14 +80,14 @@ public class DatabaseTest extends WithApplication {
      */
     @Test
     public void checkFalseSelection(){
-        thrown.expect(Exception.class );
+        thrown.expect(RuntimeException.class );
 
         JPA.withTransaction(() -> {
-            new TestController().selectEntity(User.class, user.getPassword());
+            new TestController().selectEntity(User.class, true);
         });
     }
 
-    public class TestController extends DatabaseController<DomainObject, String>{
+    public class TestController extends DatabaseController<DomainObject, Object>{
 
     }
 }
