@@ -76,7 +76,7 @@ public class DatabaseTest extends WithApplication {
     @Rule public ExpectedException thrown= ExpectedException.none();
 
     /**
-     * check nullpointer when false selection
+     * check nullpointer when false selected variable
      */
     @Test
     public void checkFalseSelection(){

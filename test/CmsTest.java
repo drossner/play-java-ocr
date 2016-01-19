@@ -43,6 +43,12 @@ public class CmsTest extends WithApplication {
             cmsController = SessionHolder.getInstance().getController(user, password);
     }
 
+    /**
+     * Create a folder via cmis
+     * Check if folder exist
+     * Edit (rename) folder
+     * Delete Folder
+     */
     @Test
     public void folderTest(){
 
@@ -61,6 +67,11 @@ public class CmsTest extends WithApplication {
 
     }
 
+    /**
+     * Create a document via cmis
+     * Check if document exist
+     * Delete document
+     */
     @Test
     public void documentTest(){
         File file = new File(path + testImage);
@@ -126,7 +137,7 @@ public class CmsTest extends WithApplication {
 
     @Test
     public void getSharedFoldersTest(){
-        // Voraussetzung: Der User muss existieren und mit anderen User Ordner geteilt hab en
+        // Voraussetzung: Der User muss existieren und mit anderen User Ordner geteilt haben
         cmsController = SessionHolder.getInstance().getController("test", "test");
 
         ArrayList<Folder> sharedFolders = cmsController.listSharedFolder();
