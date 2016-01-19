@@ -7,12 +7,14 @@ import org.junit.Before;
 import org.junit.Test;
 import play.Logger;
 import play.db.jpa.JPA;
+import play.test.WithApplication;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 import static java.lang.Thread.sleep;
@@ -24,85 +26,63 @@ import static play.test.Helpers.running;
 /**
  * Created by Benedikt Linke on 23.11.15.
  */
-public class CmsTest {
+public class CmsTest extends WithApplication {
 
     CMSController cmsController;
 
     String user = "ocr";
     String password = "ocr";
 
+    String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
+    String testImage = "inputTestImage.png";
+    String testImageOutput = "outputTestImage.png";
+
 
     @Before
     public void setupTest(){
-        running(fakeApplication(), () -> {
             cmsController = SessionHolder.getInstance().getController(user, password);
-
-        });
-
-
     }
 
+    /**
+     * Create a folder via cmis
+     * Check if folder exist
+     * Edit (rename) folder
+     * Delete Folder
+     */
     @Test
     public void folderTest(){
-        running(fakeApplication(), () -> {
 
-            Folder workspaceFolder = cmsController.getWorkspaceFolder();
+        Folder workspaceFolder = cmsController.getWorkspaceFolder();
 
-            Folder newFolder = cmsController.createFolder(workspaceFolder, "testfolder");
-            String testFolderId = newFolder.getId();
+        Folder newFolder = cmsController.createFolder(workspaceFolder, "testfolder");
+        String testFolderId = newFolder.getId();
 
-            assertEquals(testFolderId, cmsController.getFolderById(testFolderId).getId());
-            Folder testFolder = cmsController.getFolderById(testFolderId);
+        assertEquals(testFolderId, cmsController.getFolderById(testFolderId).getId());
+        Folder testFolder = cmsController.getFolderById(testFolderId);
 
-            Folder updatedFolder = cmsController.updateFolder(testFolder, "newName");
-            assertEquals(updatedFolder.getName(), "newName");
+        Folder updatedFolder = cmsController.updateFolder(testFolder, "newName");
+        assertEquals(updatedFolder.getName(), "newName");
 
-            assertTrue(cmsController.deleteFolder(testFolder));
-        });
+        assertTrue(cmsController.deleteFolder(testFolder));
+
     }
 
+    /**
+     * Create a document via cmis
+     * Check if document exist
+     * Delete document
+     */
     @Test
     public void documentTest(){
-        running(fakeApplication(), () -> {
-
-            File file = new File("./test/testFiles/Wissenschaftlicher_Artikel.PNG");
-            String fileType = "File";
-
-            Folder workspaceFolder = cmsController.getWorkspaceFolder();
-
-            try {
-                Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
-                assertEquals(testDocument.getName(),"Wissenschaftlicher_Artikel.PNG");
-                Logger.info(testDocument.getContentUrl());
-                assertTrue(cmsController.deleteDocument(testDocument.getId()));
-
-            } catch (FileNotFoundException e) {
-                Logger.info("File not found",e);
-            }
-        });
-    }
-
-    @Test
-    public void getCMISObject(){
-        Folder workspaceFolder = (Folder) cmsController.getDocument("b88407c2-4a2f-4d61-8eff-d5a3fc369a4e");
-        cmsController.downloadDocument(workspaceFolder.getId(), "./test/testFiles/" );
-
-        System.out.println(workspaceFolder.getName());
-    }
-
-    @Test
-    public void downloadDocumentTest(){
-        String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
-
-        File file = new File(path + "Wissenschaftlicher_Artikel.PNG");
+        File file = new File(path + testImage);
         String fileType = "File";
 
         Folder workspaceFolder = cmsController.getWorkspaceFolder();
 
         try {
             Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
-            Logger.info("Start to downloading");
-            assertTrue(cmsController.downloadDocument(testDocument.getId(), path + "/downloaded/downloadTest.png"));
+            assertEquals(testDocument.getName(),testImage);
+            Logger.info(testDocument.getContentUrl());
             assertTrue(cmsController.deleteDocument(testDocument.getId()));
 
         } catch (FileNotFoundException e) {
@@ -111,20 +91,45 @@ public class CmsTest {
     }
 
     @Test
-    public void readingAImageTest(){
-        String path = "/Users/Ben/OCR/play-java-ocr/test/testFiles/";
-
-        File file = new File(path + "Wissenschaftlicher_Artikel.PNG");
+    public void downloadDocumentTest(){
+        File file = new File(path + testImage);
         String fileType = "File";
 
         Folder workspaceFolder = cmsController.getWorkspaceFolder();
+
+        try {
+            Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
+            Logger.info("Start to downloading");
+            assertTrue(cmsController.downloadDocument(testDocument.getId(), path + testImageOutput));
+            assertTrue(cmsController.deleteDocument(testDocument.getId()));
+
+            //Delete testImage form Dictionary
+            File fileOutput = new File(path+ testImageOutput);
+            fileOutput.delete();
+
+        } catch (FileNotFoundException e) {
+            Logger.info("File not found",e);
+        }
+    }
+
+    @Test
+    public void readingAImageTest(){
+        File file = new File(path + testImage);
+        String fileType = "File";
+
+        Folder workspaceFolder = cmsController.getWorkspaceFolder();
+
         try {
             Document testDocument = cmsController.createDocument(workspaceFolder,file, fileType);
 
             BufferedImage bufferedImage = cmsController.readingAImage(testDocument.getId());
-            File f = new File(path+"downloaded/testFile.png");
+            File f = new File(path+ testImageOutput);
             assertTrue(ImageIO.write(bufferedImage, "png", f));
             assertTrue(cmsController.deleteDocument(testDocument.getId()));
+
+            //Delete testImage form Dictionary
+            File fileOutput = new File(path+ testImageOutput);
+            fileOutput.delete();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -132,7 +137,8 @@ public class CmsTest {
 
     @Test
     public void getSharedFoldersTest(){
-        initSessionCMS();
+        // Voraussetzung: Der User muss existieren und mit anderen User Ordner geteilt haben
+        cmsController = SessionHolder.getInstance().getController("test", "test");
 
         ArrayList<Folder> sharedFolders = cmsController.listSharedFolder();
         ArrayList<modules.cms.data.Folder> sharedFoldersTemp = new ArrayList<>();
@@ -157,18 +163,13 @@ public class CmsTest {
             }
         }
 
-
-        // print arraylist
-        //Logger.info("Folderlist: ");
+        // print Sharedfolders
         for (modules.cms.data.Folder folder : sharedFoldersTemp){
             String objectId = folder.getId();
             String name = folder.getTitle();
-            System.out.println("Name: " +name + " ObjectId: "+  objectId);
+            Logger.info("Name: " +name + " ObjectId: "+  objectId);
         }
-    }
 
-    private void initSessionCMS(){
-        cmsController = SessionHolder.getInstance().getController("test", "test");
+        assertTrue(!sharedFoldersTemp.isEmpty());
     }
-
 }

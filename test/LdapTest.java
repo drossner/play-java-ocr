@@ -16,22 +16,34 @@ public class LdapTest {
     LdapController lc;
     User temp;
 
+    /**
+     * setting up test => Create LDAPController, User
+     */
     @Before
     public void SetupTest(){
         lc = new LdapController();
         temp = new LDAPUserCreator().getUser();
     }
 
+    /**
+     * Insert user in LDAP Dictionary
+     */
     @Test
     public void bCreateUserTest() {
         assertTrue(lc.insert(temp));
     }
 
+    /**
+     * Search user in LDAP Dictionary
+     */
     @Test
     public void cSearchUserTest(){
         assertTrue(lc.searchUser(temp.getCmsAccount()));
     }
 
+    /**
+     * Edit user in LDAP Dictionary
+     */
     @Test
     public void dEditUserTest(){
         //change an Attribute before edit an user
@@ -39,6 +51,9 @@ public class LdapTest {
         assertTrue(lc.edit(temp));
     }
 
+    /**
+     * Delete user from LDAP Dictionary
+     */
     @Test
     public void eDeleteUserTest(){
         assertTrue(lc.delete(temp));
