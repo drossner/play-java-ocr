@@ -91,6 +91,10 @@ libraryDependencies ++= Seq(
   "org.nuxeo.ecm.automation" % "nuxeo-automation-client" % "7.10"
 )
 
+//test
+libraryDependencies += "org.mockito" % "mockito-core" % "1.8.5"
+
+
 // Play provides two styles of routers, one expects its actions to be injected, the
 // other, legacy style, accesses its actions statically.
 routesGenerator := InjectedRoutesGenerator
